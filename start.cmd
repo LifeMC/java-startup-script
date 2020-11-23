@@ -1,23 +1,51 @@
+
+
+:: LifeMCServer baslatma kodu - flags.lifemcserver.com
+:: Tanitim konusu icin flags.lifemcserver.com 'a gidebilirsiniz.
+
+:: Her ne kadar hicbirsey yapmadan direk ilk calistirmanizda calismasi gereksede,
+
+:: En iyi sonuclar icin .NET 5.0, Windows Server 2012 R2+/Windows 7+
+:: ve PowerShell 7.x kullanin. .NET 5.0: https://dotnet.microsoft.com/download/dotnet/5.0
+
+:: PowerShell 7.x
+:: Windows 7 kullaniyorsaniz once WMF 4.0 kurun.
+
+:: https://github.com/PowerShell/PowerShell/releases/latest/
+:: Dosyalar kismindan PowerShell-7.x.x-win-x64/x86.msi olan kisma basip indirip kurun.
+
+:: Java olarak 64-bit Oracle JDK onerilir. Fakat OpenJDK ve OpenJ9 da da calisir.
+
+:: Discord: https://discord.gg/tmupwqn - Tanitim Konusu: https://flags.lifemcserver.com
+
+
 @echo off
-@call @chcp 65001 > nul
+chcp 65001 > nul
 
 :: Bu kismi ellemeniz onerilmez
 
-@call @setlocal enableextensions enabledelayedexpansion
-@call @cd /d "%~dp0"
+cd /d "%~dp0"
 
-:: Sürüm - degistermeniz onerilmez
+:: SURUM - degistermeniz onerilmez
 
-set version=2.0.4-BETA
+set version=2.1.0
 
-:: Ayarlar - kendinize gore duzenleyebilirsiniz
+:: AYARLAR - kendinize gore duzenleyebilirsiniz
 
-:: Sunucunuzun ana JAR dosyasının adı - spigot, craftbukkit, paper vb. olabilir
+:: Sunucunuzun ana JAR dosyasinin adi - spigot, craftbukkit, paper, yatopia vb. olabilir
 set jar_name=craftbukkit
 
-:: Sunucunuzun surumu - 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2 veya 1.14.4 olabilir
+:: Sunucunuzun surumu - 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4, 1.15.2 veya 1.16.4 olabilir
 :: Not: Sadece yukarida belirtilen sunucu JAR dosyasi yok ise calisir
 set game_version=1.8.8
+
+:: Eger sunucunuzu daha eski bir surumden 1.13 veya daha ust bir surume guncelleyecekseniz
+:: bunu bir kez acip sonra yukseltme islemi bittiginde tekrar kapatmaniz onerilir.
+set is_upgrading=false
+
+:: Eger sunucunuzu 1.13'den 1.14'e veya 1.14'den daha ust bir surume yukseltiyorsaniz,
+:: yukaridaki ayara ek olarak bunuda acip, yukseltme isleminden sonra kapatin.
+set erase_cache=false
 
 :: Sunucunun kullanacagi minimum ram miktari (MB icin M, GB icin G kullanin)
 set min_ram=1536M
@@ -58,9 +86,10 @@ set online_mode=false
 :: Eger dunya ayarlarini baslangicta konsola yazdirmasini istiyorsaniz true yapin
 set verbose=false
 
-:: Gelismis Ayarlar - duzenlemeniz pek onerilmez
+:: GELISMIS AYARLAR - duzenlemeniz pek onerilmez
 
 :: Eger sunucu JAR dosyasi yok ise, otomatik olarak bu linkten indirilir
+:: 1.16.4+ kullaniyorsaniz Paper'a gore daha performansli olan Yatopia'yi kullanin: https://api.yatopia.net/v2/build/latestBuild/download
 set download_url=https://papermc.io/api/v1/paper/%game_version%/latest/download
 
 :: Spigot konfigurasyon dosyasinin adi (uzanti dahil)
@@ -78,8 +107,8 @@ set verbose_info=false
 :: Eger sunucu dosyalariniz cok buyuk ise disk aktivitesini azaltmak icin kapatabilirsiniz
 set unblock_files=true
 
-:: Eger "This JVM instance does not support server VM." tarzi bir hata alirsaniz false yapin
-set use_server_vm=true
+:: Sunucunuzun daha optimizeli calismasi icin normal Java yerine JDK indirip bunu acabilirsiniz
+set use_server_vm=false
 
 :: Assertion ozelligini acar. Sadece gelistirici iseniz acin, sunucudaki hatalari arttirabilir
 set enable_assertions=false
@@ -90,7 +119,11 @@ set messagebox_on_error=false
 :: Eger baslangicta Java surumunun yazdirilmasini istemiyorsaniz false yapin
 set print_java_version=true
 
-:: Performans Ayarlari - duzenlemeniz ancak performans sorunu yasiyorsaniz onerilir
+:: Java komutu - javaw.exe konumunu girin veya varsayilan JAVA_HOME'u kullanmak icin "java" yazin
+:: Not: Klasor/java.exe yolunda / yerine \ kullanin ve "" icerisine yazin orn. "C:\Program Files\Java\jdk-14\bin\javaw.exe"
+set java_command=java
+
+:: PERFORMANS AYARLARI - duzenlemeniz ancak performans sorunu yasiyorsaniz onerilir
 
 :: Eger bilgisayariniz ve Java surumunuz 64-bit ise bunu true yapin
 set sixty_four_bit_java=false
@@ -107,110 +140,119 @@ set class_caching=false
 :: Baslatma kodu uzun suruyorsa veya powershell ile alakali hata veriyorsa true yapin
 set disable_powershell=false
 
-:: Mesajlar - kendinize gore duzenleyebilirsiniz
+:: MESAJLAR - kendinize gore duzenleyebilirsiniz
 
 :: Eger birden fazla sunucu penceresi aciyorsaniz karistirmamak icin bir onek girebilirsiniz
 :: orn. Skyblock, Bungee, Lobi vb.
 set title_prefix=
 
 :: Onek ile asil baslik arasina bosluk koyar
-if not "%title_prefix%" equ "" call set title_prefix=%title_prefix% 
+if not "%title_prefix%" equ "" set title_prefix=%title_prefix%
 
 :: Pencere basligi
 set title=%title_prefix%Sunucu Konsolu
 
-:: Diger mesajlar
+:: DIGER MESAJLAR
 set baslatiliyor=Sunucu baslatiliyor...
 set dosya_indiriliyor=Sunucu dosyasi indiriliyor...
 
 set temizlik_yapiliyor=Temizlik yapiliyor...
 set yeniden_baslatiliyor=Sunucu yeniden baslatiliyor...
 
-:: Kod kismi - duzenlemeniz onerilmez
+:: KOS KISMI - duzenlemeniz onerilmez
 
-call title %title%
-call set unblocked=false
+title %title%
+set unblocked=false
 
 :start
-call echo %baslatiliyor%
-call echo.
+echo %baslatiliyor%
+echo.
 
-call set additional_parameters=
-if %colored_console% equ false call set additional_parameters= -nojline
+set additional_parameters=
+if %colored_console% equ false set additional_parameters= -nojline
+
+if not exist %jar_name%.jar if exist "bukkit.jar" set jar_name=bukkit
+if not exist %jar_name%.jar if exist "spigot.jar" set jar_name=spigot
+
+if not exist %jar_name%.jar if exist "paper.jar" set jar_name=paper
+if not exist %jar_name%.jar if exist "paperclip.jar" set jar_name=paperclip
+
+if not exist %jar_name%.jar if exist "yatopia.jar" set jar_name=yatopia
 
 if not exist %jar_name%.jar (
- call echo %dosya_indiriliyor%
- if %disable_powershell% equ false call powershell -nologo -noninteractive -executionpolicy bypass -command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::TLS12; (New-Object Net.WebClient).DownloadFile('%download_url%', '%jar_name%.jar')" 1> nul
+ echo %dosya_indiriliyor%
+ echo.
+ if %disable_powershell% equ false powershell -nologo -noprofile -noninteractive -executionpolicy bypass -command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::TLS12; (New-Object Net.WebClient).DownloadFile('%download_url%', '%jar_name%.jar')" > nul
 )
 
-call echo eula=true> eula.txt
+echo eula=true> eula.txt
 
-if exist %spigot_config% call find "verbose: true" %spigot_config% 1> nul 2> nul
-if exist %spigot_config% if %errorlevel% equ 1 if %verbose% equ false if %disable_powershell% equ false call powershell -nologo -noninteractive -executionpolicy bypass -command "(gc spigot.yml) -replace 'verbose: true', 'verbose: false' | Out-File -encoding UTF8 spigot.yml" 1> nul
+if exist %spigot_config% if %verbose% equ false if %disable_powershell% equ false powershell -nologo -noprofile -noninteractive -executionpolicy bypass -command "(Get-Content %spigot_config%) | ForEach-Object { $_ -replace 'verbose: true', 'verbose: false' } | Set-Content -encoding UTF8 %spigot_config%" > nul
+if exist %paper_config% if %verbose% equ false if %disable_powershell% equ false powershell -nologo -noprofile -noninteractive -executionpolicy bypass -command "(Get-Content %paper_config%) | ForEach-Object { $_ -replace 'verbose: true', 'verbose: false' } | Set-Content -encoding UTF8 %paper_config%" > nul
 
-if exist %paper_config% call find "verbose: true" %paper_config% 1> nul 2> nul
-if exist %paper_config% if %errorlevel% equ 1 if %verbose% equ false if %disable_powershell% equ false call powershell -nologo -noninteractive -executionpolicy bypass -command "(gc paper.yml) -replace 'verbose: true', 'verbose: false' | Out-File -encoding UTF8 paper.yml" 1> nul
+set server_config=server.properties
 
-call set server_config=server.properties
-
-if exist %server_config% if %online_mode% equ false call find "online-mode=true" %server_config% 1> nul 2> nul
-if exist %server_config% if %errorlevel% equ 1 if %online_mode% equ false if %disable_powershell% equ false call powershell -nologo -noninteractive -executionpolicy bypass -command "(gc server.properties) -replace 'online-mode=true', 'online-mode=false' | Out-File -encoding UTF8 server.properties" 1> nul
+if exist %server_config% if %online_mode% equ false if %disable_powershell% equ false powershell -nologo -noprofile -noninteractive -executionpolicy bypass -command "(Get-Content %server_config%) | ForEach-Object { $_ -replace 'online-mode=true', 'online-mode=false' } | Set-Content -encoding UTF8 %server_config%" > nul
 
 if %unblock_files% equ true if %unblocked% equ false (
- if %verbose_info% equ true call echo Unblocking files in the background...
- if %disable_powershell% equ false call powershell -nologo -noninteractive -executionpolicy bypass -command "Start-Job -Name 'Unblock Files' -ScriptBlock { [System.Threading.Thread]::CurrentThread.Priority = 'BelowNormal'; ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'BelowNormal'; Get-ChildItem -Recurse | Unblock-File }" 1> nul
+ if %verbose_info% equ true echo Unblocking files in the background...
+ if %disable_powershell% equ false powershell -nologo -noprofile -noninteractive -executionpolicy bypass -command "Start-Job -Name 'Unblock Files' -ScriptBlock { [System.Threading.Thread]::CurrentThread.Priority = 'BelowNormal'; ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'BelowNormal'; Get-ChildItem -Recurse | Unblock-File }" > nul
 
- call set unblocked=true
+ set unblocked=true
 )
 
-call set module_access=
-if %allow_module_access% equ true call set module_access= --add-opens java.base/java.lang=ALL-UNNAMED
+set module_access=
+if %allow_module_access% equ true set module_access= --add-opens java.base/java.lang=ALL-UNNAMED
 
-if %verbose_info% equ true call echo Starting server with minimum RAM of %min_ram% and maximum of %max_ram%, code cache is %code_cache%
+if %verbose_info% equ true echo Starting server with minimum RAM of %min_ram% and maximum of %max_ram%, code cache is %code_cache%
 
-if %sixty_four_bit_java% equ true call set sixty_four_bit_java0= -d64
-if %tiered_compilation% equ true call set tiered_compilation0= -XX:+TieredCompilation
+if %sixty_four_bit_java% equ true set sixty_four_bit_java0= -d64
+if %tiered_compilation% equ true set tiered_compilation0= -XX:+TieredCompilation
 
 if %class_caching% equ true (
- call set class_caching0= -Xshare:on -Xshareclasses
- call set class_caching1= -XX:+ShareAnonymousClasses -XX+TransparentHugePage -Dcom.ibm.enableClassCaching=true
+ set class_caching0= -Xshare:on -Xshareclasses
+ set class_caching1= -XX:+ShareAnonymousClasses -XX+TransparentHugePage -Dcom.ibm.enableClassCaching=true
 )
 
 if %less_ram% equ false (
- call set less_ram0= -XX:+UseStringDeduplication
- call set less_ram1= -XX:+DisableExplicitGC
+ set less_ram0= -XX:+UseStringDeduplication
+ set less_ram1= -XX:+DisableExplicitGC
 ) else (
- call set min_ram=1M
+ set min_ram=1M
 )
 
-if %use_server_vm% equ true call set use_server_vm0= -server
-if %enable_assertions% equ true call set enable_assertions0= -esa -ea -Xfuture -Xverify:all
+if %use_server_vm% equ true set use_server_vm0= -server
+if %enable_assertions% equ true set enable_assertions0= -esa -ea -Xverify:all
 
-if %omit_stacktrace% equ true call set omit_stacktrace0= -XX:+OmitStackTraceInFastThrow
-if %messagebox_on_error% equ true call set show_messagebox_onerror0= -XX:+ShowMessageBoxOnError
+if %omit_stacktrace% equ true set omit_stacktrace0= -XX:+OmitStackTraceInFastThrow
+if %messagebox_on_error% equ true set show_messagebox_onerror0= -XX:+ShowMessageBoxOnError
 
-call set full_arguments=-XX:+UnlockExperimentalVMOptions -XX:+IgnoreUnrecognizedVMOptions%enable_assertions0% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0% -Xlint:none%module_access%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -Xms%min_ram% -Xmx%max_ram% -XX:ReservedCodeCacheSize=%code_cache% -XX:UseSSE=4 -XX:+UseGCOverheadLimit -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe%tiered_compilation0% -XX:+UseLWPSynchronization -XX:+UseBiasedLocking -XX:+UseFastAccessorMethods -XX:+CMSIncrementalPacing -XX:+CMSParallelRemarkEnabled -XX:+UseCMSInitiatingOccupancyOnly -XX:+ScavengeBeforeFullGC -XX:+CMSScavengeBeforeRemark -XX:+CMSClassUnloadingEnabled%less_ram0% -XX:+ParallelRefProcEnabled%omit_stacktrace0% -XX:-AggressiveOpts%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches -Dsun.io.useCanonPrefixCache=false -Djava.net.preferIPv4Stack=true -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=5000 -Dsun.net.client.defaultReadTimeout=5000 -Dskript.dontUseNamesForSerialization=true -Djava.net.preferIPv4Stack=true -Djdk.http.auth.tunneling.disabledSchemes="" -Djdk.attach.allowAttachSelf -Dkotlinx.coroutines.debug=off -Djava.awt.headless=%head_less% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Duser.language=en -Duser.country=US -Duser.timezone=Asia/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -Dlog4j.skipJansi=true -Dusing.flags.lifemcserver.com=true -Dflags.lifemcserver.com.version="%version%" -Djansi.force=true -Dansi.force=true -Dlibrary.jansi.version=%jar_name% -jar %jar_name%.jar "-o %online_mode% --log-append=false --log-strip-color nogui%additional_parameters%"
-if %print_java_version% equ true call set full_arguments=-showversion %full_arguments%
+if %is_upgrading% equ true set upgrade_argument= --forceUpgrade
+if %erase_cache% equ true set upgrade_argument= --forceUpgrade --eraseCache
 
-if %verbose_info% equ true call echo Starting Java with the final arguments of %full_arguments%
+set full_arguments=-XX:+UnlockExperimentalVMOptions -XX:+IgnoreUnrecognizedVMOptions%enable_assertions0% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0% -Xlint:none%module_access%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -Xms%min_ram% -Xmx%max_ram% -XX:+ShowCodeDetailsInExceptionMessages -XX:ReservedCodeCacheSize=%code_cache% -XX:UseSSE=4 -XX:+UseGCOverheadLimit -XX:+UseG1GC -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe%tiered_compilation0% -XX:+UseFastAccessorMethods -XX:+CMSIncrementalPacing -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled%omit_stacktrace0% -XX:-AggressiveOpts%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches -Dsun.io.useCanonPrefixCache=false -Djava.net.preferIPv4Stack=true -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=5000 -Dsun.net.client.defaultReadTimeout=5000 -Dskript.dontUseNamesForSerialization=true -Djava.net.preferIPv4Stack=true -Djdk.http.auth.tunneling.disabledSchemes="" -Djdk.attach.allowAttachSelf -Dkotlinx.coroutines.debug=off -Djava.awt.headless=%head_less% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Duser.language=en -Duser.country=US -Duser.timezone=Asia/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -Dlog4j.skipJansi=true -Djansi.passthrough=true -Dlibrary.jansi.path=cache -DPaper.IgnoreJavaVersion=true -Dusing.aikars.flags=true -Daikars.new.flags=true -Dusing.flags.lifemcserver.com=true -Dflags.lifemcserver.com.version="%version%" -Djansi.force=true -Dansi.force=true -Dlibrary.jansi.version=%jar_name% -jar %jar_name%.jar "-o %online_mode%%upgrade_argument% --log-append=false --log-strip-color nogui%additional_parameters%"
+if %print_java_version% equ true set full_arguments=-showversion %full_arguments%
 
-call java %full_arguments%
+if %verbose_info% equ true echo Starting Java with the final arguments of %full_arguments%
 
-call echo %temizlik_yapiliyor%
+%java_command% %full_arguments%
+
+echo %temizlik_yapiliyor%
 
 if %auto_del_files% equ true (
- if %clear_logs% equ true call del logs\*.* /q 1> nul 2> nul
- call del plugins\NoCheatPlus\*.log /q 1> nul 2> nul
- call del plugins\NoCheatPlus\*.lck /q 1> nul 2> nul
- call del plugins\NoCheatPlus\*.log.* /q 1> nul 2> nul
- call del plugins\AuthMe\authme.log /q 1> nul 2> nul
- call del plugins\bStats\temp.txt /q 1> nul 2> nul
- call del plugins\AntiAura\logs\*.* /q 1> nul 2> nul
+ if %clear_logs% equ true del .console_history /q > nul 2> nul
+ if %clear_logs% equ true del logs\*.* /q > nul 2> nul
+ del plugins\NoCheatPlus\*.log /q > nul 2> nul
+ del plugins\NoCheatPlus\*.lck /q > nul 2> nul
+ del plugins\NoCheatPlus\*.log.* /q > nul 2> nul
+ del plugins\AuthMe\authme.log /q > nul 2> nul
+ del plugins\bStats\temp.txt /q > nul 2> nul
+ del plugins\AntiAura\logs\*.* /q > nul 2> nul
 )
 
 if %auto_restart% equ true (
- call echo %yeniden_baslatiliyor%
- call timeout %delay% 2> nul
+ echo %yeniden_baslatiliyor%
+ timeout %delay% > nul
 
  goto start
 ) else (
