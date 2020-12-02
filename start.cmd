@@ -466,7 +466,7 @@ set availableMemory=%availableMemory:~1%
 set /a availableMemory=%availableMemory% - 1048576
 
 if %max_ram% equ 1536M if %availableMemory% gtr 1572864 set max_ram=%availableMemory%K
-if %min_ram% equ 1536M if %availableMemory% lss 1572864 if %availableMemory% gtr 0 set min_ram%availableMemory%K
+if %min_ram% equ 1536M if %availableMemory% lss 1572864 if %availableMemory% gtr 0 set min_ram=%availableMemory%K
 
 if %verbose_info% equ true echo Starting server with minimum RAM of %min_ram% and maximum of %max_ram%, code cache is %code_cache%
 
