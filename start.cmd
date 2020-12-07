@@ -40,7 +40,7 @@ setlocal enableextensions enabledelayedexpansion
 
 :: SURUM - degistermeniz onerilmez
 
-set version=2.2.0
+set version=2.2.1
 
 :: AYARLAR - kendinize gore duzenleyebilirsiniz
 
@@ -61,6 +61,7 @@ set version=2.2.0
 :: upgrade : Buyuk surum guncellemelerinde acarsaniz surum yukseltmesi yapar. (orn. 1.12 -> 1.13, 1.13 -> 1.14)
 
 :: no-tracking : Tum telemetri servislerini engeller. Performansa etkisi olabilir.
+:: security : Guvenlik icin bazi ayarlar yapar. Performans dusurebilir veya bazi seyleri bozabilir fakat guvenligi arttirir.
 set settings_preset=none
 
 :: Sunucunuzun ana JAR dosyasinin adi - spigot, craftbukkit, paper, yatopia vb. olabilir
@@ -162,6 +163,9 @@ set enable_assertions=false
 :: Hata ciktiginda mesaj kutusu gosterir, sunucuyu debug islemleri icin acik tutar
 set messagebox_on_error=false
 
+:: Eger sadece guvenli TLS surumlerini kullanmak ve TLS 1.3 aktif etmek istiyorsaniz true yapin
+set use_secure_tls=false
+
 :: Eger baslangicta Java surumunun yazdirilmasini istemiyorsaniz false yapin
 set print_java_version=true
 
@@ -246,7 +250,7 @@ if not "x%settings_preset:dev=%" == "x%settings_preset%" (
  set enable_assertions=true
  set messagebox_on_error=true
  set omit_stacktrace=false
- set additional_commands=-XX:+UnlockDiagnosticVMOptions -XX:+PrintFlagsFinal -XX:+PrintFlagsWithComments 
+ ::set additional_commands=-XX:+UnlockDiagnosticVMOptions -XX:+PrintFlagsFinal -XX:+PrintFlagsWithComments 
  echo Gelistirici hazir ayarlari uygulandi.
 )
 
@@ -262,6 +266,11 @@ if not "x%settings_preset:no-tracking=%" == "x%settings_preset%" (
  set disable_query=true
  set disable_help_index=true
  echo Izleme engelleme hazir ayarlari uygulandi.
+)
+
+if not "x%settings_preset:security=%" == "x%settings_preset%" (
+ set use_secure_tls=true
+ echo Guvenlik hazir ayarlari uygulandi.
 )
 
 ::
@@ -411,7 +420,7 @@ if %unblock_files% equ true if %unblocked% equ false (
 set module_access=
 if %allow_module_access% equ true set module_access= --add-opens java.base/java.lang=ALL-UNNAMED
 
-if %sixty_four_bit_java% equ true set sixty_four_bit_java0= -d64
+if %sixty_four_bit_java% equ true set sixty_four_bit_java0= -d64 -Djava.vm.compressedOopsMode=64-bit
 if %tiered_compilation% equ true set tiered_compilation0= -XX:+TieredCompilation
 
 if %class_caching% equ true (
@@ -420,11 +429,13 @@ if %class_caching% equ true (
 )
 
 if %less_ram% equ false (
- set less_ram0= -XX:+UseStringDeduplication
+ ::set less_ram0= -XX:+UseStringDeduplication
  set less_ram1= -XX:+DisableExplicitGC
 ) else (
  set min_ram=1M
 )
+
+if %use_secure_tls% equ true set use_secure_tls0= -Dhttps.protocols=TLSv1.3,TLSv1.2 -Dmail.smtp.ssl.protocols=TLSv1.3,TLSv1.2
 
 if %use_server_vm% equ true set use_server_vm0= -server
 if %enable_assertions% equ true set enable_assertions0= -esa -ea -Xverify:all
@@ -470,7 +481,10 @@ if %min_ram% equ 1536M if %availableMemory% lss 1572864 if %availableMemory% gtr
 
 if %verbose_info% equ true echo Starting server with minimum RAM of %min_ram% and maximum of %max_ram%, code cache is %code_cache%
 
-set full_arguments=%additional_commands%-XX:+UnlockExperimentalVMOptions -XX:+IgnoreUnrecognizedVMOptions%enable_assertions0% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -Xms%min_ram% -Xmx%max_ram% -XX:+UseAdaptiveSizePolicy -XX:+ShowCodeDetailsInExceptionMessages -XX:ReservedCodeCacheSize=%code_cache% -XX:UseSSE=4 -XX:+UseGCOverheadLimit -XX:+UseG1GC -XX:+PerfDisableSharedMem -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe%tiered_compilation0% -XX:+UseFastAccessorMethods -XX:+CMSIncrementalPacing -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled%omit_stacktrace0% -XX:-AggressiveOpts%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches -Dsun.io.useCanonPrefixCache=false -Djava.net.preferIPv4Stack=true -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=10000 -Dsun.net.client.defaultReadTimeout=10000 -Dskript.dontUseNamesForSerialization=true -Djdk.http.auth.tunneling.disabledSchemes="" -Djdk.attach.allowAttachSelf -Dkotlinx.coroutines.debug=off -Djava.awt.headless=%head_less% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Duser.language=en -Duser.country=US -Duser.timezone=Asia/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -Dlog4j.skipJansi=true -Djansi.passthrough=true -Dlibrary.jansi.path=cache -DPaper.IgnoreJavaVersion=true -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -Dusing.flags.lifemcserver.com=true -Dflags.lifemcserver.com.version="%version%" -Djansi.force=true -Dansi.force=true -Dlibrary.jansi.version=%jar_name% -Dio.netty.eventLoopThreads=%eventLoopThreads% -jar %jar_name%.jar "-o %online_mode%%upgrade_argument% --log-append=false --log-strip-color nogui%additional_parameters%"
+:: https://github.com/aikar/timings/blob/master/src/js/ui/ServerInfo.jsx#L102
+set timings_aikar_flags_workarounds0= -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -D-XX:G1NewSizePercent=30 -D-XX:G1MixedGCLiveThresholdPercent=90 -D-XX:MaxTenuringThreshold=1 -D-XX:SurvivorRatio=32
+
+set full_arguments=%additional_commands%-XX:+UnlockExperimentalVMOptions -XX:+IgnoreUnrecognizedVMOptions%enable_assertions0% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -Xms%min_ram% -Xmx%max_ram% -XX:+UseAdaptiveSizePolicy -XX:+ShowCodeDetailsInExceptionMessages -XX:ReservedCodeCacheSize=%code_cache% -XX:UseSSE=4 -XX:+UseGCOverheadLimit -XX:+UseG1GC -XX:+PerfDisableSharedMem -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe%tiered_compilation0% -XX:+UseFastAccessorMethods -XX:+CMSIncrementalPacing -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled%omit_stacktrace0% -XX:-AggressiveOpts%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches -Dsun.io.useCanonPrefixCache=false -Djava.net.preferIPv4Stack=true%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=10000 -Dsun.net.client.defaultReadTimeout=10000 -Dskript.dontUseNamesForSerialization=true -Djdk.http.auth.tunneling.disabledSchemes="" -Djdk.attach.allowAttachSelf -Dkotlinx.coroutines.debug=off -Djava.awt.headless=%head_less% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Duser.language=en -Duser.country=US -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -Dlog4j.skipJansi=true -Djansi.passthrough=true -Dlibrary.jansi.path=cache -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dflags.lifemcserver.com.version="%version%" -Djansi.force=true -Dansi.force=true -Dlibrary.jansi.version=%jar_name% -Dio.netty.eventLoopThreads=%eventLoopThreads% -jar %jar_name%.jar "-o %online_mode%%upgrade_argument% --log-append=false --log-strip-color nogui%additional_parameters%"
 if %print_java_version% equ true set full_arguments=-showversion %full_arguments%
 
 if %verbose_info% equ true echo Starting Java with the final arguments of %full_arguments%
