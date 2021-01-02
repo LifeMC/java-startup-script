@@ -42,7 +42,7 @@ setlocal enableextensions enabledelayedexpansion
 
 :: SURUM - degistermeniz onerilmez
 
-set version=2.3.0
+set version=2.3.1
 
 :: AYARLAR - kendinize gore duzenleyebilirsiniz
 
@@ -206,6 +206,8 @@ set use_custom_log4j_config=true
 
 :: Bunun disinda spawnin yuklenmesini geciktirecek olsa da paper.yml'den keep-spawn-loaded: true kismini da false yapabilirsiniz.
 :: Son olarak TacoSpigot veya yuksek surum Paper kullaniyorsaniz taco/paper.yml de hopper kisminda disable-move-event'i true yapabilirsiniz.
+
+:: Not: Java surumunuzunde guncel olduguna ve resmi sitelerden indirdiginize emin olun.
 
 :: Bu ayari acarsaniz Aikar'in GC ayarlarindan bazilarini uygular. Performansa etkisi belirsizdir.
 :: Arttiradabilir, azaltadabilir. Timings'de GC ile alakali sorunlariniz var ise deneyebilirsiniz.
@@ -386,15 +388,23 @@ if %disable_powershell% equ false set powershell_command=powershell
 if %powershell_command% equ "pwsh" echo Using PowerShell 7
 
 set powershell_arguments=-nologo -noprofile -noninteractive -executionpolicy bypass -mta -command
-set powershell_workarounds=$ProgressPreference = 'SilentlyContinue'; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::TLS12; [System.Net.ServicePointManager]::DefaultConnectionLimit = [System.Int32]::MaxValue; [System.Net.WebRequest]::DefaultWebProxy = null; [System.Net.ServicePointManager]::Expect100Continue = false;
 
-set powershell_new_web_client_wc=$WC = New-Object System.Net.WebClient; $WC.Proxy = null; $WC.Encoding = [System.Text.Encoding]::UTF8Encoding;
+:: Enables TLS 1.3 but currently buggy and gives errors
+:: $CurrentVersionTls = [System.Net.ServicePointManager]::SecurityProtocol; $AvailableTls = [enum]::GetValues('System.Net.SecurityProtocolType') ^| Where-Object { $_ -ge 'Tls12' }; $AvailableTls.ForEach({[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor $_});
+set powershell_workarounds=$ProgressPreference = 'SilentlyContinue'; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; [System.Net.ServicePointManager]::DefaultConnectionLimit = [System.Int32]::MaxValue; [System.Net.WebRequest]::DefaultWebProxy = $null; [System.Net.ServicePointManager]::Expect100Continue = $false;
+
+set powershell_new_web_client_wc=$WC = New-Object System.Net.WebClient; $WC.Proxy = $null; $WC.Encoding = New-Object System.Text.UTF8Encoding $false; $WC.Headers.Add('User-Agent', 'Mozilla/5.0'); $WC.Headers.Add('Accept', '*/*');
 
 :: PowerShell kodlamasini UTF8 yapar, fakat suan bakimda
 ::if %disable_powershell% equ false %powershell_command% %powershell_arguments% "$OutputEncoding = [console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF8Encoding"
 
 :: Supposed to be a slow startup work-around but not working currently
 ::if %disable_powershell% equ false %powershell_command% %powershell_arguments% "Start-Process %powershell_command% '%powershell_arguments% [environment]::SetEnvironmentVariable(`POWERSHELL_UPDATECHECK_OPTOUT`, `1`); [environment]::SetEnvironmentVariable(`POWERSHELL_TELEMETRY_OPTOUT`, `1`); Set-MpPreference -DisableRealtimeMonitoring $True -Force; Enter-PSSession -HostName localhost -SSHTransport -UserName administrator' -Verb RunAs; . (Join-Path ([Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()) ngen.exe) update; Clear-History; [Microsoft.PowerShell.PSConsoleReadLine]::ClearHistory(); Add-MpPreference -ExclusionPath '%powershell_command%'"
+
+if %verbose_info% equ true (
+ :: Shows the PowerShell version that is being used (either Windows default or PowerShell 7) and the underlying .NET version behind it.
+ %powershell_command% %powershell_arguments% "%powershell_workarounds% $PSVersionTable.PSVersion; $PSVersionTable.CLRVersion"
+)
 
 if exist "%jar_name%.jar" (
  set disable_powershell_oldvalue=%disable_powershell%
@@ -436,7 +446,7 @@ if not "%response%" == "none" (
  set latest_build=!response!
  if %verbose_info% equ true echo Using build !latest_build!
 
- set download_url=https://papermc.io/api/v2/projects/paper/versions/%game_version%/builds/!latest_build!/downloads/paper-%game_version%-!latest_build!.jar 
+ set download_url=https://papermc.io/api/v2/projects/paper/versions/%game_version%/builds/!latest_build!/downloads/paper-%game_version%-!latest_build!.jar
 )
 
 set batch_provided_jar=false
@@ -503,7 +513,7 @@ if exist "%patched_jar_name%" (
 
   if not exist "%scriptdir%cache\7z.exe" if %disable_powershell% equ false if %verbose_info% equ true echo Downloading 7z exe...
   if not exist "%scriptdir%cache\7z.exe" if %disable_powershell% equ false %powershell_command% %powershell_arguments% "%powershell_workarounds% %powershell_new_web_client_wc% $WC.DownloadFile('https://github.com/LifeMC/site-assets/raw/main/other/7z.exe', '%scriptdir%cache\7z.exe')" > nul
-  
+
   if not exist "%scriptdir%cache\7z.dll" if %disable_powershell% equ false if %verbose_info% equ true echo Downloading 7z dll...
   if not exist "%scriptdir%cache\7z.dll" if %disable_powershell% equ false %powershell_command% %powershell_arguments% "%powershell_workarounds% %powershell_new_web_client_wc% $WC.DownloadFile('https://github.com/LifeMC/site-assets/raw/main/other/7z.dll', '%scriptdir%cache\7z.dll')" > nul
 
@@ -617,7 +627,7 @@ set help_command_config=help.yml
 
 if exist "%help_command_config%" if %verbose_info% equ true echo Setting up help.yml...
 
-if exist "%help_command_config%" if %disable_help_index% equ true if %disable_powershell% equ false %powershell_command% %powershell_arguments% "Clear-Content '%scriptdir%%help_command_config%'; Add-Content -Path '%scriptdir%%help_command_config%' -Value 'ignore-plugins:' -Force; Add-Content -Path '%scriptdir%%help_command_config%' -Value '    - All' -Force"
+if exist "%help_command_config%" if %disable_powershell% equ false %powershell_command% %powershell_arguments% "Clear-Content '%scriptdir%%help_command_config%'; Add-Content -Path '%scriptdir%%help_command_config%' -Value 'ignore-plugins:' -Force; Add-Content -Path '%scriptdir%%help_command_config%' -Value '    - All' -Force"
 
 if exist "%help_command_config%" if %disable_help_index% equ true "%scriptdir%cache\fart.exe" -q -i -C "%help_command_config%" "#ignore-plugins:" "ignore-plugins:" > nul 2> nul
 if exist "%help_command_config%" if %disable_help_index% equ false "%scriptdir%cache\fart.exe" -q -i -C "%help_command_config%" "ignore-plugins:" "#ignore-plugins:" > nul 2> nul
@@ -775,6 +785,7 @@ set /a totalsecs = %hours%*3600 + %mins%*60 + %secs%
 if %verbose_info% equ true echo Baslama suresi %hours%:%mins%:%secs%.%ms% (%totalsecs%.%ms%s total)
 if %verbose_info% equ true echo.
 
+title %title%
 %java_command% %full_arguments%
 
 set end=%time%
