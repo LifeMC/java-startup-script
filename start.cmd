@@ -1,22 +1,21 @@
 
 
-:: | |     (_) / _|     |  \/  | / ____| / ____|                                  
-:: | |      _ | |_  ___ | \  / || |     | (___    ___  _ __ __   __ ___  _ __     
-:: | |     | ||  _|/ _ \| |\/| || |      \___ \  / _ \| '__|\ \ / // _ \| '__|    
-:: | |____ | || | |  __/| |  | || |____  ____) ||  __/| |    \ V /|  __/| |       
-:: |______||_||_|  \___||_|  |_| \_____||_____/  \___||_|     \_/  \___||_|       
-::  ____               _         _                       _  __           _        
-:: |  _ \             | |       | |                     | |/ /          | |       
-:: | |_) |  __ _  ___ | |  __ _ | |_  _ __ ___    __ _  | ' /  ___    __| | _   _ 
-:: |  _ <  / _` |/ __|| | / _` || __|| '_ ` _ \  / _` | |  <  / _ \  / _` || | | |
-:: | |_) || (_| |\__ \| || (_| || |_ | | | | | || (_| | | . \| (_) || (_| || |_| |
-:: |____/  \__,_||___/|_| \__,_| \__||_| |_| |_| \__,_| |_|\_\\___/  \__,_| \__,_|
-::                              ___      ____     ___                             
-::                             |__ \    |___ \   |__ \                            
-::                        __   __ ) |     __) |     ) |                           
-::                        \ \ / // /     |__ <     / /                            
-::                         \ V // /_  _  ___) |_  / /_                            
-::                          \_/|____|(_)|____/(_)|____|                           
+::  _        _    __          __  __    _____    _____                                     
+:: | |      (_)  / _|        |  \/  |  / ____|  / ____|                                    
+:: | |       _  | |_    ___  | \  / | | |      | (___     ___   _ __  __   __   ___   _ __ 
+:: | |      | | |  _|  / _ \ | |\/| | | |       \___ \   / _ \ | '__| \ \ / /  / _ \ | '__|
+:: | |____  | | | |   |  __/ | |  | | | |____   ____) | |  __/ | |     \ V /  |  __/ | |   
+:: |______| |_| |_| _  \___| |_|_ |_|  \_____| |_____/   \___| |_|      \_/    \___| |_|   
+:: |  _ \          | |         | |                         | |/ /             | |          
+:: | |_) |   __ _  | |   __ _  | |_   _ __ ___     __ _    | ' /    ___     __| |  _   _   
+:: |  _ <   / _` | | |  / _` | | __| | '_ ` _ \   / _` |   |  <    / _ \   / _` | | | | |  
+:: | |_) | | (_| | | | | (_| | | |_  | | | | | | | (_| |   | . \  | (_) | | (_| | | |_| |  
+:: |____/   \__,_| |_|  \__,_|  \__| |_| |_|_|_|  \__,_|___|_|\_\  \___/   \__,_|  \__,_|  
+::                             |__ \      |___ \      |___ \                               
+::                     __   __    ) |       __) |       __) |                              
+::                     \ \ / /   / /       |__ <       |__ <                               
+::                      \ V /   / /_   _   ___) |  _   ___) |                              
+::                       \_/   |____| (_) |____/  (_) |____/                               
 
 
 
@@ -49,20 +48,20 @@
 
 :: Bu kismi ellemeniz onerilmez
 
+setlocal enableextensions enabledelayedexpansion
+
 cd /d "%~dp0"
 
 set "SystemPath=%SystemRoot%\System32"
 if not "%ProgramFiles(x86)%" == "" set "SystemPath=%SystemRoot%\Sysnative"
 
-if exist "%SystemPath%\cmd.exe" if exist "%0" if not "%1" == "true" start "" /b /c /d /belownormal /elevate "%SystemPath%\cmd.exe" "%0" true
+if exist "%SystemPath%\cmd.exe" if exist "%0" if not "%1" == "true" start "" /elevate /b "%SystemPath%\cmd.exe" "%0" true
 
-if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
-
-setlocal enableextensions enabledelayedexpansion
+if not defined in_subprocess (cmd /q /e:on /v:on /f:off /k set in_subprocess=y ^& %0 %*) & exit )
 
 :: SURUM - degistermeniz onerilmez
 
-set version=2.3.2
+set version=2.3.3
 
 :: AYARLAR - kendinize gore duzenleyebilirsiniz
 
@@ -80,7 +79,6 @@ set version=2.3.2
 :: online-mode : Sadece Premium hesaplarin giris yapabilmesi icin ayarlar
 
 :: yatopia : Sadece Yatopia kullanmak istiyorsaniz kullanin
-:: yatopia-leaflight : Sadece Yatopia leaflight kullanmak istiyorsaniz kullanin
 
 :: dev : Gelistirici modu ayarlari. Normal kullanicilarin acmasi onerilmez.
 
@@ -88,6 +86,8 @@ set version=2.3.2
 
 :: no-tracking : Tum telemetri servislerini engeller. Performansa etkisi olabilir.
 :: security : Guvenlik icin bazi ayarlar yapar. Performans dusurebilir veya bazi seyleri bozabilir fakat guvenligi arttirir.
+
+:: aggressive : Optimize edilmis fakat hatalara veya uyumluluk sorunlarina yol acabilecek ayarlari yapar.
 set settings_preset=none
 
 :: Sunucunuzun ana JAR dosyasinin adi - spigot, craftbukkit, paper, yatopia vb. olabilir
@@ -106,11 +106,11 @@ set is_upgrading=false
 set erase_cache=false
 
 :: Sunucunun kullanacagi minimum ram miktari (MB icin M, GB icin G kullanin)
-:: Eger 1536M (varsayilan) ise ve sistemde 1.5 GB ram yok ise, toplam RAM - 1GB'a otomatik dusurulebilir.
-set min_ram=1536M
+:: Eger 1024K (varsayilan) ise ve sistemde yeterli ram yok ise, toplam RAM - 1GB'a otomatik dusurulebilir.
+set min_ram=1024K
 
 :: Sunucunun kullanacagi maximum ram miktari (MB icin M, GB icin G kullanin)
-:: Eger 1536M (varsayilan) ise, toplam RAM - 1GB'a mumkun oldugunda otomatik genisletilebilir.
+:: Eger 1536M (varsayilan) ise, toplam bosta RAM - 1GB'a mumkun oldugunda otomatik genisletilebilir.
 set max_ram=1536M
 
 :: Kod onbellegi boyutu, 256M onerilir (MB icin M, GB icin G kullanin)
@@ -125,6 +125,9 @@ set colored_console=true
 
 :: Sunucu kapandiktan sonra loglar temizlensin mi?
 set clear_logs=true
+
+:: Baslatma kodu guncellemeleri otomatik kontrol edilsin mi?
+set check_for_updates=true
 
 :: JVM cokmelerini vs. depolayan dump dosyalarini siler. Bu dosyalar buyuk olabilir
 :: ve disk alaninizdan yiyebilir. True kalmasi onerilir.
@@ -143,8 +146,8 @@ set delay=3
 set head_less=true
 
 :: Eger sunucunuzda cok timeout/disconnected sorunu yasiyorsaniz arttirabilirsiniz
-:: Not: Ek olarak AsyncKeepAlive eklentisi isinize yarayabilir. Bu degeri 120'den yukari yapmaniz onerilmez.
-set io_timeout=60
+:: Not: Ek olarak AsyncKeepAlive eklentisi isinize yarayabilir. Bu degeri 60 veya 120'den yukari yapmaniz onerilmez.
+set io_timeout=30
 
 :: Eger sunucunuza sadece premium sahibi kisilerin girmesini istiyorsaniz true yapin
 set online_mode=false
@@ -172,7 +175,7 @@ set disable_help_index=false
 :: Eger sunucu JAR dosyasi yok ise, otomatik olarak bu linkten indirilir
 :: 1.15.2+ kullaniyorsaniz Paper'a gore daha performansli olan Yatopia'yi kullanmak icin "yatopia" girin.
 
-:: Yatopia Leaflight surumunu kullanmak icin yatopia-leaflight girebilirsiniz.
+:: Yatopia kullanmak icin yatopia girebilirsiniz.
 set download_provider=paper
 
 :: Eger Java 9 veya ustu bir surum kullaniyor iseniz ve hatalar aliyor iseniz true yapin
@@ -275,12 +278,15 @@ title %title%
 
 :: DIGER MESAJLAR
 set baslatiliyor=Sunucu baslatilmak uzere, lutfen bekleyin...
+set guncellemeler_kontrol_ediliyor=Guncellemeler kontrol ediliyor...
+
 set oto_ayarlar_uygulaniyor=Otomatik ayarlar uygulaniyor, bu biraz uzun surebilir, lutfen bekleyin...
 
 set log4j_ayar_dosyasi_indiriliyor=Log4J ayar dosyasi indiriliyor...
 set dosya_bloklari_kaldiriliyor=Dosya bloklari arka planda kaldiriliyor...
 
 set java_kontrol_ediliyor=Java kontrol ediliyor...
+set java_indiriliyor=Java indiriliyor...
 
 set ram_ayarlaniyor=RAM ayarlaniyor...
 set ip_ayarlaniyor=IP ayarlaniyor...
@@ -295,7 +301,7 @@ set yeniden_baslatiliyor=Sunucu %delay% saniye icinde yeniden baslatilacak...
 
 ::
 
-:: strict-jdk, strict-jdk-9, online-mode, yatopia, yatopia-leaflight, dev, upgrade, no-tracking
+:: strict-jdk, strict-jdk-9, online-mode, yatopia, dev, upgrade, no-tracking, aggressive
 
 if not "x%settings_preset:strict-jdk=%" == "x%settings_preset%" (
  set use_server_vm=true
@@ -318,11 +324,6 @@ if not "x%settings_preset:yatopia=%" == "x%settings_preset%" (
  echo Yatopia hazir ayarlari uygulandi.
 )
 
-if not "x%settings_preset:yatopia-leaflight=%" == "x%settings_preset%" (
- set download_provider=yatopia-leaflight
- echo Yatopia Leaflight hazir ayarlari uygulandi.
-)
-
 if not "x%settings_preset:dev=%" == "x%settings_preset%" (
  set clear_logs=false
  set clear_jvm_dumps=false
@@ -332,7 +333,7 @@ if not "x%settings_preset:dev=%" == "x%settings_preset%" (
  set enable_assertions=true
  set messagebox_on_error=true
  set omit_stacktrace=false
- ::set additional_commands=-XX:+UnlockDiagnosticVMOptions -XX:+PrintFlagsFinal -XX:+PrintFlagsWithComments 
+ ::set additional_commands=-XX:+UnlockDiagnosticVMOptions -XX:+PrintFlagsFinal 
  echo Gelistirici hazir ayarlari uygulandi.
 )
 
@@ -355,20 +356,11 @@ if not "x%settings_preset:security=%" == "x%settings_preset%" (
  echo Guvenlik hazir ayarlari uygulandi.
 )
 
-::
-
-:: Auto tune settings
-
-%java_command% -d64 -Djava.vm.compressedOopsMode=64-bit -version > nul 2> nul
-
-if errorlevel 0 (
- set sixty_four_bit_java=true
-)
-
-%java_command% -server -version > nul 2> nul
-
-if errorlevel 0 (
- set use_server_vm=true
+if not "x%settings_preset:agressive=%" == "x%settings_preset%" (
+ set class_caching=true
+ set connect_timeout=5000
+ set read_timeout=5000
+ echo Optimizeli hazir ayarlar uygulandi.
 )
 
 ::
@@ -406,7 +398,7 @@ if not exist "%scriptdir%cache" mkdir "%scriptdir%cache"
 attrib +h "%scriptdir%cache"
 if exist "%scriptdir%.git" attrib +h "%scriptdir%.git"
 
-if not exist "%scriptdir%cache\osname.txt" start "" /belownormal /b systeminfo 2> nul | find "OS Name" > "%scriptdir%cache\osname.txt" 2> nul
+start "" /belownormal /b systeminfo 2> nul | find "OS Name" > "%scriptdir%cache\osname.txt" 2> nul
 
 :: Fix common Windows issues
 start "" /belownormal /b sc config printnotify type= own > nul 2> nul
@@ -433,6 +425,7 @@ if not exist "%jar_name%.jar" if exist "paper.jar" set jar_name=paper
 if not exist "%jar_name%.jar" if exist "paperclip.jar" set jar_name=paperclip
 
 if not exist "%jar_name%.jar" if exist "yatopia.jar" set jar_name=yatopia
+if not exist "%jar_name%.jar" if exist "yatoclip.jar" set jar_name=yatoclip
 
 set size=1
 for /f "usebackq" %%a in ('%jar_name%.jar') do set "size=%%~za"
@@ -443,11 +436,7 @@ if size lss 1 del /f /q "%jar_name%.jar" > nul 2> nul
 if %verbose_info% equ true echo Processing download providers...
 
 if not "x%download_provider:yatopia=%" == "x%download_provider%" (
- set download_url=https://api.yatopiamc.org/v2/latestBuild/download?branch=ver/%game_version%
-)
-
-if not "x%download_provider:yatopia-leaflight=%" == "x%download_provider%" (
- set download_url=https://api.yatopiamc.org/v2/latestBuild/download?branch=leaflight/ver/%game_version%
+ set download_url=https://api.yatopiamc.org/v2/stableBuild/download?branch=ver/%game_version%
 )
 
 :: Try to automatically install PowerShell 7.1
@@ -487,16 +476,17 @@ if %print_powershell_version% equ true (
 :: Check for startup script updates
 :: Only works when vendor is the official vendor.
 
-if %disable_powershell% equ false if %checked_for_updates% equ false if %vendor% equ %vendor_original% if %verbose_info% equ true echo Checking for updates...
+if %disable_powershell% equ false if %check_for_updates% equ true if %checked_for_updates% equ false if %vendor% equ %vendor_original% echo %guncellemeler_kontrol_ediliyor%
+if %disable_powershell% equ false if %check_for_updates% equ true if %checked_for_updates% equ false if %vendor% equ %vendor_original% echo.
 
-if %disable_powershell% equ false if %checked_for_updates% equ false if %vendor% equ %vendor_original% for /f "usebackq delims=" %%i in (`%powershell_command% %powershell_arguments% "%powershell_workarounds% %powershell_new_web_client_wc% $WC.DownloadString('https://raw.githubusercontent.com/LifeMC/site-assets/main/other/startup_script_latest_version.txt')"`) do set "latest_version=%%i"
-if %disable_powershell% equ false if %checked_for_updates% equ false if %vendor% equ %vendor_original% title %title%
+if %disable_powershell% equ false if %check_for_updates% equ true if %checked_for_updates% equ false if %vendor% equ %vendor_original% for /f "usebackq delims=" %%i in (`%powershell_command% %powershell_arguments% "%powershell_workarounds% %powershell_new_web_client_wc% $WC.DownloadString('https://raw.githubusercontent.com/LifeMC/site-assets/main/other/startup_script_latest_version.txt')"`) do set "latest_version=%%i"
+if %disable_powershell% equ false if %check_for_updates% equ true if %checked_for_updates% equ false if %vendor% equ %vendor_original% title %title%
 
-if %latest_version% neq %version% if %checked_for_updates% equ false if %vendor% equ %vendor_original% echo.
-if %latest_version% neq %version% if %checked_for_updates% equ false if %vendor% equ %vendor_original% echo Yeni bir guncelleme mevcut! Son surum (v%latest_version%). Sizdeki surum (v%version%).
-if %latest_version% neq %version% if %checked_for_updates% equ false if %vendor% equ %vendor_original% echo Guncellemek icin bu adresden son surumu indirebilirsiniz: https://flags.lifemcserver.com/
-if %latest_version% neq %version% if %checked_for_updates% equ false if %vendor% equ %vendor_original% echo.
-if %latest_version% neq %version% if %checked_for_updates% equ false if %vendor% equ %vendor_original% echo.
+if %disable_powershell% equ false if %check_for_updates% equ true if %checked_for_updates% equ false if %vendor% equ %vendor_original% if "%version%" neq "%latest_version%" echo.
+if %disable_powershell% equ false if %check_for_updates% equ true if %checked_for_updates% equ false if %vendor% equ %vendor_original% if "%version%" neq "%latest_version%" echo Yeni bir guncelleme mevcut! Son surum (v%latest_version%). Sizdeki surum (v%version%).
+if %disable_powershell% equ false if %check_for_updates% equ true if %checked_for_updates% equ false if %vendor% equ %vendor_original% if "%version%" neq "%latest_version%" echo Guncellemek icin bu adresden son surumu indirebilirsiniz: https://flags.lifemcserver.com/
+if %disable_powershell% equ false if %check_for_updates% equ true if %checked_for_updates% equ false if %vendor% equ %vendor_original% if "%version%" neq "%latest_version%" echo.
+if %disable_powershell% equ false if %check_for_updates% equ true if %checked_for_updates% equ false if %vendor% equ %vendor_original% if "%version%" neq "%latest_version%" echo.
 
 if %checked_for_updates% equ false if %vendor% equ %vendor_original% set checked_for_updates=true
 
@@ -566,7 +556,6 @@ if exist "%scriptdir%cache\patched_%game_version%.jar" set "patched_jar_name=%sc
 if exist "%scriptdir%cache\patched.jar" set "patched_jar_name=%scriptdir%cache\patched.jar"
 
 if "%patched_jar_name%" equ "" set patched_jar_name=%scriptdir%cache\first-start-non-existent.jar
-if %verbose_info% equ true echo Using patched JAR file %patched_jar_name%
 
 set cond=false
 
@@ -574,15 +563,15 @@ if "%patched_jar_name%" equ "%scriptdir%cache\patched.jar" set cond=true
 if %batch_provided_jar% equ true set cond=true
 
 if %use_custom_log4j_config% equ false set cond=false
-if %use_custom_log4j_config% equ false del /f /q "%scriptdir%cache\log4j2.xml"
+if %use_custom_log4j_config% equ false if exist "%scriptdir%cache\log4j2.xml" del /f /q "%scriptdir%cache\log4j2.xml"
 
 if %cond% equ true (
  set cond=false
  if %disable_powershell% equ false if %downloaded_log4j_config% equ false if %game_version% equ 1.8.8 set cond=true
 )
 
-if %cond% equ true echo %log4j_ayar_dosyasi_indiriliyor%
-if %cond% equ true echo.
+if %cond% equ true if %verbose_info% equ true echo %log4j_ayar_dosyasi_indiriliyor%
+if %cond% equ true if %verbose_info% equ true echo.
 
 :: n: hotspot
 
@@ -598,9 +587,9 @@ set downloaded_log4j_config=true
 
 :: Above 1.8.8, Paper uses TerminalConsoleAppender, which has different Log4J2 configuration and fixes the issues
 :: covered by the batch file provided log4j2 configuration file.
-if exist "%scriptdir%cache\log4j2.xml" if %game_version% equ 1.8.8 if %cond% equ true set "log4j_config_parameter=-Dlog4j.configurationFile="%scriptdir%cache\log4j2.xml" "
+if exist "%scriptdir%cache\log4j2.xml" if %game_version% equ 1.8.8 if %cond% equ true set "log4j_config_parameter=-Dlog4j.configurationFile="cache\log4j2.xml" "
 
-echo %oto_ayarlar_uygulaniyor%
+if %verbose_info% equ true echo %oto_ayarlar_uygulaniyor%
 
 if exist "%patched_jar_name%" (
   if not exist "%scriptdir%cache\yggdrasil_session_pubkey_new.der" if %disable_powershell% equ false if %verbose_info% equ true echo Downloading yggdrasil certificate...
@@ -649,6 +638,8 @@ if exist "%spigot_config%" if %verbose% equ true "%scriptdir%cache\fart.exe" -q 
 
 if 4 gtr %NUMBER_OF_PROCESSORS% if exist %spigot_config% "%scriptdir%cache\fart.exe" -q -i -C "%spigot_config%" "netty-threads: 4" "netty-threads: %NUMBER_OF_PROCESSORS%" > nul 2> nul
 
+if exist "%spigot_config%" if %verbose% equ true "%scriptdir%cache\fart.exe" -q -i -C "%spigot_config%" "item-despawn-rate: 6000" "item-despawn-rate: 4000" > nul 2> nul
+
 set paper_config=paper.yml
 
 if exist "%paper_config%" if %verbose_info% equ true echo Setting up paper config...
@@ -668,6 +659,9 @@ if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -C "%paper_config%" 
 
 :: Optimizes explosion performance by caching entity lookups.
 if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -C "%paper_config%" "optimize-explosions: false" "optimize-explosions: true" > nul 2> nul
+
+:: Optimizes lightning performance by making lightning updates async
+if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -C "%paper_config%" "use-async-lighting: false" "use-async-lighting: true" > nul 2> nul
 
 :: Fixes CommandSender#hasPermission on ConsoleCommandSender
 if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -C "%paper_config%" "console-has-all-permissions: false" "console-has-all-permissions: true" > nul 2> nul
@@ -722,6 +716,9 @@ if exist "%purpur_config%" "%scriptdir%cache\fart.exe" -q -i -C "%purpur_config%
 
 set yatopia_config=yatopia.yml
 
+if exist "%yatopia_config%" if %verbose% equ false "%scriptdir%cache\fart.exe" -q -i -C "%yatopia_config%" "verbose: true" "verbose: false" > nul 2> nul
+if exist "%yatopia_config%" if %verbose% equ true "%scriptdir%cache\fart.exe" -q -i -C "%yatopia_config%" "verbose: false" "verbose: true" > nul 2> nul
+
 if exist "%yatopia_config%" "%scriptdir%cache\fart.exe" -q -i -C "%yatopia_config%" "fixFallDistance: false" "fixFallDistance: true" > nul 2> nul
 
 set help_command_config=help.yml
@@ -748,8 +745,8 @@ if exist "%skellet_config%" "%scriptdir%cache\fart.exe" -q -i -C "%skellet_confi
 ::
 
 if %unblock_files% equ true if %unblocked% equ false (
- echo.
- echo %dosya_bloklari_kaldiriliyor%
+ if %verbose_info% equ true echo.
+ if %verbose_info% equ true echo %dosya_bloklari_kaldiriliyor%
 
  :: n: hotspot
  if %disable_powershell% equ false start "" /belownormal /b %powershell_command% %powershell_arguments% "Start-Job -Name 'Unblock Files' -ScriptBlock { [System.Threading.Thread]::CurrentThread.Priority = 'BelowNormal'; ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'BelowNormal'; Get-ChildItem -Recurse | Unblock-File }" > nul
@@ -759,21 +756,94 @@ if %unblock_files% equ true if %unblocked% equ false (
 
 if %sixty_four_bit_java% equ true set sixty_four_bit_java0= -d64 -Djava.vm.compressedOopsMode=64-bit
 
-echo.
+if %verbose_info% equ true echo.
 echo %java_kontrol_ediliyor%
 
 set found_working_java=true
 
 %java_command% -version > nul 2> nul || (
-   echo Can't access Java installation
-   set found_working_java=false
+ set found_working_java=false
+)
+
+:: Defines the bundled JRE version. Change below to latest version when a new one is released
+set bundled_jre_ver_minor=282
+set bunlded_jre_ver_build=08
+
+set built_in_java_loc=%scriptdir%cache\java\openjdk-8u%bundled_jre_ver_minor%-b%bunlded_jre_ver_build%-jre\bin\java.exe
+
+:: Set variables
+if %found_working_java% equ false if exist "%built_in_java_loc%" set java_command="%built_in_java_loc%"
+if %found_working_java% equ false if exist "%built_in_java_loc%" set JAVA_PATH=%built_in_java_loc%
+
+if %found_working_java% equ false if exist "%built_in_java_loc%" set found_working_java=true
+
+:: Re-test after detecting built-in Java
+%java_command% -version > nul 2> nul || (
+ set found_working_java=false
+)
+
+if %found_working_java% equ false echo.
+if %found_working_java% equ false echo %java_indiriliyor%
+
+:: 37 MB, JRE, unaltered OpenJDK (not AdoptOpenJDK) as ZIP file.
+:: Note: Only 64-bit is supported.
+if %found_working_java% equ false set java_download_url=https://github.com/AdoptOpenJDK/openjdk8-upstream-binaries/releases/download/jdk8u%bundled_jre_ver_minor%-b%bunlded_jre_ver_build%/OpenJDK8U-jre_x64_windows_8u%bundled_jre_ver_minor%b%bunlded_jre_ver_build%.zip
+if %found_working_java% equ false if not exist "%scriptdir%cache\java" mkdir "%scriptdir%cache\java"
+ 
+if %found_working_java% equ false set java_download_loc=%scriptdir%cache\java\java.zip
+
+if %found_working_java% equ false if %disable_powershell% equ false %powershell_command% %powershell_arguments% "%powershell_workarounds% %powershell_new_web_client_wc% $WC.DownloadFile('%java_download_url%', '%java_download_loc%')" > nul
+if %found_working_java% equ false if %disable_powershell% equ false title %title%
+
+if %found_working_java% equ false if exist "%java_download_loc%" "%scriptdir%cache\7z.exe" x "%java_download_loc%" -o"%scriptdir%cache\java" * -r -y > nul
+
+:: Set variables
+if %found_working_java% equ false if exist "%built_in_java_loc%" set java_command="%built_in_java_loc%"
+if %found_working_java% equ false if exist "%built_in_java_loc%" set JAVA_PATH=%built_in_java_loc%
+
+if %found_working_java% equ false if exist "%built_in_java_loc%" set found_working_java=true
+
+:: Re-test after downloading built-in Java
+%java_command% -version > nul 2> nul || (
+ set found_working_java=false
+)
+
+:: Set JAVA_HOME from PATH if not defined
+
+if not defined JAVA_PATH for /f "delims=" %%i in ('where java') do set "JAVA_PATH=%%i"
+
+if defined JAVA_PATH for %%a in ("%JAVA_PATH%") do set "JAVA_PATH=%%~dpa"
+if defined JAVA_PATH set JAVA_PATH=%%~dpJAVA_PATH
+
+if not defined JAVA_HOME if defined JAVA_PATH set "JAVA_HOME=%JAVA_PATH%"
+
+:: Set JDK_HOME to JAVA_HOME if no JDK_HOME defined, but JAVA_HOME is defined
+
+if defined JAVA_HOME if not defined JDK_HOME set "JDK_HOME=%JAVA_HOME%"
+
+:: Auto tune settings
+
+%java_command% -d64 -Djava.vm.compressedOopsMode=64-bit -version > nul 2> nul
+
+if not defined errorlevel set errorlevel=1
+
+if %errorlevel% equ 0 (
+ set sixty_four_bit_java=true
+)
+
+%java_command% -server -version > nul 2> nul
+
+if %errorlevel% equ 0 (
+ set use_server_vm=true
 )
 
 if %found_working_java% equ true for /f tokens^=2-5^ delims^=.-_^" %%j in ('%java_command% -fullversion 2^>^&1') do set "jver_major=%%j"
 if %found_working_java% equ true for /f tokens^=2-5^ delims^=.-_^" %%j in ('%java_command% -fullversion 2^>^&1') do set "jver_minor=%%k"
 
 if %found_working_java% equ true for /f tokens^=2-5^ delims^=.-_^" %%j in ('%java_command% -fullversion 2^>^&1') do set "jver_build=%%l"
-if %found_working_java% equ true for /f tokens^=2-5^ delims^=.-_^" %%j in ('%java_command% -fullversion 2^>^&1') do set "jver_revision=%%m"
+
+if %jver_major% equ 1 if %found_working_java% equ true for /f tokens^=2-5^ delims^=.-_^" %%j in ('%java_command% -fullversion 2^>^&1') do set "jver_revision=%%m"
+if %jver_major% neq 1 set jver_revision=281
 
 :: Checking major equals 1 makes it compatible with Java 9+, they always pass since 9, 10, 11, 12 .. 15, etc all are higher than 1.
 if %jver_major% equ 1 if %jver_minor% lss 8 echo.
@@ -797,19 +867,22 @@ if %tiered_compilation% equ true set tiered_compilation0= -XX:+TieredCompilation
 :: Java 9+ on < MC 1.9 requires java.nio to be open
 if %found_working_java% equ true if %jver_major% neq 1 if %game_version% equ 1.8.8 set allow_module_access=true
 
-:: v2.3.2: Added NIO & java.lang.reflect & jdk.internal.misc
+:: Java 13+ enables a new CDS behaviour
+if %jver_major% geq 13 set use_cds=true
+
 set module_access=
 if %allow_module_access% equ true set module_access= --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED
 
 if %allow_module_access% equ true if %found_working_java% equ true if %jver_major% neq 1 set netty_additional_arguments= -Dio.netty.tryAllocateUninitializedArray=true
 
-if %less_ram% equ false (
- rem RAM'de etkisi belirsiz oldugundan bakima alindi
- ::set less_ram0= -XX:+UseStringDeduplication
- set less_ram1= -XX:+DisableExplicitGC
-) else (
- set min_ram=1M
-)
+:: RAM'de etkisi belirsiz oldugundan bakima alindi
+::if %less_ram% equ false set less_ram0= -XX:+UseStringDeduplication
+
+:: System#gc 'yi while ile cagiran eklentilerin, timeout vermemesi icin bakima alindi
+if %less_ram% equ false if %use_aikars_gc_settings% equ true set less_ram1= -XX:+DisableExplicitGC
+
+:: Artik gereksiz, varsayilan olarak 1024K zaten
+::if %less_ram% equ true set min_ram=1M
 
 if %use_secure_tls% equ true set use_secure_tls0= -Dhttps.protocols=TLSv1.3,TLSv1.2 -Dmail.smtp.ssl.protocols=TLSv1.3,TLSv1.2
 
@@ -828,12 +901,17 @@ if 4 gtr %NUMBER_OF_PROCESSORS% (
  set eventLoopThreads=4
 )
 
-echo.
-echo %ram_ayarlaniyor%
+if %verbose_info% equ true echo.
+if %verbose_info% equ true echo %ram_ayarlaniyor%
 
 for /f "skip=1 delims=" %%i in ('wmic os get freephysicalmemory /value') do for /f "delims=" %%j in ("%%i") do set "availableMemory=%%j"
 
 :: Constants (KB)
+
+:: 12GB
+set twelve_gb=12582912
+
+:: 1GB
 set one_gb=1048576
 
 :: 1536MB
@@ -871,14 +949,14 @@ if %leave_ram_to_windows% equ true set /a availableMemory=%availableMemory% - %w
 if %max_ram% equ 1536M if %availableMemory% geq %one_and_half_gb% set max_ram=%availableMemory%K
 
 set min_ram_is_auto_detected=false
-if %min_ram% equ 1536M set min_ram_is_auto_detected=true
+if %min_ram% equ 1024K set min_ram_is_auto_detected=true
 
-if %min_ram% equ 1536M if %availableMemory% lss %one_and_half_gb% if %availableMemory% geq %one_gb% set min_ram=%one_gb%K
+::if %min_ram% equ 1536M if %availableMemory% lss %one_and_half_gb% if %availableMemory% geq %one_gb% set min_ram=%one_gb%K
 
-if %min_ram% equ 1536M if %availableMemory% lss %one_and_half_gb% if %availableMemory% geq %half_gb% set min_ram=%half_gb%K
-if %min_ram% equ 1536M if %availableMemory% lss %one_and_half_gb% if %availableMemory% geq %quarter_gb% set min_ram=%quarter_gb%K
+::if %min_ram% equ 1536M if %availableMemory% lss %one_and_half_gb% if %availableMemory% geq %half_gb% set min_ram=%half_gb%K
+::if %min_ram% equ 1536M if %availableMemory% lss %one_and_half_gb% if %availableMemory% geq %quarter_gb% set min_ram=%quarter_gb%K
 
-if %min_ram% equ 1536M if %availableMemory% lss %one_and_half_gb% if %availableMemory% gtr 0 set min_ram=%availableMemory%K
+::if %min_ram% equ 1536M if %availableMemory% lss %one_and_half_gb% if %availableMemory% gtr 0 set min_ram=%availableMemory%K
 
 %java_command% -Xms%min_ram% -Xmx%max_ram% -version > nul 2> nul
 
@@ -910,15 +988,20 @@ if errorlevel 1 (
   set code_cache=128M
 )
 
-if %min_ram_is_auto_detected% equ true if %min_ram% neq 1536M set max_ram=%min_ram%
+if %min_ram_is_auto_detected% equ true if %min_ram% neq 1024K set max_ram=%min_ram%
 
 if %verbose_info% equ true echo Starting server with minimum RAM of %min_ram% and maximum of %max_ram%, code cache is %code_cache%
 
 set aikar_flags_prefix=-D
 if %use_aikars_gc_settings% equ true set aikar_flags_prefix=
 
+set timings_aikar_flags_workarounds00=-Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true
+
 :: https://github.com/aikar/timings/blob/master/src/js/ui/ServerInfo.jsx#L102
-set timings_aikar_flags_workarounds0= -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true %aikar_flags_prefix%-XX:G1NewSizePercent=30 %aikar_flags_prefix%-XX:G1MixedGCLiveThresholdPercent=90 %aikar_flags_prefix%-XX:MaxTenuringThreshold=1 %aikar_flags_prefix%-XX:SurvivorRatio=32
+set timings_aikar_flags_workarounds0= %timings_aikar_flags_workarounds00%
+
+:: Not used anymore
+::set timings_aikar_flags_workarounds0= %timings_aikar_flags_workarounds0% %aikar_flags_prefix%-XX:G1NewSizePercent=30 %aikar_flags_prefix%-XX:G1MixedGCLiveThresholdPercent=90 %aikar_flags_prefix%-XX:MaxTenuringThreshold=1 %aikar_flags_prefix%-XX:SurvivorRatio=32
 
 :: Skips a weird JANSI error on 1.8.8, makes JANSI library DLL appear on a fixed path instead of random Temp/AppData locations and fixes JANSI version property & initialization
 :: -Djansi.passthrough=true is disabled by default - may break console colors on some MC versions
@@ -945,12 +1028,6 @@ if %cond% equ true (
  for /f %%l in ('%powershell_command% %powershell_arguments% "%powershell_workarounds% %powershell_new_web_client_wc% $WC.DownloadString('https://ipinfo.io/ip')"') do set "ip_address=%%l"
 )
 
-if %use_aikars_gc_settings% equ true if not %min_ram% equ %max_ram% set min_ram=%max_ram%
-
-:: Note on MaxGCPauseMillis: A tick is 50 milliseconds; setting it to 50 makes GC not drop TPS at the cost of VERY high memory usage and OutOfMemoryError risks.
-:: LifeMC's flags believe the GC should not be limited to do its work and let Java handle this value automatically, but Aikar thinks 200 is a better value.. He thinked 50 was a great value too, before, and that made many servers get OutOfMemoryErrors.
-if %use_aikars_gc_settings% equ true set timings_aikar_flags_workarounds0=%timings_aikar_flags_workarounds0% -XX:MaxGCPauseMillis=200 -XX:+AlwaysPreTouch -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1RSetUpdatingPauseTimePercent=5
-
 set using_windows_server=false
 
 if exist "%scriptdir%cache\osname.txt" findstr /m "Server" "%scriptdir%cache\osname.txt" > nul 2> nul
@@ -960,8 +1037,8 @@ if %using_windows_server% equ true set prod=yes
 if %using_windows_server% equ false set prod=no
 
 if %class_caching% equ true (
- set class_caching0= -Xshare:on -Xshareclasses -Xshareclasses:cacheDir=/cache/classes/%jar_name% -Xshareclasses:name=%jar_name% -Xscmx300M
- set class_caching1= -XX:+ShareAnonymousClasses -XX+TransparentHugePage -Dcom.ibm.enableClassCaching=true -Xtune:virtualized -XX:+ClassRelationshipVerifier -Dcom.ibm.tools.attach.enable=%prod%
+ set class_caching0= -Xshare:auto -Xshareclasses -Xshareclasses:cacheDir=/cache/classes/%jar_name% -Xshareclasses:name=%jar_name% -Xscmx300M
+ set class_caching1= -XX:+ShareAnonymousClasses -Dcom.ibm.enableClassCaching=true
 )
 
 set os_name=Windows
@@ -971,7 +1048,87 @@ if exist "%scriptdir%cache\osname.txt" set /p os_name=<"%scriptdir%cache\osname.
 if exist "%scriptdir%cache\osname.txt" for /f "tokens=2 delims=:" %%a in ("%os_name%") do set os_name=%%a
 if exist "%scriptdir%cache\osname.txt" for /f "tokens=* delims= " %%a in ("%os_name%") do set os_name=%%a
 
-set full_arguments=%additional_commands%-XX:+UnlockExperimentalVMOptions -XX:+IgnoreUnrecognizedVMOptions%enable_assertions0% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -Xms%min_ram% -XX:InitialHeapSize=%min_ram% -Xmx%max_ram% -XX:MaxHeapSize=%max_ram% -XX:+UseAdaptiveSizePolicy -XX:+G1UseAdaptiveIHOP -XX:+G1UseAdaptiveConcRefinement -XX:+UseNUMA -XX:+ShowCodeDetailsInExceptionMessages -XX:ReservedCodeCacheSize=%code_cache% -XX:UseSSE=4 -XX:+UseGCOverheadLimit -XX:+UseG1GC -XX:+EnableJVMCIProduct -XX:+PerfDisableSharedMem -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe%tiered_compilation0% -XX:+UseFastAccessorMethods -XX:+CMSIncrementalPacing -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled%omit_stacktrace0% %less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches -Dsun.io.useCanonPrefixCache=false -Djava.lang.string.substring.nocopy=true -Djava.net.preferIPv4Stack=true%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=%connect_timeout% -Dsun.net.client.defaultReadTimeout=%read_timeout% -Dskript.dontUseNamesForSerialization=true -Djdk.http.auth.tunneling.disabledSchemes="" -Djdk.attach.allowAttachSelf -Dkotlinx.coroutines.debug=off -Djava.awt.headless=%head_less% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Duser.language=en -Duser.country=US -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dusing.lifemcserver.flags=https://flags.lifemcserver.com -Dflags.lifemcserver.com.version="%version%" -Dflags.lifemcserver.com.vendor="%vendor%" %jansi_parameters% %log4j_config_parameter%-Dio.netty.eventLoopThreads=%eventLoopThreads%%netty_additional_arguments% -Druntime.availableProcessors=%NUMBER_OF_PROCESSORS% -Dserver.ipAddress=%ip_address% -Djava.codeCacheMem=%code_cache% -Dbatch.os.name="%os_name%" -Dusing.windowsServer=%using_windows_server% -jar %jar_name%.jar "-o %online_mode%%upgrade_argument% --log-append=false --log-strip-color nogui%additional_parameters%"
+:: 200 = Java 15 default & Aikar recommended value
+:: 50 = Mojang recommended value, no tick skipping because of GC - but memory can be high
+set max_gc_pause_millis=49
+
+:: Detect maximum heap values above 12GB
+set heap_above_12g=false
+
+if %availableMemory% gtr %twelve_gb% set heap_above_12g=true
+
+set max_ram_no_g=%max_ram%
+
+set max_ram_no_g=%max_ram_no_g:G=%
+set max_ram_no_g=%max_ram_no_g:g=%
+
+if not "x%max_ram:g=%" == "x%max_ram%" if %max_ram_no_g% gtr 12 set heap_above_12g=true
+if not "x%max_ram:G=%" == "x%max_ram%" if %max_ram_no_g% gtr 12 set heap_above_12g=true
+
+set max_ram_no_m=%max_ram%
+
+set max_ram_no_m=%max_ram_no_m:M=%
+set max_ram_no_m=%max_ram_no_m:m=%
+
+if not "x%max_ram:m=%" == "x%max_ram%" if %max_ram_no_m% gtr 12288 set heap_above_12g=true
+if not "x%max_ram:M=%" == "x%max_ram%" if %max_ram_no_m% gtr 12288 set heap_above_12g=true
+
+set max_ram_no_k=%max_ram%
+
+set max_ram_no_k=%max_ram_no_k:K=%
+set max_ram_no_k=%max_ram_no_k:k=%
+
+if not "x%max_ram:k=%" == "x%max_ram%" if %max_ram_no_k% gtr %twelve_gb% set heap_above_12g=true
+if not "x%max_ram:K=%" == "x%max_ram%" if %max_ram_no_k% gtr %twelve_gb% set heap_above_12g=true
+
+:: 5 - Java default
+:: 20 = Mojang recommended value
+:: 30 - Aikar recommended value
+
+:: Above 12GB: 40
+set new_size_percent=30
+if %heap_above_12g% equ true set new_size_percent=40
+
+:: Above 12GB: 50
+set max_new_size_percent=40
+if %heap_above_12g% equ true set max_new_size_percent=50
+
+:: Above 12GB: 15
+set reserve_percent=20
+if %heap_above_12g% equ true set reserve_percent=15
+
+:: Above 12GB: 20
+set heap_occupancy_percent=15
+if %heap_above_12g% equ true set heap_occupancy_percent=20
+
+:: Mojang Recommended Client Defaults
+:: (excluding the starting of -Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC, which already in this script)
+set mojang_client_defaults= -XX:G1HeapRegionSize=32M -XX:G1ReservePercent=%reserve_percent% -XX:G1NewSizePercent=%new_size_percent% -XX:MaxGCPauseMillis=%max_gc_pause_millis%
+
+set aikar_additional= -XX:G1MaxNewSizePercent=%max_new_size_percent% -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=%heap_occupancy_percent% -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:MaxTenuringThreshold=1
+
+:: We use Aikar + Mojang + Our flags, but this also adjusts script to Xms = Xmx policy of Aikar, and adds loading all memory instantly at startup.
+:: This not the default behaviour since we believe the memory should be used only as needed and leaved to other programs, OS, or even other server instances when not needed.
+if %use_aikars_gc_settings% equ true if not %min_ram% equ %max_ram% set min_ram=%max_ram%
+if %use_aikars_gc_settings% equ true set timings_aikar_flags_workarounds0=%timings_aikar_flags_workarounds0% -XX:+AlwaysPreTouch
+
+::if exist "%scriptdir%cache\app-cds-new.jsa" move /y "%scriptdir%cache\app-cds-new.jsa" "app-cds.jsa"
+::if %use_cds% equ true set use_cds0= -XX:ArchiveClassesAtExit=cache\app-cds-new.jsa
+
+::if exist "%scriptdir%cache\app-cds.jsa" set use_cds0=%use_cds0% -XX:SharedArchiveFile=app-cds.jsa
+
+set cms0= -XX:+CMSParallelRemarkEnabled -XX:+UseCMSInitiatingOccupancyOnly -XX:+CMSScavengeBeforeRemark -XX:+CMSClassUnloadingEnabled
+if %jver_major% lss 15 set lock_optimization_prejava15= -XX:+UseLWPSynchronization -XX:+UseBiasedLocking -XX:BiasedLockingStartupDelay=0
+
+:: Might be moved to the main options on the start later, here for now
+set gc_logging=false
+
+if %gc_logging% equ true if %jver_major% geq 11 set gc_logging0= -Xlog:gc*:logs/gc.log:time,uptime:filecount=5,filesize=1M
+if %gc_logging% equ true if not %jver_major% geq 11 set gc_logging0= -Xloggc:gc.log -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=1M
+
+::set optimize_sk_parser0= -XX:+UnlockDiagnosticVMOptions -XX:CompileCommand=quiet -XX:CompileCommand=compileonly,ch/njol/skript/SkriptParser.parse_i -XX:CompileCommand=inline,ch/njol/skript/SkriptParser.parse_i
+
+set full_arguments=%additional_commands%-XX:+UnlockExperimentalVMOptions -XX:+IgnoreUnrecognizedVMOptions%enable_assertions0% -truffle -XX:-DontCompileHugeMethods -XX+DoEscapeAnalysis%aikar_additional%%mojang_client_defaults% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access% -Xtune:virtualized -XX:+ClassRelationshipVerifier -Xshare:auto%use_cds0%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -Xms%min_ram% -Xmx%max_ram% -XX:+UseAdaptiveSizePolicy -XX:+G1UseAdaptiveIHOP -XX:+G1UseAdaptiveConcRefinement -XX:+UseNUMA -XX:+ShowCodeDetailsInExceptionMessages -XX:ReservedCodeCacheSize=%code_cache% -XX:+UseCodeCacheFlushing -XX:UseSSE=4 -XX:+UseSSE42Intrinsics%lock_optimization_prejava15% -XX:+UseGCOverheadLimit -XX:+UseG1GC -XX:+EnableJVMCIProduct -XX:+PerfDisableSharedMem -XX:-UsePerfData -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities -XX:ActiveProcessorCount=%NUMBER_OF_PROCESSORS% -XX:+PortableSharedCache -XX:+UseCGroupMemoryLimit -XX:+UseContainerSupport -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe -Dcom.mojang.mojangTricksIntelDriversForPerformance=java.exe_MinecraftLauncher.exe %tiered_compilation0% -XX:+UseFastAccessorMethods -XX:+AllowUserSignalHandlers -XX:+UseTLAB -XX:+ReduceCPUMonitorOverhead -XX:+CMSIncrementalPacing%cms0% -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses%omit_stacktrace0%%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches%optimize_sk_parser0% -Dsun.io.useCanonPrefixCache=false -Djava.lang.string.substring.nocopy=true -Djava.net.preferIPv4Stack=true%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=%connect_timeout% -Dsun.net.client.defaultReadTimeout=%read_timeout% -Dskript.dontUseNamesForSerialization=true -Dcom.ibm.tools.attach.enable=no -Djdk.http.auth.tunneling.disabledSchemes="" -Dkotlinx.coroutines.debug=off -Djava.awt.headless=%head_less% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Duser.language=en -Duser.country=US -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dusing.lifemcserver.flags=https://flags.lifemcserver.com -Dflags.lifemcserver.com.version="%version%" -Dflags.lifemcserver.com.vendor="%vendor%" %jansi_parameters% %log4j_config_parameter%-Dio.netty.eventLoopThreads=%eventLoopThreads%%netty_additional_arguments% -Druntime.availableProcessors=%NUMBER_OF_PROCESSORS% -Dserver.ipAddress=%ip_address% -Djava.codeCacheMem=%code_cache% -Dsystem.os.name="%os_name%" -Dusing.windowsServer=%using_windows_server% -jar %jar_name%.jar "-o %online_mode%%upgrade_argument% --log-append=false --log-strip-color nogui%additional_parameters%"
 if %print_java_version% equ true set full_arguments=-showversion %full_arguments%
 
 if %verbose_info% equ true echo Starting Java with the final arguments of %full_arguments%
@@ -1029,19 +1186,19 @@ if %auto_del_temp_files% equ true (
  if %clear_logs% equ true del /f /q .console_history > nul 2> nul
 
  del /f /q "%scriptdir%plugins\*\logs\*.*" > nul 2> nul
- del /f /q "%scriptdir%plugins\*\error.log"  > nul 2> nul
- del /f /q "%scriptdir%plugins\NoCheatPlus\*.log" > nul 2> nul
- del /f /q "%scriptdir%plugins\NoCheatPlus\*.lck" > nul 2> nul
- del /f /q "%scriptdir%plugins\NoCheatPlus\*.log.*" > nul 2> nul
- del /f /q "%scriptdir%plugins\AuthMe\authme.log" > nul 2> nul
- del /f /q "%scriptdir%plugins\bStats\temp.txt" > nul 2> nul
+ del /s /f /q "%scriptdir%plugins\*\error.log"  > nul 2> nul
+ del /s /f /q "%scriptdir%plugins\NoCheatPlus\*.log" > nul 2> nul
+ del /s /f /q "%scriptdir%plugins\NoCheatPlus\*.lck" > nul 2> nul
+ del /s /f /q "%scriptdir%plugins\NoCheatPlus\*.log.*" > nul 2> nul
+ del /s /f /q "%scriptdir%plugins\AuthMe\authme.log" > nul 2> nul
+ del /s /f /q "%scriptdir%plugins\bStats\temp.txt" > nul 2> nul
  del /f /q "%scriptdir%plugins\AntiAura\logs\*.*" > nul 2> nul
 
  if %clear_logs% equ true del /f /q "%scriptdir%logs\*.*" > nul 2> nul
 
- if %clear_jvm_dumps% equ true del /f /q *.mdmp > nul 2> nul
- if %clear_jvm_dumps% equ true del /f /q *.dmp > nul 2> nul
- if %clear_jvm_dumps% equ true del /f /q *.hprof > nul 2> nul
+ if %clear_jvm_dumps% equ true del /s /f /q *.mdmp > nul 2> nul
+ if %clear_jvm_dumps% equ true del /s /f /q *.dmp > nul 2> nul
+ if %clear_jvm_dumps% equ true del /s /f /q *.hprof > nul 2> nul
 )
 
 if %auto_restart% equ true (
@@ -1050,6 +1207,5 @@ if %auto_restart% equ true (
 
  goto start
 ) else (
- endlocal
  pause
 )
