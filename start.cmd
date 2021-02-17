@@ -1,23 +1,23 @@
 
 
-::    _        _    __          __  __    _____    _____                                         
-::   | |      (_)  / _|        |  \/  |  / ____|  / ____|                                        
-::   | |       _  | |_    ___  | \  / | | |      | (___     ___   _ __  __   __   ___   _ __     
-::   | |      | | |  _|  / _ \ | |\/| | | |       \___ \   / _ \ | '__| \ \ / /  / _ \ | '__|    
-::   | |____  | | | |   |  __/ | |  | | | |____   ____) | |  __/ | |     \ V /  |  __/ | |       
-::   |______| |_| |_|    \___| |_|  |_|  \_____| |_____/   \___| |_|      \_/    \___| |_|       
-::    ____                  _           _                           _  __              _         
-::   |  _ \                | |         | |                         | |/ /             | |        
-::   | |_) |   __ _   ___  | |   __ _  | |_   _ __ ___     __ _    | ' /    ___     __| |  _   _ 
-::   |  _ <   / _` | / __| | |  / _` | | __| | '_ ` _ \   / _` |   |  <    / _ \   / _` | | | | |
-::   | |_) | | (_| | \__ \ | | | (_| | | |_  | | | | | | | (_| |   | . \  | (_) | | (_| | | |_| |
-::   |____/   \__,_| |___/ |_|  \__,_|  \__| |_| |_| |_|  \__,_|   |_|\_\  \___/   \__,_|  \__,_|
-::                                      ___        _  _          ___                             
-::                                     |__ \      | || |        / _ \                            
-::                             __   __    ) |     | || |_      | | | |                           
-::                             \ \ / /   / /      |__   _|     | | | |                           
-::                              \ V /   / /_   _     | |    _  | |_| |                           
-::                               \_/   |____| (_)    |_|   (_)  \___/                            
+::    _        _    __          __  __    _____    _____                                       
+::   | |      (_)  / _|        |  \/  |  / ____|  / ____|                                      
+::   | |       _  | |_    ___  | \  / | | |      | (___     ___   _ __  __   __   ___   _ __   
+::   | |      | | |  _|  / _ \ | |\/| | | |       \___ \   / _ \ | '__| \ \ / /  / _ \ | '__|  
+::   | |____  | | | |   |  __/ | |  | | | |____   ____) | |  __/ | |     \ V /  |  __/ | |     
+::   |______| |_| |_|    \___| |_|  |_|  \_____| |_____/   \___| |_|      \_/    \___| |_|     
+::    ____                  _           _                         _  __              _         
+::   |  _ \                | |         | |                       | |/ /             | |        
+::   | |_) |   __ _   ___  | |   __ _  | |_   _ __ ___     __ _  | ' /    ___     __| |  _   _ 
+::   |  _ <   / _` | / __| | |  / _` | | __| | '_ ` _ \   / _` | |  <    / _ \   / _` | | | | |
+::   | |_) | | (_| | \__ \ | | | (_| | | |_  | | | | | | | (_| | | . \  | (_) | | (_| | | |_| |
+::   |____/   \__,_| |___/ |_|  \__,_|  \__| |_| |_| |_|  \__,_| |_|\_\  \___/   \__,_|  \__,_|
+::                                      ___        _  _         __                             
+::                                     |__ \      | || |       /_ |                            
+::                             __   __    ) |     | || |_       | |                            
+::                             \ \ / /   / /      |__   _|      | |                            
+::                              \ V /   / /_   _     | |    _   | |                            
+::                               \_/   |____| (_)    |_|   (_)  |_|                            
 
 
 
@@ -63,14 +63,14 @@ if not defined in_subprocess (cmd /q /e:on /v:on /f:off /k set in_subprocess=y ^
 
 :: SURUM - degistermeniz onerilmez
 
-set version=2.4.0
+set version=2.4.1
 
 :: AYARLAR - kendinize gore duzenleyebilirsiniz
 
 :: Hazir ayarlari belirler. Hazir ayarlar, sizin icin bir cok ayari otomatik olarak ayarlayabilir.
 :: Uyari: Hazir ayarlar, ayarlar kisminda ki ayarlarin uzerine yazar. Ayarlariniz gecerliligini yitirebilir.
 
-:: Olabilecek degerler: none, strict-jdk, strict-jdk-9, yatopia, dev, upgrade, no-tracking
+:: Olabilecek degerler: none, strict-jdk, strict-jdk-9, yatopia, dev, upgrade, no-tracking, security, aggressive
 :: Birden fazla degeri bosluk ile belirleyebilirsiniz. Ornek: settings_preset=strict-jdk no-tracking
 
 :: none : Hic bir hazir ayar yuklemez ve tamamen asagida gireceginiz degerleri kullanir.
@@ -86,7 +86,7 @@ set version=2.4.0
 
 :: upgrade : Buyuk surum guncellemelerinde acarsaniz surum yukseltmesi yapar. (orn. 1.12 -> 1.13, 1.13 -> 1.14)
 
-:: no-tracking : Tum telemetri servislerini engeller. Performansa etkisi olabilir.
+:: no-tracking : Tum telemetri servislerini engeller. Performansi arttirabilir.
 :: security : Guvenlik icin bazi ayarlar yapar. Performans dusurebilir veya bazi seyleri bozabilir fakat guvenligi arttirir.
 
 :: aggressive : Optimize edilmis fakat hatalara veya uyumluluk sorunlarina yol acabilecek ayarlari yapar.
@@ -227,6 +227,9 @@ set print_java_version=true
 :: veya Java 8 icin "C:\Program Files\Java\jre1.8.0_281\bin\java.exe"
 set java_command=java
 
+:: Eger java_command bulunamaz ise indirilecek varsayilan Java surumunu belirler. Paper 1.16.4 ve ustu icin 11 yapin.
+set built_in_java_version=8
+
 :: HTTP baglantilari icin kullanilacak baglanti zaman asimi (yavas internet icin 30000, hizli internet icin 5000 yapin)
 set connect_timeout=10000
 
@@ -255,6 +258,28 @@ set use_custom_log4j_config=true
 :: Arttiradabilir, azaltadabilir. Timings'de GC ile alakali sorunlariniz var ise deneyebilirsiniz.
 set use_aikars_gc_settings=false
 
+:: GC ayarlari
+
+:: Young/New generation boyutu.
+:: 12GB ustunde 40 yapabilirsiniz. MC disi programlar icin (orn. discord botlari) 20 yapin.
+set new_size_percent=30
+
+:: Maximum young/new generation boyutu.
+:: 12GB ustunde 50 yapabilirsiniz. MC disi programlar icin (orn. discord botlari) 30 yapin.
+set max_new_size_percent=40
+
+:: 12GB ustu icin 15 yapin. MC disi programlar icin (orn. discord botlari) 30 yapin.
+set reserve_percent=20
+
+:: 12GB ustu icin 20 yapin. MC disi programlar icin (orn. discord botlari) 10 yapin.
+set heap_occupancy_percent=15
+
+:: Maximum GC donma zamani, milisaniye cinsinden. MC disi programlar icin (orn. discord botlari) 200 veya 100 yapin.
+set max_gc_pause_millis=49
+
+:: 1GB ve ustu icin 32, 512MB icin 16, 256MB icin 8, 128MB icin 4 yapin.
+set survivor_ratio=32
+
 :: Eger varsayilan min_ram ve max_ram degerlerini kullaniyorsaniz baslatma kodu RAM'i otomatik ayarlar.
 :: Bu ayar true ise baslatma kodu sisteme 1GB ram birakir. False yaparsaniz tum RAM'i kullanabilir, fakat onerilmez.
 set leave_ram_to_windows=true
@@ -263,6 +288,7 @@ set leave_ram_to_windows=true
 set windows_reserved_ram=default
 
 :: Eger renkli konsol calismiyorsa bunlari acmayi deneyebilirsiniz. Eger zaten calisiyor ise
+
 :: acmayin; bozabilir.
 set jansi_passthrough=false
 set jansi_force=false
@@ -462,8 +488,20 @@ if not exist "%jar_name%.jar" if exist "spigot.jar" set jar_name=spigot
 if not exist "%jar_name%.jar" if exist "paper.jar" set jar_name=paper
 if not exist "%jar_name%.jar" if exist "paperclip.jar" set jar_name=paperclip
 
+if not exist "%jar_name%.jar" if exist "purpur.jar" set jar_name=purpur
+if not exist "%jar_name%.jar" if exist "tuinity.jar" set jar_name=tuinity
+
 if not exist "%jar_name%.jar" if exist "yatopia.jar" set jar_name=yatopia
 if not exist "%jar_name%.jar" if exist "yatoclip.jar" set jar_name=yatoclip
+
+:: Check for default file names when downloaded from https://getbukkit.org/
+if not exist "%jar_name%.jar" if exist "Spigot-%game_version%.jar" set jar_name=Spigot-%game_version%
+if not exist "%jar_name%.jar" if exist "Spigot-%game_version%-R0.1-SNAPSHOT-latest.jar" set jar_name=Spigot-%game_version%-R0.1-SNAPSHOT-latest
+
+if not exist "%jar_name%.jar" if exist "Craftbukkit-%game_version%.jar" set jar_name=Craftbukkit-%game_version%
+if not exist "%jar_name%.jar" if exist "Craftbukkit-%game_version%-R0.1-SNAPSHOT-latest.jar" set jar_name=Craftbukkit-%game_version%-R0.1-SNAPSHOT-latest
+
+if not exist "%jar_name%.jar" if exist "Server.jar" set jar_name=Server
 
 set size=1
 for /f "usebackq" %%a in ('%jar_name%.jar') do set "size=%%~za"
@@ -639,7 +677,7 @@ set downloaded_log4j_config=true
 
 :: Above 1.8.8, Paper uses TerminalConsoleAppender, which has different Log4J2 configuration and fixes the issues
 :: covered by the batch file provided log4j2 configuration file.
-if exist "%scriptdir%cache\log4j2.xml" if %game_version% equ 1.8.8 if %cond% equ true set log4j_config_parameter= -Dlog4j.configurationFile="cache\log4j2.xml"
+if exist "%scriptdir%cache\log4j2.xml" if %game_version% equ 1.8.8 if %cond% equ true if not "%2" equ "client" set log4j_config_parameter= -Dlog4j.configurationFile="cache\log4j2.xml"
 
 if %verbose_info% equ true echo %oto_ayarlar_uygulaniyor%
 
@@ -685,91 +723,98 @@ if not exist "%scriptdir%cache\fart.exe" if %disable_powershell% equ false title
 
 if exist "%spigot_config%" if %verbose_info% equ true echo Setting up spigot config...
 
-if exist "%spigot_config%" if %verbose% equ false "%scriptdir%cache\fart.exe" -q -i -C "%spigot_config%" "verbose: true" "verbose: false" > nul 2> nul
-if exist "%spigot_config%" if %verbose% equ true "%scriptdir%cache\fart.exe" -q -i -C "%spigot_config%" "verbose: false" "verbose: true" > nul 2> nul
+if 4 gtr %NUMBER_OF_PROCESSORS% if exist %spigot_config% "%scriptdir%cache\fart.exe" -q -i -a -C "%spigot_config%" "netty-threads: 4" "netty-threads: %NUMBER_OF_PROCESSORS%" > nul 2> nul
 
-if 4 gtr %NUMBER_OF_PROCESSORS% if exist %spigot_config% "%scriptdir%cache\fart.exe" -q -i -C "%spigot_config%" "netty-threads: 4" "netty-threads: %NUMBER_OF_PROCESSORS%" > nul 2> nul
-
-if exist "%spigot_config%" if %verbose% equ true "%scriptdir%cache\fart.exe" -q -i -C "%spigot_config%" "item-despawn-rate: 6000" "item-despawn-rate: 4000" > nul 2> nul
+if exist "%spigot_config%" if %verbose% equ true "%scriptdir%cache\fart.exe" -q -i -a -C "%spigot_config%" "item-despawn-rate: 6000" "item-despawn-rate: 4000" > nul 2> nul
 
 set paper_config=paper.yml
 
 if exist "%paper_config%" if %verbose_info% equ true echo Setting up paper config...
 
-if exist "%paper_config%" if %verbose% equ false "%scriptdir%cache\fart.exe" -q -i -C "%paper_config%" "verbose: true" "verbose: false" > nul 2> nul
-if exist "%paper_config%" if %verbose% equ true "%scriptdir%cache\fart.exe" -q -i -C "%paper_config%" "verbose: false" "verbose: true" > nul 2> nul
+if exist "%paper_config%" if %online_mode% equ true "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config%" "online-mode: false" "online-mode: true" > nul 2> nul
+if exist "%paper_config%" if %online_mode% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config%" "online-mode: true" "online-mode: false" > nul 2> nul
 
-if exist "%paper_config%" if %online_mode% equ true "%scriptdir%cache\fart.exe" -q -i -C "%paper_config%" "online-mode: false" "online-mode: true" > nul 2> nul
-if exist "%paper_config%" if %online_mode% equ false "%scriptdir%cache\fart.exe" -q -i -C "%paper_config%" "online-mode: true" "online-mode: false" > nul 2> nul
-
-if exist "%paper_config%" if %online_mode% equ true "%scriptdir%cache\fart.exe" -q -i -C "%paper_config%" "bungee-online-mode: false" "bungee-online-mode: true" > nul 2> nul
-if exist "%paper_config%" if %online_mode% equ false "%scriptdir%cache\fart.exe" -q -i -C "%paper_config%" "bungee-online-mode: true" "bungee-online-mode: false" > nul 2> nul
+if exist "%paper_config%" if %online_mode% equ true "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config%" "bungee-online-mode: false" "bungee-online-mode: true" > nul 2> nul
+if exist "%paper_config%" if %online_mode% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config%" "bungee-online-mode: true" "bungee-online-mode: false" > nul 2> nul
 
 :: For performance - if we can't load a chunk, don't try to load other chunks further away by
 :: preventing player from moving into unloaded chunks.
-if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -C "%paper_config%" "prevent-moving-into-unloaded-chunks: false" "prevent-moving-into-unloaded-chunks: true" > nul 2> nul
+if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config%" "prevent-moving-into-unloaded-chunks: false" "prevent-moving-into-unloaded-chunks: true" > nul 2> nul
+
+:: Unloads unused chunks faster, resulting in more performance.
+if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config%" "delay-chunk-unloads-by: 10s" "delay-chunk-unloads-by: 5s" > nul 2> nul
 
 :: Optimizes explosion performance by caching entity lookups.
-if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -C "%paper_config%" "optimize-explosions: false" "optimize-explosions: true" > nul 2> nul
+if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config%" "optimize-explosions: false" "optimize-explosions: true" > nul 2> nul
 
 :: Optimizes lightning performance by making lightning updates async
-if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -C "%paper_config%" "use-async-lighting: false" "use-async-lighting: true" > nul 2> nul
+if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config%" "use-async-lighting: false" "use-async-lighting: true" > nul 2> nul
 
 :: Fixes CommandSender#hasPermission on ConsoleCommandSender
-if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -C "%paper_config%" "console-has-all-permissions: false" "console-has-all-permissions: true" > nul 2> nul
+if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config%" "console-has-all-permissions: false" "console-has-all-permissions: true" > nul 2> nul
 
 :: Fixes Paper excessive velocity warnings.
-if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -C "%paper_config%" "warnWhenSettingExcessiveVelocity: true" "warnWhenSettingExcessiveVelocity: false" > nul 2> nul
+if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config%" "warnWhenSettingExcessiveVelocity: true" "warnWhenSettingExcessiveVelocity: false" > nul 2> nul
+
+:: Fix timings verbose
+if exist "%spigot_config%" if %verbose% equ false "%scriptdir%cache\fart.exe" -q -a -C -w "%spigot_config%" "verbose: false" "verbose: true" > nul 2> nul
+if exist "%paper_config%" if %verbose% equ false "%scriptdir%cache\fart.exe" -q -a -C -w "%paper_config%" "verbose: false" "verbose: true" > nul 2> nul
+
+if exist "%spigot_config%" if %verbose% equ false "%scriptdir%cache\fart.exe" -q -a -C -w "%spigot_config%" "    verbose: true" "    verbose: false" > nul 2> nul
+if exist "%spigot_config%" if %verbose% equ true "%scriptdir%cache\fart.exe" -q -a -C -w "%spigot_config%" "    verbose: false" "    verbose: true" > nul 2> nul
+
+if exist "%paper_config%" if %verbose% equ false "%scriptdir%cache\fart.exe" -q -a -C -w "%paper_config%" "    verbose: true" "    verbose: false" > nul 2> nul
+if exist "%paper_config%" if %verbose% equ true "%scriptdir%cache\fart.exe" -q -a -C -w "%paper_config%" "    verbose: false" "    verbose: true" > nul 2> nul
 
 set server_config=server.properties
 
 if exist "%server_config%" if %verbose_info% equ true echo Setting up server.properties...
 
-if exist "%server_config%" if %online_mode% equ true "%scriptdir%cache\fart.exe" -q -i -C "%server_config%" "online-mode=false" "online-mode=true" > nul 2> nul
-if exist "%server_config%" if %online_mode% equ false "%scriptdir%cache\fart.exe" -q -i -C "%server_config%" "online-mode=true" "online-mode=false" > nul 2> nul
+if exist "%server_config%" if %online_mode% equ true "%scriptdir%cache\fart.exe" -q -i -a -C "%server_config%" "online-mode=false" "online-mode=true" > nul 2> nul
+if exist "%server_config%" if %online_mode% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%server_config%" "online-mode=true" "online-mode=false" > nul 2> nul
 
-if exist "%server_config%" if %disable_snooper% equ true "%scriptdir%cache\fart.exe" -q -i -C "%server_config%" "snooper-enabled=true" "snooper-enabled=false" > nul 2> nul
-if exist "%server_config%" if %disable_snooper% equ false "%scriptdir%cache\fart.exe" -q -i -C "%server_config%" "snooper-enabled=false" "snooper-enabled=true" > nul 2> nul
+if exist "%server_config%" if %disable_snooper% equ true "%scriptdir%cache\fart.exe" -q -i -a -C "%server_config%" "snooper-enabled=true" "snooper-enabled=false" > nul 2> nul
+if exist "%server_config%" if %disable_snooper% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%server_config%" "snooper-enabled=false" "snooper-enabled=true" > nul 2> nul
 
 :: Improves performance of chunk writes by making them async
-if exist "%server_config%" "%scriptdir%cache\fart.exe" -q -i -C "%server_config%" "sync-chunk-writes=true" "sync-chunk-writes=false" > nul 2> nul
+if exist "%server_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%server_config%" "sync-chunk-writes=true" "sync-chunk-writes=false" > nul 2> nul
 
 set "pluginmetrics_config=%scriptdir%plugins\PluginMetrics\config.yml"
 
 if exist "%pluginmetrics_config%" if %verbose_info% equ true echo Setting up PluginMetrics config...
 
-if exist "%pluginmetrics_config%" if %bstats_enabled% equ false "%scriptdir%cache\fart.exe" -q -i -C "%pluginmetrics_config%" "opt-out: false" "opt-out: true" > nul 2> nul
-if exist "%pluginmetrics_config%" if %bstats_enabled% equ true "%scriptdir%cache\fart.exe" -q -i -C "%pluginmetrics_config%" "opt-out: true" "opt-out: false" > nul 2> nul
+if exist "%pluginmetrics_config%" if %bstats_enabled% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%pluginmetrics_config%" "opt-out: false" "opt-out: true" > nul 2> nul
+if exist "%pluginmetrics_config%" if %bstats_enabled% equ true "%scriptdir%cache\fart.exe" -q -i -a -C "%pluginmetrics_config%" "opt-out: true" "opt-out: false" > nul 2> nul
 
 set "bstats_config=%scriptdir%plugins\bStats\config.yml"
 
 if exist "%bstats_config%" if %verbose_info% equ true echo Setting up bStats config...
 
-if exist "%bstats_config%" if %bstats_enabled% equ false "%scriptdir%cache\fart.exe" -q -i -C "%bstats_config%" "enabled: true" "enabled: false" > nul 2> nul
-if exist "%bstats_config%" if %bstats_enabled% equ true "%scriptdir%cache\fart.exe" -q -i -C "%bstats_config%" "enabled: false" "enabled: true" > nul 2> nul
+if exist "%bstats_config%" if %bstats_enabled% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%bstats_config%" "enabled: true" "enabled: false" > nul 2> nul
+if exist "%bstats_config%" if %bstats_enabled% equ true "%scriptdir%cache\fart.exe" -q -i -a -C "%bstats_config%" "enabled: false" "enabled: true" > nul 2> nul
 
 set bukkit_config=bukkit.yml
 
 if exist "%bukkit_config%" if %verbose_info% equ true echo Setting up bukkit config...
 
-if exist "%bukkit_config%" if %disable_query% equ true "%scriptdir%cache\fart.exe" -q -i -C "%bukkit_config%" "query-plugins: true" "query-plugins: false" > nul 2> nul
-if exist "%bukkit_config%" if %disable_query% equ false "%scriptdir%cache\fart.exe" -q -i -C "%bukkit_config%" "query-plugins: false" "query-plugins: true" > nul 2> nul
+if exist "%bukkit_config%" if %disable_query% equ true "%scriptdir%cache\fart.exe" -q -i -a -C "%bukkit_config%" "query-plugins: true" "query-plugins: false" > nul 2> nul
+if exist "%bukkit_config%" if %disable_query% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%bukkit_config%" "query-plugins: false" "query-plugins: true" > nul 2> nul
 
 :: Enable & Optimize Chunk GC
-if exist "%bukkit_config%" if %disable_query% equ false "%scriptdir%cache\fart.exe" -q -i -C "%bukkit_config%" "load-threshold: 0" "load-threshold: 300" > nul 2> nul
-if exist "%bukkit_config%" if %disable_query% equ false "%scriptdir%cache\fart.exe" -q -i -C "%bukkit_config%" "period-in-ticks: 600" "period-in-ticks: 300" > nul 2> nul
+if exist "%bukkit_config%" if %disable_query% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%bukkit_config%" "load-threshold: 0" "load-threshold: 300" > nul 2> nul
+if exist "%bukkit_config%" if %disable_query% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%bukkit_config%" "period-in-ticks: 600" "period-in-ticks: 300" > nul 2> nul
 
 set purpur_config=purpur.yml
 
-if exist "%purpur_config%" "%scriptdir%cache\fart.exe" -q -i -C "%purpur_config%" "dont-send-useless-entity-packets: false" "dont-send-useless-entity-packets: true" > nul 2> nul
-if exist "%purpur_config%" "%scriptdir%cache\fart.exe" -q -i -C "%purpur_config%" "use-alternate-keepalive: false" "use-alternate-keepalive: true" > nul 2> nul
+if exist "%purpur_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%purpur_config%" "dont-send-useless-entity-packets: false" "dont-send-useless-entity-packets: true" > nul 2> nul
+if exist "%purpur_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%purpur_config%" "use-alternate-keepalive: false" "use-alternate-keepalive: true" > nul 2> nul
 
 set yatopia_config=yatopia.yml
 
-if exist "%yatopia_config%" if %verbose% equ false "%scriptdir%cache\fart.exe" -q -i -C "%yatopia_config%" "verbose: true" "verbose: false" > nul 2> nul
-if exist "%yatopia_config%" if %verbose% equ true "%scriptdir%cache\fart.exe" -q -i -C "%yatopia_config%" "verbose: false" "verbose: true" > nul 2> nul
+if exist "%yatopia_config%" if %verbose% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%yatopia_config%" "verbose: true" "verbose: false" > nul 2> nul
+if exist "%yatopia_config%" if %verbose% equ true "%scriptdir%cache\fart.exe" -q -i -a -C "%yatopia_config%" "verbose: false" "verbose: true" > nul 2> nul
 
-if exist "%yatopia_config%" "%scriptdir%cache\fart.exe" -q -i -C "%yatopia_config%" "fixFallDistance: false" "fixFallDistance: true" > nul 2> nul
+if exist "%yatopia_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%yatopia_config%" "fixFallDistance: false" "fixFallDistance: true" > nul 2> nul
 
 set help_command_config=help.yml
 
@@ -778,11 +823,11 @@ if exist "%help_command_config%" if %verbose_info% equ true echo Setting up help
 if exist "%help_command_config%" if %disable_powershell% equ false %powershell_command% %powershell_arguments% "%powershell_workarounds% Clear-Content '%scriptdir%%help_command_config%'; Add-Content -Path '%scriptdir%%help_command_config%' -Value 'ignore-plugins:' -Force; Add-Content -Path '%scriptdir%%help_command_config%' -Value '    - All' -Force"
 if exist "%help_command_config%" if %disable_powershell% equ false title %title%
 
-if exist "%help_command_config%" if %disable_help_index% equ true "%scriptdir%cache\fart.exe" -q -i -C "%help_command_config%" "#ignore-plugins:" "ignore-plugins:" > nul 2> nul
-if exist "%help_command_config%" if %disable_help_index% equ false "%scriptdir%cache\fart.exe" -q -i -C "%help_command_config%" "ignore-plugins:" "#ignore-plugins:" > nul 2> nul
+if exist "%help_command_config%" if %disable_help_index% equ true "%scriptdir%cache\fart.exe" -q -i -a -C "%help_command_config%" "#ignore-plugins:" "ignore-plugins:" > nul 2> nul
+if exist "%help_command_config%" if %disable_help_index% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%help_command_config%" "ignore-plugins:" "#ignore-plugins:" > nul 2> nul
 
-if exist "%help_command_config%" if %disable_help_index% equ true "%scriptdir%cache\fart.exe" -q -i -C "%help_command_config%" "#    - All" "    - All" > nul 2> nul
-if exist "%help_command_config%" if %disable_help_index% equ false "%scriptdir%cache\fart.exe" -q -i -C "%help_command_config%" "    - All" "#    - All" > nul 2> nul
+if exist "%help_command_config%" if %disable_help_index% equ true "%scriptdir%cache\fart.exe" -q -i -a -C "%help_command_config%" "#    - All" "    - All" > nul 2> nul
+if exist "%help_command_config%" if %disable_help_index% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%help_command_config%" "    - All" "#    - All" > nul 2> nul
 
 :: Fixes Skellet HangingEvent errors if Skellet is installed.
 
@@ -790,7 +835,7 @@ if exist "%skellet_config%" if %disable_powershell% equ false if %verbose_info% 
 
 set "skellet_config=%scriptdir%plugins\Skellet\SyntaxToggles.yml"
 
-if exist "%skellet_config%" "%scriptdir%cache\fart.exe" -q -i -C "%skellet_config%" "Hanging: true" "Hanging: false" > nul 2> nul
+if exist "%skellet_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%skellet_config%" "Hanging: true" "Hanging: false" > nul 2> nul
 
 ::
 
@@ -817,9 +862,15 @@ set found_working_java=true
 
 :: Defines the bundled JRE version. Change below to latest version when a new one is released
 set bundled_jre_ver_minor=282
-set bunlded_jre_ver_build=08
+set bundled_jre_ver_build=08
 
-set built_in_java_loc=%scriptdir%cache\java\openjdk-8u%bundled_jre_ver_minor%-b%bunlded_jre_ver_build%-jre\bin\java.exe
+set bundled_jre11_ver_patch=10
+set bundled_jre11_ver_build=9
+
+set built_in_java_loc=%scriptdir%cache\java\openjdk-8u%bundled_jre_ver_minor%-b%bundled_jre_ver_build%-jre\bin\java.exe
+set built_in_java11_loc=%scriptdir%cache\java\openjdk-11.0.%bundled_jre11_ver_patch%_%bundled_jre11_ver_build%-jre\bin\java.exe
+
+if exist "%built_in_java11_loc%" set built_in_java_loc=%built_in_java11_loc%
 
 :: Set variables
 if %found_working_java% equ false if exist "%built_in_java_loc%" set java_command="%built_in_java_loc%"
@@ -837,7 +888,17 @@ if %found_working_java% equ false echo %java_indiriliyor%
 
 :: 37 MB, JRE, unaltered OpenJDK (not AdoptOpenJDK) as ZIP file.
 :: Note: Only 64-bit is supported.
-if %found_working_java% equ false set java_download_url=https://github.com/AdoptOpenJDK/openjdk8-upstream-binaries/releases/download/jdk8u%bundled_jre_ver_minor%-b%bunlded_jre_ver_build%/OpenJDK8U-jre_x64_windows_8u%bundled_jre_ver_minor%b%bunlded_jre_ver_build%.zip
+if %found_working_java% equ false set java_download_url=https://github.com/AdoptOpenJDK/openjdk8-upstream-binaries/releases/download/jdk8u%bundled_jre_ver_minor%-b%bundled_jre_ver_build%/OpenJDK8U-jre_x64_windows_8u%bundled_jre_ver_minor%b%bundled_jre_ver_build%.zip
+if %found_working_java% equ false set java11_download_url=https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/releases/download/jdk-11.0.%bundled_jre11_ver_patch%%%2B%bundled_jre11_ver_build%/OpenJDK11U-jre_x64_windows_11.0.%bundled_jre11_ver_patch%_%bundled_jre11_ver_build%.zip
+
+set game_version_number=%game_version:.=%
+
+:: Paper 1.16.4 build 311 onwards gives a warning on Java 8, so download Java 11 instead.
+:: This will also be future compatible when Paper 1.17 comes.
+if %found_working_java% equ false if %game_version_number% geq 1164 set built_in_java_version=11
+
+if %found_working_java% equ false if "%built_in_java_version%" equ "11" set java_download_url=%java11_download_url%
+
 if %found_working_java% equ false if not exist "%scriptdir%cache\java" mkdir "%scriptdir%cache\java"
  
 if %found_working_java% equ false set java_download_loc=%scriptdir%cache\java\java.zip
@@ -854,6 +915,8 @@ if not exist "%scriptdir%cache\7z.dll" if %disable_powershell% equ false %powers
 if not exist "%scriptdir%cache\7z.dll" if %disable_powershell% equ false title %title%
 
 if %found_working_java% equ false if exist "%java_download_loc%" if exist "%scriptdir%cache\7z.exe" "%scriptdir%cache\7z.exe" x "%java_download_loc%" -o"%scriptdir%cache\java" * -r -y > nul
+
+if exist "%built_in_java11_loc%" set built_in_java_loc=%built_in_java11_loc%
 
 :: Set variables
 if %found_working_java% equ false if exist "%built_in_java_loc%" set java_command="%built_in_java_loc%"
@@ -919,6 +982,12 @@ if %jver_major% equ 1 if %jver_minor% equ 8 if %jver_build% equ 0 if %jver_revis
 if %jver_major% equ 1 if %jver_minor% equ 8 if %jver_build% equ 0 if %jver_revision% lss 281 echo https://www.java.com/ (Hesap gerektirmez/JRE)
 if %jver_major% equ 1 if %jver_minor% equ 8 if %jver_build% equ 0 if %jver_revision% lss 281 echo https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html (Oracle hesabi gerektirir/JDK)
 
+:: Warn for JDK 11 too.
+if %jver_major% equ 11 if %jver_minor% equ 0 if %jver_revision% lss 10 echo(
+if %jver_major% equ 11 if %jver_minor% equ 0 if %jver_revision% lss 10 echo Eski bir Java 11 surumu kullandiginiz tespit edildi. Lutfen oracle.com'dan son surum Java 11 kurun.
+if %jver_major% equ 11 if %jver_minor% equ 0 if %jver_revision% lss 10 echo(
+if %jver_major% equ 11 if %jver_minor% equ 0 if %jver_revision% lss 10 echo https://www.oracle.com/java/technologies/javase-jdk11-downloads.html (Oracle hesabi gerektirir/JDK)
+
 if %found_working_java% equ false set tiered_compilation=false
 if %tiered_compilation% equ true set tiered_compilation0= -XX:+TieredCompilation
 
@@ -930,6 +999,7 @@ if %jver_major% geq 13 set use_cds=true
 
 set module_access=
 if %allow_module_access% equ true set module_access= --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED
+if %allow_module_access% equ true if %jver_major% geq 12 set module_access=%module_access% --add-opens java.base/jdk.internal.access=ALL-UNNAMED
 
 if %allow_module_access% equ true if %found_working_java% equ true if %jver_major% neq 1 set netty_additional_arguments= -Dio.netty.tryAllocateUninitializedArray=true
 
@@ -1066,6 +1136,8 @@ if %verbose_info% equ true echo Cleaning up old leftover JANSI DLL files...
 del /f /q "%scriptdir%cache\jansi*.dll" > nul 2> nul
 del /f /q "%tmp%\jansi*.dll" > nul 2> nul
 
+del /f /q "%tmp%\hsperfdata_*" > nul 2> nul
+
 set cond=false
 if %ip_address% equ 127.0.0.1 if %expose_ip% equ true set cond=true
 
@@ -1097,10 +1169,6 @@ if %class_caching% equ true (
 ::if exist "%scriptdir%cache\osname.txt" for /f "tokens=2 delims=:" %%a in ("%os_name%") do set os_name=%%a
 ::if exist "%scriptdir%cache\osname.txt" for /f "tokens=* delims= " %%a in ("%os_name%") do set os_name=%%a
 
-:: 200 = Java 15 default & Aikar recommended value
-:: 50 = Mojang recommended value, no tick skipping because of GC - but memory can be high
-set max_gc_pause_millis=49
-
 :: Detect maximum heap values above 12GB
 set heap_above_12g=false
 
@@ -1130,33 +1198,18 @@ set max_ram_no_k=%max_ram_no_k:k=%
 if not "x%max_ram:k=%" == "x%max_ram%" if %max_ram_no_k% gtr %twelve_gb% set heap_above_12g=true
 if not "x%max_ram:K=%" == "x%max_ram%" if %max_ram_no_k% gtr %twelve_gb% set heap_above_12g=true
 
-:: 5 - Java default
-:: 20 = Mojang recommended value
-:: 30 - Aikar recommended value
-
-:: Above 12GB: 40
-set new_size_percent=30
-if %heap_above_12g% equ true set new_size_percent=40
-
-:: Above 12GB: 50
-set max_new_size_percent=40
-if %heap_above_12g% equ true set max_new_size_percent=50
-
-:: Above 12GB: 15
-set reserve_percent=20
-if %heap_above_12g% equ true set reserve_percent=15
-
-:: Above 12GB: 20
-set heap_occupancy_percent=15
-if %heap_above_12g% equ true set heap_occupancy_percent=20
+if %heap_above_12g% equ true if %new_size_percent% equ 30 set new_size_percent=40
+if %heap_above_12g% equ true if %max_new_size_percent% equ 40 set max_new_size_percent=50
+if %heap_above_12g% equ true if %reserve_percent% equ 20 set reserve_percent=15
+if %heap_above_12g% equ true if %heap_occupancy_percent% equ 15 set heap_occupancy_percent=20
 
 :: Mojang Recommended Client Defaults
 :: (excluding the starting of -Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC, which already in this script)
 set mojang_client_defaults= -XX:G1HeapRegionSize=32M -XX:G1ReservePercent=%reserve_percent% -XX:G1NewSizePercent=%new_size_percent% -XX:MaxGCPauseMillis=%max_gc_pause_millis%
 
-set survivor_ratio=32
-
 if %max_ram% equ 512M set survivor_ratio=16
+if %max_ram% equ 256M set survivor_ratio=8
+if %max_ram% equ 128M set survivor_ratio=4
 
 set aikar_additional= -XX:G1MaxNewSizePercent=%max_new_size_percent% -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=%heap_occupancy_percent% -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=%survivor_ratio% -XX:MaxTenuringThreshold=1
 
@@ -1175,8 +1228,8 @@ if %use_aikars_gc_settings% equ true set timings_aikar_flags_workarounds0=%timin
 set cms0= -XX:+CMSParallelRemarkEnabled -XX:+UseCMSInitiatingOccupancyOnly -XX:+CMSScavengeBeforeRemark -XX:+CMSClassUnloadingEnabled
 if %jver_major% lss 15 set lock_optimization_prejava15= -XX:+UseLWPSynchronization -XX:+UseBiasedLocking -XX:BiasedLockingStartupDelay=0
 
-if %jver_major% lss 15 set java8_backported_defaults= -XX:+UseCountedLoopSafepoints -XX:+UseSharedSpaces -XX:-UseParallelGC -XX:LogEventsBufferEntries=20 -XX:MaxInlineLevel=15 -XX:MaxNodeLimit=80000 -XX:StringTableSize=65536 -XX:+AggressiveUnboxing -XX:MarkSweepDeadRatio=5 -XX:MaxHeapFreeRatio=70 -XX:MinHeapFreeRatio=40 -XX:GCPauseIntervalMillis=50 -XX:GCTimeRatio=12 -XX:G1RefProcDrainInterval=1000 -XX:G1RSetSparseRegionEntries=8 -XX:G1RSetRegionEntries=256 -Djdk.debug=release -Djava.version.date=2021-01-19 
-if %use_secure_tls% equ true set java8_backported_defaults=%java8_backported_defaults% -Djava.vendor.url=https://java.oracle.com/ -Djava.vendor.url.bug=https://bugreport.java.com/bugreport/
+if %jver_major% lss 9 set java8_backported_defaults= -XX:+UseCountedLoopSafepoints -XX:+UseSharedSpaces -XX:-UseParallelGC -XX:LogEventsBufferEntries=20 -XX:MaxInlineLevel=15 -XX:MaxNodeLimit=80000 -XX:StringTableSize=65536 -XX:+AggressiveUnboxing -XX:MarkSweepDeadRatio=5 -XX:MaxHeapFreeRatio=70 -XX:MinHeapFreeRatio=40 -XX:GCPauseIntervalMillis=50 -XX:GCTimeRatio=12 -XX:G1RefProcDrainInterval=1000 -XX:G1RSetSparseRegionEntries=8 -XX:G1RSetRegionEntries=256 -Djdk.debug=release -Djava.version.date=2021-01-19 
+if %jver_major% lss 11 if %use_secure_tls% equ true set java8_backported_defaults=%java8_backported_defaults% -Djava.vendor.url=https://java.oracle.com/ -Djava.vendor.url.bug=https://bugreport.java.com/bugreport/
 
 ::set log4j_perf0= -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector -Dlog4j2.AsyncQueueFullPolicy="com.destroystokyo.paper.log.LogFullPolicy"
 
@@ -1216,8 +1269,11 @@ if "%for_client%" equ "true" set head_less=false
 if not "%for_client%" equ "true" set head_less00= -Djava.awt.headless=%head_less%
 
 if not "%for_client%" equ "true" set non_client00= -jar %jar_name%.jar "nogui%upgrade_argument% --log-append=false -o %online_mode% --log-strip-color%additional_parameters%"
+if "%for_client%" equ "true" set fml_parameters0= -Dfml.ignorePatchDiscrepancies=true -Dfml.ignoreInvalidMinecraftCertificates=true
 
-set full_arguments=-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+IgnoreUnrecognizedVMOptions%additional_commands% -Xms%min_ram% -Xmx%max_ram%%enable_assertions0% -XX:+UnsyncloadClass%truffle_enable0% -XX:-DontCompileHugeMethods -XX+DoEscapeAnalysis%aikar_additional%%mojang_client_defaults% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%enable_preview0% -Xtune:virtualized -XX:+ClassRelationshipVerifier -Xshare:auto%use_cds0%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -XX:+UseAdaptiveSizePolicy -XX:+G1UseAdaptiveIHOP -XX:+G1UseAdaptiveConcRefinement -XX:+UseNUMA -XX:+ShowCodeDetailsInExceptionMessages -XX:ReservedCodeCacheSize=%code_cache% -XX:+UseCodeCacheFlushing -XX:UseSSE=4 -XX:+UseSSE42Intrinsics%lock_optimization_prejava15% -XX:+UseGCOverheadLimit -XX:+UseG1GC%jvmci_enable0% -XX:+PerfDisableSharedMem -XX:-UsePerfData -XX:+DisableAttachMechanism -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities%non_portable1% -XX:+PortableSharedCache -XX:+UseCGroupMemoryLimit -XX:+UseContainerSupport%java8_backported_defaults% -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump -Dcom.mojang.mojangTricksIntelDriversForPerformance=java.exe_MinecraftLauncher.exe%tiered_compilation0% -XX:+UseFastAccessorMethods -XX:+AllowUserSignalHandlers -XX:+UseTLAB -XX:+ReduceCPUMonitorOverhead -XX:+CMSIncrementalPacing%cms0% -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses%omit_stacktrace0%%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches%optimize_sk_parser0% -Dsun.io.useCanonPrefixCache=false -Djava.lang.string.substring.nocopy=true -Djava.net.preferIPv4Stack=true%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=%connect_timeout% -Dsun.net.client.defaultReadTimeout=%read_timeout% -Dskript.dontUseNamesForSerialization=true -Dcom.ibm.tools.attach.enable=no -Djdk.useMethodHandlesForReflection=true -Dkotlinx.coroutines.debug=off%head_less00% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Duser.language=en -Duser.country=US -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dusing.lifemcserver.flags=https://flags.lifemcserver.com -Dflags.lifemcserver.com.version="%version%" -Dflags.lifemcserver.com.vendor="%vendor%"%jansi_parameters%%log4j_config_parameter%%log4j_perf0%%non_portable2%%netty_additional_arguments%%non_portable01%%non_portable0%%non_client00%
+if %jver_major% lss 10 set unsync_load_class0= -XX:+UnsyncloadClass
+
+set full_arguments=-XX:+UnlockCommercialFeatures -XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+IgnoreUnrecognizedVMOptions%additional_commands% -Xms%min_ram% -Xmx%max_ram%%enable_assertions0% %unsync_load_class0%%truffle_enable0% -XX:-DontCompileHugeMethods -XX:+UseCondCardMark -XX:+EliminateLocks -XX+DoEscapeAnalysis%aikar_additional%%mojang_client_defaults% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%enable_preview0% -Xtune:virtualized -XX:+ClassRelationshipVerifier -Xshare:auto%use_cds0%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -XX:+UseAdaptiveSizePolicy -XX:+G1UseAdaptiveIHOP -XX:+G1UseAdaptiveConcRefinement -XX:+UseNUMA -XX:+ShowCodeDetailsInExceptionMessages -XX:ReservedCodeCacheSize=%code_cache% -XX:+UseCodeCacheFlushing -XX:UseSSE=4 -XX:+UseSSE42Intrinsics%lock_optimization_prejava15% -XX:+UseGCOverheadLimit -XX:-NeverActAsServerClassMachine -XX:+UseG1GC%jvmci_enable0% -XX:+PerfDisableSharedMem -XX:-UsePerfData -XX:+DisableAttachMechanism -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities%non_portable1% -XX:+PortableSharedCache -XX:+UseCGroupMemoryLimit -XX:+UseContainerSupport%java8_backported_defaults% -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump -Dcom.mojang.mojangTricksIntelDriversForPerformance=java.exe_MinecraftLauncher.exe%tiered_compilation0% -XX:+UseFastAccessorMethods -XX:+AllowUserSignalHandlers -XX:+UseTLAB -XX:+ReduceCPUMonitorOverhead -XX:+CMSIncrementalPacing%cms0% -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses%omit_stacktrace0%%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches%optimize_sk_parser0%%fml_parameters0% -Dsun.io.useCanonPrefixCache=false -Djava.lang.string.substring.nocopy=true -Djava.net.preferIPv4Stack=true%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=%connect_timeout% -Dsun.net.client.defaultReadTimeout=%read_timeout% -Dskript.dontUseNamesForSerialization=true -Dcom.ibm.tools.attach.enable=no -Djdk.useMethodHandlesForReflection=true -Dkotlinx.coroutines.debug=off%head_less00% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Duser.language=en -Duser.country=US -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dusing.lifemcserver.flags=https://flags.lifemcserver.com -Dflags.lifemcserver.com.version="%version%" -Dflags.lifemcserver.com.vendor="%vendor%"%jansi_parameters%%log4j_config_parameter%%log4j_perf0%%non_portable2%%netty_additional_arguments%%non_portable01%%non_portable0%%non_client00%
 if %print_java_version% equ true set full_arguments=-showversion %full_arguments%
 
 if %verbose_info% equ true echo Starting Java with the final command %java_command% %full_arguments%
@@ -1238,8 +1294,8 @@ if "%1" equ "gencode" if "%2" equ "mac" echo Mac/MacOS/Mac OSX uyumlu kod %~n0.s
 if "%1" equ "gencode" if "%2" equ "mac" echo #^^!/usr/bin/env bash > %~n0.sh
 if "%1" equ "gencode" if "%2" equ "mac" echo %java_command% %full_arguments% >> %~n0.sh
 
-if "%4" equ "exit" exit
-if "%3" equ "exit" exit
+if "%4" equ "exit" pause
+if "%3" equ "exit" pause
 
 if "%for_client%" equ "true" set full_arguments=%full_arguments%%non_client00%
 
