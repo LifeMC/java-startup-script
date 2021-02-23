@@ -12,12 +12,12 @@
 ::   |  _ <   / _` | / __| | |  / _` | | __| | '_ ` _ \   / _` | |  <    / _ \   / _` | | | | |
 ::   | |_) | | (_| | \__ \ | | | (_| | | |_  | | | | | | | (_| | | . \  | (_) | | (_| | | |_| |
 ::   |____/   \__,_| |___/ |_|  \__,_|  \__| |_| |_| |_|  \__,_| |_|\_\  \___/   \__,_|  \__,_|
-::                                      ___        _  _         __                             
-::                                     |__ \      | || |       /_ |                            
-::                             __   __    ) |     | || |_       | |                            
-::                             \ \ / /   / /      |__   _|      | |                            
-::                              \ V /   / /_   _     | |    _   | |                            
-::                               \_/   |____| (_)    |_|   (_)  |_|                            
+::                                      ___        _  _         ___                            
+::                                     |__ \      | || |       |__ \                           
+::                             __   __    ) |     | || |_         ) |                          
+::                             \ \ / /   / /      |__   _|       / /                           
+::                              \ V /   / /_   _     | |    _   / /_                           
+::                               \_/   |____| (_)    |_|   (_) |____|                          
 
 
 
@@ -63,14 +63,14 @@ if not defined in_subprocess (cmd /q /e:on /v:on /f:off /k set in_subprocess=y ^
 
 :: SURUM - degistermeniz onerilmez
 
-set version=2.4.1
+set version=2.4.2
 
 :: AYARLAR - kendinize gore duzenleyebilirsiniz
 
 :: Hazir ayarlari belirler. Hazir ayarlar, sizin icin bir cok ayari otomatik olarak ayarlayabilir.
 :: Uyari: Hazir ayarlar, ayarlar kisminda ki ayarlarin uzerine yazar. Ayarlariniz gecerliligini yitirebilir.
 
-:: Olabilecek degerler: none, strict-jdk, strict-jdk-9, yatopia, dev, upgrade, no-tracking, security, aggressive
+:: Olabilecek degerler: none, strict-jdk, strict-jdk-9, yatopia, dev, upgrade, no-tracking, security, aggressive, gui, relaxgc, hungryos
 :: Birden fazla degeri bosluk ile belirleyebilirsiniz. Ornek: settings_preset=strict-jdk no-tracking
 
 :: none : Hic bir hazir ayar yuklemez ve tamamen asagida gireceginiz degerleri kullanir.
@@ -90,6 +90,11 @@ set version=2.4.1
 :: security : Guvenlik icin bazi ayarlar yapar. Performans dusurebilir veya bazi seyleri bozabilir fakat guvenligi arttirir.
 
 :: aggressive : Optimize edilmis fakat hatalara veya uyumluluk sorunlarina yol acabilecek ayarlari yapar.
+
+:: gui : head_less ve nogui parametrelerini kapatir. Sunucu konsolu veya menu/javafx kullanan eklentiler icin acabilirsiniz.
+:: relaxgc : new size gibi gc parametrelerini kisar. MC disi uygulamalar icin acilmasi uygulamayi rahatlatabilir.
+
+:: hungryos : Windows'a varsayilan 1GB yerine 2GB ram birakir. Sunucu ve clienti ayni anda kullanacaksaniz onerilebilir.
 set settings_preset=none
 
 :: Sunucunuzun ana JAR dosyasinin adi - spigot, craftbukkit, paper, yatopia vb. olabilir
@@ -119,12 +124,6 @@ set min_ram=1024K
 :: Not: Tum rami vermeyin, Java bu miktardan fazla kullanabilir ve isletim sistemine RAM birakmalisiniz.
 :: Ek olarak, 1536M ise otomatik ayarlar, fakat kendiniz ayarlamaniz daha stabil sonuclar dogurur.
 set max_ram=1536M
-
-:: Kod onbellegi boyutu, 256M onerilir (MB icin M, GB icin G kullanin)
-:: Eger lag sorunu yasiyorsaniz 512M deneyebilirsiniz.
-
-:: Not: Diger parametrelere gore daha az efektiftir, bol RAMiniz yoksa buna vermek yerine max_ram'e ekleyin.
-set code_cache=256M
 
 :: Sunucunuzun daha az RAM yemesini fakat daha az performansli calismasini saglar
 set less_ram=false
@@ -303,6 +302,10 @@ set tiered_compilation=true
 :: Not: Bu ayari kapatmak ciddi performans dususlerine sebep olabilir. Sadece test sunucularinda kapatmaniz onerilir.
 set omit_stacktrace=true
 
+:: Hatalarda hic bir zaman detay gosterilmemesini saglar. Hatanin nerede ciktigini gostermez. Sadece hata mesaji ve
+:: hata cesidi gozukur. Acmaniz onerilmez, fakat acmak performansi arttirabilir.
+set always_omit_stacktrace=false
+
 :: Class dosyalarini onbellege alarak performans arttirir, fakat bazi sistemlerde calismaz
 set class_caching=false
 
@@ -347,7 +350,7 @@ set yeniden_baslatiliyor=Sunucu %delay% saniye icinde yeniden baslatilacak...
 
 ::
 
-:: strict-jdk, strict-jdk-9, online-mode, yatopia, dev, upgrade, no-tracking, aggressive
+:: strict-jdk, strict-jdk-9, online-mode, yatopia, dev, upgrade, no-tracking, aggressive, gui, relaxgc, hungryos
 
 if not "x%settings_preset:strict-jdk=%" == "x%settings_preset%" (
  set use_server_vm=true
@@ -413,6 +416,26 @@ if not "x%settings_preset:agressive=%" == "x%settings_preset%" (
  echo Optimizeli hazir ayarlar uygulandi.
 )
 
+if not "x%settings_preset:gui=%" == "x%settings_preset%" (
+ set head_less=false
+ set server_gui=true
+ echo GUI hazir ayarlari uygulandi.
+)
+
+if not "x%settings_preset:relaxgc=%" == "x%settings_preset%" (
+ set new_size_percent=20
+ set max_new_size_percent=30
+ set reserve_percent=25
+ set heap_occupancy_percent=10
+ set max_gc_pause_millis=99
+ echo Rahat cop toplama ayarlari uygulandi.
+)
+
+if not "x%settings_preset:hungryos=%" == "x%settings_preset%" (
+ set windows_reserved_ram=2097152
+ echo Sunucuya daha az RAM veren hazir ayarlar uygulandi.
+)
+
 ::
 
 set unblocked=false
@@ -445,6 +468,18 @@ if %omit_stacktrace% equ false echo Uyari: omit_stacktrace false iken ciddi perf
 
 if %connect_timeout% lss 5000 echo Uyari: HTTP baglanma zaman asimi cok dusuk. Bu baglanti sorunlarina neden olabilir.
 if %read_timeout% lss 500 echo Uyari: HTTP okuma zaman asimi cok dusuk. Bu baglanti sorunlarina neden olabilir.
+
+if not exist "%homedrive%%homepath%\.batch.lock" (
+ echo true> "%homedrive%%homepath%\.batch.lock"
+ echo Baslatma kodunu ilk kez calistirdiginiz tespit edildi. Ilk acilista sizin icin ekstra islemler yapilir. Bu 1 dakikayi bulabilir, bekleyin!
+ echo(
+)
+
+if not exist "%scriptdir%cache/.batch.lock" (
+ echo true> "%scriptdir%cache/.batch.lock"
+ echo Bu sunucuyu ilk kez aciyorsunuz. En iyi sonuclar icin acilma bittikten sonra kapatip tekrar acin!
+ echo(
+)
 
 set vendor_original=lifemc
 
@@ -493,6 +528,8 @@ if not exist "%jar_name%.jar" if exist "tuinity.jar" set jar_name=tuinity
 
 if not exist "%jar_name%.jar" if exist "yatopia.jar" set jar_name=yatopia
 if not exist "%jar_name%.jar" if exist "yatoclip.jar" set jar_name=yatoclip
+
+if not exist "%jar_name%.jar" if exist "yatopia-%game_version%-yatoclip.jar" set jar_name=yatopia-%game_version%-yatoclip
 
 :: Check for default file names when downloaded from https://getbukkit.org/
 if not exist "%jar_name%.jar" if exist "Spigot-%game_version%.jar" set jar_name=Spigot-%game_version%
@@ -712,6 +749,7 @@ if %verbose_info% equ true echo Applying settings to config files...
 
 if not exist "%scriptdir%eula.txt" if %verbose_info% equ true echo Creating eula...
 
+if not exist "%scriptdir%server.properties" echo online-mode=%online_mode%> server.properties
 if not exist "%scriptdir%eula.txt" echo eula=true> eula.txt
 
 set spigot_config=spigot.yml
@@ -749,6 +787,9 @@ if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config
 
 :: Optimizes lightning performance by making lightning updates async
 if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config%" "use-async-lighting: false" "use-async-lighting: true" > nul 2> nul
+
+:: Caches chunk maps to improve performance of them
+if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config%" "cache-chunk-maps: false" "cache-chunk-maps: true" > nul 2> nul
 
 :: Fixes CommandSender#hasPermission on ConsoleCommandSender
 if exist "%paper_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config%" "console-has-all-permissions: false" "console-has-all-permissions: true" > nul 2> nul
@@ -801,8 +842,8 @@ if exist "%bukkit_config%" if %disable_query% equ true "%scriptdir%cache\fart.ex
 if exist "%bukkit_config%" if %disable_query% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%bukkit_config%" "query-plugins: false" "query-plugins: true" > nul 2> nul
 
 :: Enable & Optimize Chunk GC
-if exist "%bukkit_config%" if %disable_query% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%bukkit_config%" "load-threshold: 0" "load-threshold: 300" > nul 2> nul
-if exist "%bukkit_config%" if %disable_query% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%bukkit_config%" "period-in-ticks: 600" "period-in-ticks: 300" > nul 2> nul
+if exist "%bukkit_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%bukkit_config%" "load-threshold: 0" "load-threshold: 300" > nul 2> nul
+if exist "%bukkit_config%" "%scriptdir%cache\fart.exe" -q -i -a -C "%bukkit_config%" "period-in-ticks: 600" "period-in-ticks: 300" > nul 2> nul
 
 set purpur_config=purpur.yml
 
@@ -915,6 +956,7 @@ if not exist "%scriptdir%cache\7z.dll" if %disable_powershell% equ false %powers
 if not exist "%scriptdir%cache\7z.dll" if %disable_powershell% equ false title %title%
 
 if %found_working_java% equ false if exist "%java_download_loc%" if exist "%scriptdir%cache\7z.exe" "%scriptdir%cache\7z.exe" x "%java_download_loc%" -o"%scriptdir%cache\java" * -r -y > nul
+if %found_working_java% equ false if exist "%java_download_loc%" if exist "%scriptdir%cache\7z.exe" del /f /q "%java_download_loc%"
 
 if exist "%built_in_java11_loc%" set built_in_java_loc=%built_in_java11_loc%
 
@@ -974,13 +1016,13 @@ if %jver_major% equ 1 if %jver_minor% lss 8 echo(
 if %jver_major% equ 1 if %jver_minor% lss 8 set tiered_compilation=false
 
 :: JDK 8u281 adds TLS 1.3 support.
-if %jver_major% equ 1 if %jver_minor% equ 8 if %jver_build% equ 0 if %jver_revision% lss 281 echo(
-if %jver_major% equ 1 if %jver_minor% equ 8 if %jver_build% equ 0 if %jver_revision% lss 281 echo Eski bir Java 8 surumu kullandiginiz tespit edildi. Lutfen java.com veya oracle.com'dan son surum Java 8 kurun.
-if %jver_major% equ 1 if %jver_minor% equ 8 if %jver_build% equ 0 if %jver_revision% lss 281 echo(
-if %jver_major% equ 1 if %jver_minor% equ 8 if %jver_build% equ 0 if %jver_revision% lss 281 echo Eger Oracle hesabiniz var ise Oracle'nin sitesinden JDK olarak indirmeniz onerilir.
-if %jver_major% equ 1 if %jver_minor% equ 8 if %jver_build% equ 0 if %jver_revision% lss 281 echo(
-if %jver_major% equ 1 if %jver_minor% equ 8 if %jver_build% equ 0 if %jver_revision% lss 281 echo https://www.java.com/ (Hesap gerektirmez/JRE)
-if %jver_major% equ 1 if %jver_minor% equ 8 if %jver_build% equ 0 if %jver_revision% lss 281 echo https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html (Oracle hesabi gerektirir/JDK)
+if %jver_major% equ 1 if %jver_minor% equ 8 if "%jver_build%" equ "0" if %jver_revision% lss 281 echo(
+if %jver_major% equ 1 if %jver_minor% equ 8 if "%jver_build%" equ "0" if %jver_revision% lss 281 echo Eski bir Java 8 surumu kullandiginiz tespit edildi. Lutfen java.com veya oracle.com'dan son surum Java 8 kurun.
+if %jver_major% equ 1 if %jver_minor% equ 8 if "%jver_build%" equ "0" if %jver_revision% lss 281 echo(
+if %jver_major% equ 1 if %jver_minor% equ 8 if "%jver_build%" equ "0" if %jver_revision% lss 281 echo Eger Oracle hesabiniz var ise Oracle'nin sitesinden JDK olarak indirmeniz onerilir.
+if %jver_major% equ 1 if %jver_minor% equ 8 if "%jver_build%" equ "0" if %jver_revision% lss 281 echo(
+if %jver_major% equ 1 if %jver_minor% equ 8 if "%jver_build%" equ "0" if %jver_revision% lss 281 echo https://www.java.com/ (Hesap gerektirmez/JRE)
+if %jver_major% equ 1 if %jver_minor% equ 8 if "%jver_build%" equ "0" if %jver_revision% lss 281 echo https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html (Oracle hesabi gerektirir/JDK)
 
 :: Warn for JDK 11 too.
 if %jver_major% equ 11 if %jver_minor% equ 0 if %jver_revision% lss 10 echo(
@@ -998,7 +1040,7 @@ if %found_working_java% equ true if %jver_major% neq 1 if %game_version% equ 1.8
 if %jver_major% geq 13 set use_cds=true
 
 set module_access=
-if %allow_module_access% equ true set module_access= --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED
+if %allow_module_access% equ true set module_access= --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/sun.reflect=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED
 if %allow_module_access% equ true if %jver_major% geq 12 set module_access=%module_access% --add-opens java.base/jdk.internal.access=ALL-UNNAMED
 
 if %allow_module_access% equ true if %found_working_java% equ true if %jver_major% neq 1 set netty_additional_arguments= -Dio.netty.tryAllocateUninitializedArray=true
@@ -1018,6 +1060,8 @@ if %use_server_vm% equ true set use_server_vm0= -server
 if %enable_assertions% equ true set enable_assertions0= -esa -ea -Xverify:all
 
 if %omit_stacktrace% equ true set omit_stacktrace0= -XX:+OmitStackTraceInFastThrow
+if %always_omit_stacktrace% equ true set always_omit_stacktrace= -XX:-StackTraceInThrowable
+
 if %messagebox_on_error% equ true set show_messagebox_onerror0= -XX:+ShowMessageBoxOnError
 
 if %is_upgrading% equ true set upgrade_argument= --forceUpgrade
@@ -1109,7 +1153,7 @@ if errorlevel 1 (
 
 if %min_ram_is_auto_detected% equ true if %min_ram% neq 1024K set max_ram=%min_ram%
 
-if %verbose_info% equ true echo Starting server with minimum RAM of %min_ram% and maximum of %max_ram%, code cache is %code_cache%
+if %verbose_info% equ true echo Starting server with minimum RAM of %min_ram% and maximum of %max_ram%
 
 set aikar_flags_prefix=-D
 if %use_aikars_gc_settings% equ true set aikar_flags_prefix=
@@ -1228,7 +1272,7 @@ if %use_aikars_gc_settings% equ true set timings_aikar_flags_workarounds0=%timin
 set cms0= -XX:+CMSParallelRemarkEnabled -XX:+UseCMSInitiatingOccupancyOnly -XX:+CMSScavengeBeforeRemark -XX:+CMSClassUnloadingEnabled
 if %jver_major% lss 15 set lock_optimization_prejava15= -XX:+UseLWPSynchronization -XX:+UseBiasedLocking -XX:BiasedLockingStartupDelay=0
 
-if %jver_major% lss 9 set java8_backported_defaults= -XX:+UseCountedLoopSafepoints -XX:+UseSharedSpaces -XX:-UseParallelGC -XX:LogEventsBufferEntries=20 -XX:MaxInlineLevel=15 -XX:MaxNodeLimit=80000 -XX:StringTableSize=65536 -XX:+AggressiveUnboxing -XX:MarkSweepDeadRatio=5 -XX:MaxHeapFreeRatio=70 -XX:MinHeapFreeRatio=40 -XX:GCPauseIntervalMillis=50 -XX:GCTimeRatio=12 -XX:G1RefProcDrainInterval=1000 -XX:G1RSetSparseRegionEntries=8 -XX:G1RSetRegionEntries=256 -Djdk.debug=release -Djava.version.date=2021-01-19 
+if %jver_major% lss 9 set java8_backported_defaults= -XX:+UseCountedLoopSafepoints -XX:LoopStripMiningIter=1 -XX:+UseSharedSpaces -XX:-UseParallelGC -XX:LogEventsBufferEntries=20 -XX:MaxInlineLevel=15 -XX:MaxNodeLimit=80000 -XX:StringTableSize=65536 -XX:+AggressiveUnboxing -XX:MarkSweepDeadRatio=5 -XX:MaxHeapFreeRatio=70 -XX:MinHeapFreeRatio=40 -XX:GCPauseIntervalMillis=50 -XX:GCTimeRatio=12 -XX:G1RefProcDrainInterval=1000 -XX:G1RSetSparseRegionEntries=8 -XX:G1RSetRegionEntries=256 -Djdk.debug=release -Djava.version.date=2021-01-19
 if %jver_major% lss 11 if %use_secure_tls% equ true set java8_backported_defaults=%java8_backported_defaults% -Djava.vendor.url=https://java.oracle.com/ -Djava.vendor.url.bug=https://bugreport.java.com/bugreport/
 
 ::set log4j_perf0= -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector -Dlog4j2.AsyncQueueFullPolicy="com.destroystokyo.paper.log.LogFullPolicy"
@@ -1261,7 +1305,7 @@ if "%2" equ "client" set for_client=true
 if not "%gencode%" equ "true" if %expose_ip% equ true set non_portable00= -Dserver.ipAddress=%ip_address%
 
 if not "%gencode%" equ "true" set non_portable1= -XX:ActiveProcessorCount=%NUMBER_OF_PROCESSORS%
-if not "%gencode%" equ "true" set non_portable01= -Druntime.availableProcessors=%NUMBER_OF_PROCESSORS%%non_portable00% -Djava.codeCacheMem=%code_cache%
+if not "%gencode%" equ "true" set non_portable01= -Druntime.availableProcessors=%NUMBER_OF_PROCESSORS%%non_portable00%
 
 if not "%gencode%" equ "true" set non_portable2= -Dio.netty.eventLoopThreads=%eventLoopThreads%
 
@@ -1269,11 +1313,18 @@ if "%for_client%" equ "true" set head_less=false
 if not "%for_client%" equ "true" set head_less00= -Djava.awt.headless=%head_less%
 
 if not "%for_client%" equ "true" set non_client00= -jar %jar_name%.jar "nogui%upgrade_argument% --log-append=false -o %online_mode% --log-strip-color%additional_parameters%"
-if "%for_client%" equ "true" set fml_parameters0= -Dfml.ignorePatchDiscrepancies=true -Dfml.ignoreInvalidMinecraftCertificates=true
+if "%for_client%" equ "true" set fml_parameters0= -Dfml.ignorePatchDiscrepancies=true -Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.readTimeout=%io_timeout% -Dcofh.rf.crashOnOldAPI=false
 
 if %jver_major% lss 10 set unsync_load_class0= -XX:+UnsyncloadClass
+set graph_extra0= -Dawt.useSystemAAFontSettings=lcd -Dsun.java2d.opengl=true -Dsun.java2d.d3d=false
 
-set full_arguments=-XX:+UnlockCommercialFeatures -XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+IgnoreUnrecognizedVMOptions%additional_commands% -Xms%min_ram% -Xmx%max_ram%%enable_assertions0% %unsync_load_class0%%truffle_enable0% -XX:-DontCompileHugeMethods -XX:+UseCondCardMark -XX:+EliminateLocks -XX+DoEscapeAnalysis%aikar_additional%%mojang_client_defaults% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%enable_preview0% -Xtune:virtualized -XX:+ClassRelationshipVerifier -Xshare:auto%use_cds0%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -XX:+UseAdaptiveSizePolicy -XX:+G1UseAdaptiveIHOP -XX:+G1UseAdaptiveConcRefinement -XX:+UseNUMA -XX:+ShowCodeDetailsInExceptionMessages -XX:ReservedCodeCacheSize=%code_cache% -XX:+UseCodeCacheFlushing -XX:UseSSE=4 -XX:+UseSSE42Intrinsics%lock_optimization_prejava15% -XX:+UseGCOverheadLimit -XX:-NeverActAsServerClassMachine -XX:+UseG1GC%jvmci_enable0% -XX:+PerfDisableSharedMem -XX:-UsePerfData -XX:+DisableAttachMechanism -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities%non_portable1% -XX:+PortableSharedCache -XX:+UseCGroupMemoryLimit -XX:+UseContainerSupport%java8_backported_defaults% -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump -Dcom.mojang.mojangTricksIntelDriversForPerformance=java.exe_MinecraftLauncher.exe%tiered_compilation0% -XX:+UseFastAccessorMethods -XX:+AllowUserSignalHandlers -XX:+UseTLAB -XX:+ReduceCPUMonitorOverhead -XX:+CMSIncrementalPacing%cms0% -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses%omit_stacktrace0%%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches%optimize_sk_parser0%%fml_parameters0% -Dsun.io.useCanonPrefixCache=false -Djava.lang.string.substring.nocopy=true -Djava.net.preferIPv4Stack=true%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=%connect_timeout% -Dsun.net.client.defaultReadTimeout=%read_timeout% -Dskript.dontUseNamesForSerialization=true -Dcom.ibm.tools.attach.enable=no -Djdk.useMethodHandlesForReflection=true -Dkotlinx.coroutines.debug=off%head_less00% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Duser.language=en -Duser.country=US -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dusing.lifemcserver.flags=https://flags.lifemcserver.com -Dflags.lifemcserver.com.version="%version%" -Dflags.lifemcserver.com.vendor="%vendor%"%jansi_parameters%%log4j_config_parameter%%log4j_perf0%%non_portable2%%netty_additional_arguments%%non_portable01%%non_portable0%%non_client00%
+::set jit_extra0= -XX:+UseJITServer
+
+set full_arguments=-XX:+UnlockCommercialFeatures -XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+IgnoreUnrecognizedVMOptions%additional_commands% -Xms%min_ram% -Xmx%max_ram%%enable_assertions0% %unsync_load_class0%%truffle_enable0% -XX:-DontCompileHugeMethods -XX:+TrustFinalNonStaticFields -XX:+UseCondCardMark -XX:+EliminateLocks -XX+DoEscapeAnalysis%jit_extra0%%aikar_additional%%mojang_client_defaults% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%enable_preview0% -Xtune:virtualized -Xgc:concurrentScavenge -Xgc:dnssExpectedTimeRatioMaximum=3 -Xgc:scvNoAdaptiveTenure -XX:+ClassRelationshipVerifier -Xshare:auto%use_cds0%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -XX:+UseNUMA -XX:+ShowCodeDetailsInExceptionMessages -XX:UseSSE=4 -XX:+UseSSE42Intrinsics%lock_optimization_prejava15% -XX:+UseGCOverheadLimit -XX:-NeverActAsServerClassMachine -XX:+UseG1GC%jvmci_enable0% -XX:+PerfDisableSharedMem -XX:-UsePerfData -XX:+DisableAttachMechanism -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities%non_portable1% -XX:-PortableSharedCache -XX:+UseCGroupMemoryLimit -XX:+UseContainerSupport%java8_backported_defaults% -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump -Dcom.mojang.mojangTricksIntelDriversForPerformance=java.exe_MinecraftLauncher.exe%tiered_compilation0% -XX:+UseFastAccessorMethods -XX:+AllowUserSignalHandlers -XX:+UseTLAB -XX:+ReduceCPUMonitorOverhead -XX:+CMSIncrementalPacing%cms0% -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses%omit_stacktrace0%%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches%optimize_sk_parser0%%fml_parameters0% -Djava.lang.string.substring.nocopy=true -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true -Dhttp.maxConnections=100%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=%connect_timeout% -Dsun.net.client.defaultReadTimeout=%read_timeout% -Dskript.dontUseNamesForSerialization=true -Dcom.ibm.tools.attach.enable=no -Djdk.useMethodHandlesForReflection=true -Djdk.util.jar.enableMultiRelease=force -Dkotlinx.coroutines.debug=off%graph_extra0%%head_less00% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Duser.language=en -Duser.country=US -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dusing.lifemcserver.flags=https://flags.lifemcserver.com -Dflags.lifemcserver.com.version="%version%" -Dflags.lifemcserver.com.vendor="%vendor%"%jansi_parameters%%log4j_config_parameter%%log4j_perf0%%non_portable2%%netty_additional_arguments%%non_portable01%%non_portable0%
+
+set full_arguments_nonclient00=%full_arguments%
+set full_arguments=%full_arguments%%non_client00%
+
 if %print_java_version% equ true set full_arguments=-showversion %full_arguments%
 
 if %verbose_info% equ true echo Starting Java with the final command %java_command% %full_arguments%
@@ -1294,10 +1345,28 @@ if "%1" equ "gencode" if "%2" equ "mac" echo Mac/MacOS/Mac OSX uyumlu kod %~n0.s
 if "%1" equ "gencode" if "%2" equ "mac" echo #^^!/usr/bin/env bash > %~n0.sh
 if "%1" equ "gencode" if "%2" equ "mac" echo %java_command% %full_arguments% >> %~n0.sh
 
-if "%4" equ "exit" pause
-if "%3" equ "exit" pause
+if "%4" equ "exit" (
+ pause
+ exit
+)
+
+if "%3" equ "exit" (
+ pause
+ exit
+)
 
 if "%for_client%" equ "true" set full_arguments=%full_arguments%%non_client00%
+
+set JAVA_OPTS=%full_arguments_nonclient00%
+
+if not exist "%scriptdir%cache\YamlExactSetCli.jar" if %disable_powershell% equ false if %verbose_info% equ true echo Downloading yaml utility...
+if not exist "%scriptdir%cache\YamlExactSetCli.jar" if %disable_powershell% equ false %powershell_command% %powershell_arguments% "%powershell_workarounds% %powershell_new_web_client_wc% $WC.DownloadFile('https://github.com/LifeMC/site-assets/raw/main/other/YamlExactSetCli.jar', '%scriptdir%cache\YamlExactSetCli.jar')"
+if not exist "%scriptdir%cache\YamlExactSetCli.jar" if %disable_powershell% equ false title %title%
+
+if exist "%scriptdir%cache\YamlExactSetCli.jar" %java_command% %full_arguments_nonclient00% -jar cache/YamlExactSetCli.jar paper.yml verbose false
+
+if exist "%scriptdir%cache\YamlExactSetCli.jar" %java_command% %full_arguments_nonclient00% -jar cache/YamlExactSetCli.jar paper.yml world-settings.default.verbose false
+if exist "%scriptdir%cache\YamlExactSetCli.jar" %java_command% %full_arguments_nonclient00% -jar cache/YamlExactSetCli.jar spigot.yml world-settings.default.verbose false
 
 echo(
 echo %sunucu_baslatiliyor%
@@ -1350,6 +1419,7 @@ echo %temizlik_yapiliyor%
 
 if %auto_del_temp_files% equ true (
  if %clear_logs% equ true del /f /q .console_history > nul 2> nul
+ if %clear_logs% equ true del /f /q version_history.json > nul 2> nul
 
  del /f /q "%scriptdir%plugins\*\logs\*.*" > nul 2> nul
  del /s /f /q "%scriptdir%plugins\*\error.log"  > nul 2> nul
@@ -1374,7 +1444,7 @@ if %auto_del_temp_files% equ true (
 
 if %auto_restart% equ true (
  echo %yeniden_baslatiliyor%
- timeout /t %delay% > nul
+ timeout %delay% > nul
 
  goto start
 ) else (
