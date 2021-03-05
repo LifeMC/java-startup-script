@@ -12,12 +12,14 @@
 ::   |  _ <   / _` | / __| | |  / _` | | __| | '_ ` _ \   / _` | |  <    / _ \   / _` | | | | |
 ::   | |_) | | (_| | \__ \ | | | (_| | | |_  | | | | | | | (_| | | . \  | (_) | | (_| | | |_| |
 ::   |____/   \__,_| |___/ |_|  \__,_|  \__| |_| |_| |_|  \__,_| |_|\_\  \___/   \__,_|  \__,_|
-::                                      ___        _  _         ___                            
-::                                     |__ \      | || |       |__ \                           
-::                             __   __    ) |     | || |_         ) |                          
-::                             \ \ / /   / /      |__   _|       / /                           
-::                              \ V /   / /_   _     | |    _   / /_                           
-::                               \_/   |____| (_)    |_|   (_) |____|                          
+::                                      ___        _  _         ____                           
+::                                     |__ \      | || |       |___ \                          
+::                             __   __    ) |     | || |_        __) |                         
+::                             \ \ / /   / /      |__   _|      |__ <                          
+::                              \ V /   / /_   _     | |    _   ___) |                         
+::                               \_/   |____| (_)    |_|   (_) |____/                          
+::                                                                                             
+::                                                                                             
 
 
 
@@ -63,7 +65,7 @@ if not defined in_subprocess (cmd /q /e:on /v:on /f:off /k set in_subprocess=y ^
 
 :: SURUM - degistermeniz onerilmez
 
-set version=2.4.2
+set version=2.4.3
 
 :: AYARLAR - kendinize gore duzenleyebilirsiniz
 
@@ -276,6 +278,9 @@ set heap_occupancy_percent=15
 :: Maximum GC donma zamani, milisaniye cinsinden. MC disi programlar icin (orn. discord botlari) 200 veya 100 yapin.
 set max_gc_pause_millis=49
 
+:: Yukaridaki sayinin bir fazlasi onerilir. Daha fazla degerler de girebilirsiniz fakat asagi girmeyin.
+set gc_pause_interval_millis=50
+
 :: 1GB ve ustu icin 32, 512MB icin 16, 256MB icin 8, 128MB icin 4 yapin.
 set survivor_ratio=32
 
@@ -428,6 +433,7 @@ if not "x%settings_preset:relaxgc=%" == "x%settings_preset%" (
  set reserve_percent=25
  set heap_occupancy_percent=10
  set max_gc_pause_millis=99
+ set gc_pause_interval_millis=100
  echo Rahat cop toplama ayarlari uygulandi.
 )
 
@@ -1040,7 +1046,7 @@ if %found_working_java% equ true if %jver_major% neq 1 if %game_version% equ 1.8
 if %jver_major% geq 13 set use_cds=true
 
 set module_access=
-if %allow_module_access% equ true set module_access= --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/sun.reflect=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED
+if %allow_module_access% equ true set module_access= --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens jdk.unsupported/sun.reflect=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED
 if %allow_module_access% equ true if %jver_major% geq 12 set module_access=%module_access% --add-opens java.base/jdk.internal.access=ALL-UNNAMED
 
 if %allow_module_access% equ true if %found_working_java% equ true if %jver_major% neq 1 set netty_additional_arguments= -Dio.netty.tryAllocateUninitializedArray=true
@@ -1272,7 +1278,7 @@ if %use_aikars_gc_settings% equ true set timings_aikar_flags_workarounds0=%timin
 set cms0= -XX:+CMSParallelRemarkEnabled -XX:+UseCMSInitiatingOccupancyOnly -XX:+CMSScavengeBeforeRemark -XX:+CMSClassUnloadingEnabled
 if %jver_major% lss 15 set lock_optimization_prejava15= -XX:+UseLWPSynchronization -XX:+UseBiasedLocking -XX:BiasedLockingStartupDelay=0
 
-if %jver_major% lss 9 set java8_backported_defaults= -XX:+UseCountedLoopSafepoints -XX:LoopStripMiningIter=1 -XX:+UseSharedSpaces -XX:-UseParallelGC -XX:LogEventsBufferEntries=20 -XX:MaxInlineLevel=15 -XX:MaxNodeLimit=80000 -XX:StringTableSize=65536 -XX:+AggressiveUnboxing -XX:MarkSweepDeadRatio=5 -XX:MaxHeapFreeRatio=70 -XX:MinHeapFreeRatio=40 -XX:GCPauseIntervalMillis=50 -XX:GCTimeRatio=12 -XX:G1RefProcDrainInterval=1000 -XX:G1RSetSparseRegionEntries=8 -XX:G1RSetRegionEntries=256 -Djdk.debug=release -Djava.version.date=2021-01-19
+if %jver_major% lss 9 set java8_backported_defaults= -XX:+UseCountedLoopSafepoints -XX:LoopStripMiningIter=1 -XX:+UseSharedSpaces -XX:-UseParallelGC -XX:LogEventsBufferEntries=20 -XX:MaxInlineLevel=15 -XX:MaxNodeLimit=80000 -XX:StringTableSize=65536 -XX:+AggressiveUnboxing -XX:MarkSweepDeadRatio=5 -XX:MaxHeapFreeRatio=70 -XX:MinHeapFreeRatio=40 -XX:GCPauseIntervalMillis=%gc_pause_interval_millis% -XX:GCTimeRatio=12 -XX:G1RefProcDrainInterval=1000 -XX:G1RSetSparseRegionEntries=8 -XX:G1RSetRegionEntries=256 -Djdk.debug=release -Djava.version.date=2021-01-19
 if %jver_major% lss 11 if %use_secure_tls% equ true set java8_backported_defaults=%java8_backported_defaults% -Djava.vendor.url=https://java.oracle.com/ -Djava.vendor.url.bug=https://bugreport.java.com/bugreport/
 
 ::set log4j_perf0= -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector -Dlog4j2.AsyncQueueFullPolicy="com.destroystokyo.paper.log.LogFullPolicy"
@@ -1319,8 +1325,9 @@ if %jver_major% lss 10 set unsync_load_class0= -XX:+UnsyncloadClass
 set graph_extra0= -Dawt.useSystemAAFontSettings=lcd -Dsun.java2d.opengl=true -Dsun.java2d.d3d=false
 
 ::set jit_extra0= -XX:+UseJITServer
+set std_utf8= -Dsun.stderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8
 
-set full_arguments=-XX:+UnlockCommercialFeatures -XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+IgnoreUnrecognizedVMOptions%additional_commands% -Xms%min_ram% -Xmx%max_ram%%enable_assertions0% %unsync_load_class0%%truffle_enable0% -XX:-DontCompileHugeMethods -XX:+TrustFinalNonStaticFields -XX:+UseCondCardMark -XX:+EliminateLocks -XX+DoEscapeAnalysis%jit_extra0%%aikar_additional%%mojang_client_defaults% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%enable_preview0% -Xtune:virtualized -Xgc:concurrentScavenge -Xgc:dnssExpectedTimeRatioMaximum=3 -Xgc:scvNoAdaptiveTenure -XX:+ClassRelationshipVerifier -Xshare:auto%use_cds0%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -XX:+UseNUMA -XX:+ShowCodeDetailsInExceptionMessages -XX:UseSSE=4 -XX:+UseSSE42Intrinsics%lock_optimization_prejava15% -XX:+UseGCOverheadLimit -XX:-NeverActAsServerClassMachine -XX:+UseG1GC%jvmci_enable0% -XX:+PerfDisableSharedMem -XX:-UsePerfData -XX:+DisableAttachMechanism -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities%non_portable1% -XX:-PortableSharedCache -XX:+UseCGroupMemoryLimit -XX:+UseContainerSupport%java8_backported_defaults% -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump -Dcom.mojang.mojangTricksIntelDriversForPerformance=java.exe_MinecraftLauncher.exe%tiered_compilation0% -XX:+UseFastAccessorMethods -XX:+AllowUserSignalHandlers -XX:+UseTLAB -XX:+ReduceCPUMonitorOverhead -XX:+CMSIncrementalPacing%cms0% -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses%omit_stacktrace0%%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches%optimize_sk_parser0%%fml_parameters0% -Djava.lang.string.substring.nocopy=true -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true -Dhttp.maxConnections=100%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=%connect_timeout% -Dsun.net.client.defaultReadTimeout=%read_timeout% -Dskript.dontUseNamesForSerialization=true -Dcom.ibm.tools.attach.enable=no -Djdk.useMethodHandlesForReflection=true -Djdk.util.jar.enableMultiRelease=force -Dkotlinx.coroutines.debug=off%graph_extra0%%head_less00% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Duser.language=en -Duser.country=US -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dusing.lifemcserver.flags=https://flags.lifemcserver.com -Dflags.lifemcserver.com.version="%version%" -Dflags.lifemcserver.com.vendor="%vendor%"%jansi_parameters%%log4j_config_parameter%%log4j_perf0%%non_portable2%%netty_additional_arguments%%non_portable01%%non_portable0%
+set full_arguments=-XX:+UnlockCommercialFeatures -XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+IgnoreUnrecognizedVMOptions%additional_commands% -Xms%min_ram% -Xmx%max_ram%%enable_assertions0%%unsync_load_class0%%truffle_enable0% -XX:-DontCompileHugeMethods -XX:+TrustFinalNonStaticFields -XX:+UseCondCardMark -XX:+EliminateLocks -XX+DoEscapeAnalysis%jit_extra0%%aikar_additional%%mojang_client_defaults% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%enable_preview0% -Xtune:virtualized -Xgc:concurrentScavenge -Xgc:dnssExpectedTimeRatioMaximum=3 -Xgc:scvNoAdaptiveTenure -XX:+ClassRelationshipVerifier -Xshare:auto%use_cds0%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -XX:+UseNUMA -XX:+ShowCodeDetailsInExceptionMessages -XX:UseSSE=4 -XX:+UseSSE42Intrinsics%lock_optimization_prejava15% -XX:+UseGCOverheadLimit -XX:-NeverActAsServerClassMachine -XX:+UseG1GC%jvmci_enable0% -XX:+PerfDisableSharedMem -XX:-UsePerfData -XX:+DisableAttachMechanism -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities%non_portable1% -XX:-PortableSharedCache -XX:+UseCGroupMemoryLimit -XX:+UseContainerSupport%java8_backported_defaults% -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump -Dcom.mojang.mojangTricksIntelDriversForPerformance=java.exe_MinecraftLauncher.exe%tiered_compilation0% -XX:+UseFastAccessorMethods -XX:+AllowUserSignalHandlers -XX:+UseTLAB -XX:+ReduceCPUMonitorOverhead -XX:+CMSIncrementalPacing%cms0% -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses%omit_stacktrace0%%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches%optimize_sk_parser0%%fml_parameters0% -Djava.lang.string.substring.nocopy=true -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true -Dhttp.maxConnections=100%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=%connect_timeout% -Dsun.net.client.defaultReadTimeout=%read_timeout% -Dskript.dontUseNamesForSerialization=true -Dcom.ibm.tools.attach.enable=no -Djdk.useMethodHandlesForReflection=true -Djdk.util.jar.enableMultiRelease=force -Dkotlinx.coroutines.debug=off%graph_extra0%%head_less00% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8%std_utf8% -Duser.language=en -Duser.country=US -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -Dpolyglot.js.nashorn-compat=true -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dusing.lifemcserver.flags=https://flags.lifemcserver.com -Dflags.lifemcserver.com.version="%version%" -Dflags.lifemcserver.com.vendor="%vendor%"%jansi_parameters%%log4j_config_parameter%%log4j_perf0%%non_portable2%%netty_additional_arguments%%non_portable01%%non_portable0%
 
 set full_arguments_nonclient00=%full_arguments%
 set full_arguments=%full_arguments%%non_client00%
