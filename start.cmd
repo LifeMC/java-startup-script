@@ -1513,9 +1513,10 @@ if %auto_del_temp_files% equ true (
 if %auto_restart% equ true (
  echo %yeniden_baslatiliyor%
  timeout %delay% > nul
+
+ endlocal
+ goto start
 ) else (
  pause
+ exit
 )
-
-endlocal
-goto start
