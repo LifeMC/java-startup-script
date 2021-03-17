@@ -15,7 +15,7 @@ jobs:
         strategy:
             fail-fast: true
             matrix:
-                os: [ 'windows-latest', 'ubuntu-20.04', 'macos-latest' ]
+                os: [ 'windows-latest' ]
                 java: [ 8, 11, 16 ]
 
         runs-on: ${{ matrix.os }}
@@ -64,9 +64,9 @@ jobs:
 
             -   name: Test CLI
                 run: |
-                    .\start.cmd no-auto-restart patch-only version 1.16.5 online-mode no-java
-                    .\start.cmd gencode client print exit
-                    .\start.cmd gencode mac exit
+                    .\start.cmd no-auto-restart patch-only version 1.16.5 online-mode
+                    .\start.cmd gencode client save exit client.txt
+                    .\start.cmd gencode mac save exit mac.sh
                     .\start.cmd gencode linux exit
                 if: runner.os == 'Windows'
 

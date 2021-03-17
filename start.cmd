@@ -1403,12 +1403,25 @@ if "%1" equ "gencode" if "%2" equ "mac" echo Mac/MacOS/Mac OSX uyumlu kod %~n0.s
 if "%1" equ "gencode" if "%2" equ "mac" echo #^^!/usr/bin/env bash > %~n0.sh
 if "%1" equ "gencode" if "%2" equ "mac" echo %java_command% %full_arguments% >> %~n0.sh
 
+if "%3" equ "save" (
+ if "%for_client%" equ true echo(
+ if "%for_client%" equ true echo Client uyumlu kod %5% olarak kaydedildi.
+ if "%for_client%" equ true echo %start_code% > %5%
+ 
+ if exist "%~n0.sh" move "%~n0.sh" "%5%"
+)
+
 if "%4" equ "exit" (
  pause
  exit
 )
 
 if "%3" equ "exit" (
+ pause
+ exit
+)
+
+if "%4" equ "exit" (
  pause
  exit
 )
