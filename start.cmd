@@ -1310,6 +1310,11 @@ if %enable_preview% equ true set enable_preview0= --enable-preview
 if "%1" equ "no-auto-restart" set auto_restart=false
 if "%2" equ "patch-only" set additional_commands=%additional_commands% -Dpaperclip.patchonly=true
 
+if "%3" equ "version" set game_version=%4%
+if "%5" equ "online-mode" set online_mode=true
+
+if "%6" equ "no-java" set java_command=non-existent
+
 if "%4" equ "patch-only" set additional_commands=%additional_commands% -Dpaperclip.patchonly=true
 
 if "%1" equ "gencode" echo(

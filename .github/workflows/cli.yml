@@ -64,7 +64,7 @@ jobs:
 
             -   name: Test CLI
                 run: |
-                    .\start.cmd no-auto-restart patch-only
+                    .\start.cmd no-auto-restart patch-only version 1.16.5 online-mode no-java
                     .\start.cmd gencode client print exit
                     .\start.cmd gencode mac exit
                     .\start.cmd gencode linux exit
@@ -74,12 +74,12 @@ jobs:
                 run: |
                     if [ "$RUNNER_OS" == "macOS" ]; then
                         chmod u+x start.cmd
-                        wine cmd /c start.cmd gencode mac exit patch-only
+                        wine cmd /c start.cmd gencode mac exit patch-only version 1.16.5 online-mode
                         chmod u+x start.sh
                         ./start.sh
                     elif [ "$RUNNER_OS" == "Linux" ]; then
                         chmod u+x start.cmd
-                        wine cmd /c start.cmd gencode linux exit patch-only
+                        wine cmd /c start.cmd gencode linux exit patch-only version 1.16.5 online-mode
                         chmod u+x start.sh
                         ./start.sh
                     else
