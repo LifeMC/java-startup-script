@@ -64,10 +64,10 @@ jobs:
 
             -   name: Test CLI
                 run: |
-                    start.cmd
-                    start.cmd gencode client print exit
-                    start.cmd gencode mac exit
-                    start.cmd gencode linux exit
+                    .\start.cmd
+                    .\start.cmd gencode client print exit
+                    .\start.cmd gencode mac exit
+                    .\start.cmd gencode linux exit
                 if: runner.os == 'Windows'
 
             -   name: Test CLI
