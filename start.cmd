@@ -12,12 +12,12 @@
 ::   |  _ <   / _` | / __| | |  / _` | | __| | '_ ` _ \   / _` | |  <    / _ \   / _` | | | | |
 ::   | |_) | | (_| | \__ \ | | | (_| | | |_  | | | | | | | (_| | | . \  | (_) | | (_| | | |_| |
 ::   |____/   \__,_| |___/ |_|  \__,_|  \__| |_| |_| |_|  \__,_| |_|\_\  \___/   \__,_|  \__,_|
-::                                      ___        _  _         ____                           
-::                                     |__ \      | || |       |___ \                          
-::                             __   __    ) |     | || |_        __) |                         
-::                             \ \ / /   / /      |__   _|      |__ <                          
-::                              \ V /   / /_   _     | |    _   ___) |                         
-::                               \_/   |____| (_)    |_|   (_) |____/                          
+::                                      ___        _____        ___                            
+::                                     |__ \      | ____|      / _ \                           
+::                             __   __    ) |     | |__       | | | |                          
+::                             \ \ / /   / /      |___ \      | | | |                          
+::                              \ V /   / /_   _   ___) |  _  | |_| |                          
+::                               \_/   |____| (_) |____/  (_)  \___/                           
 ::                                                                                             
 ::                                                                                             
 
@@ -65,7 +65,7 @@ if not defined in_subprocess (cmd /q /e:on /v:on /f:off /k set in_subprocess=y ^
 
 :: SURUM - degistermeniz onerilmez
 
-set version=2.4.3
+set version=2.5.0
 
 :: AYARLAR - kendinize gore duzenleyebilirsiniz
 
@@ -224,12 +224,15 @@ set print_java_version=true
 
 :: Java komutu - java.exe konumunu girin veya varsayilan JAVA_HOME'u kullanmak icin "java" yazin
 
-:: Not: Klasor/java.exe yolunda / yerine \ kullanin ve "" icerisine yazin orn. "C:\Program Files\Java\jdk-15.0.2\bin\java.exe"
+:: Not: Klasor/java.exe yolunda / yerine \ kullanin ve "" icerisine yazin orn. "C:\Program Files\Java\jdk-11.0.10\bin\java.exe"
 :: veya Java 8 icin "C:\Program Files\Java\jre1.8.0_281\bin\java.exe"
 set java_command=java
 
 :: Eger java_command bulunamaz ise indirilecek varsayilan Java surumunu belirler. Paper 1.16.4 ve ustu icin 11 yapin.
 set built_in_java_version=8
+
+:: Java 12 ve ustu: Preview ozelliklerini acar. Bu ozelliklerin performansa etkisi belirsizdir.
+set enable_preview=false
 
 :: HTTP baglantilari icin kullanilacak baglanti zaman asimi (yavas internet icin 30000, hizli internet icin 5000 yapin)
 set connect_timeout=10000
@@ -262,12 +265,12 @@ set use_aikars_gc_settings=false
 :: GC ayarlari
 
 :: Young/New generation boyutu.
-:: 12GB ustunde 40 yapabilirsiniz. MC disi programlar icin (orn. discord botlari) 20 yapin.
-set new_size_percent=30
+:: 12GB ustunde 50 yapabilirsiniz. MC disi programlar icin (orn. discord botlari) dusurebilirsiniz.
+set new_size_percent=40
 
 :: Maximum young/new generation boyutu.
-:: 12GB ustunde 50 yapabilirsiniz. MC disi programlar icin (orn. discord botlari) 30 yapin.
-set max_new_size_percent=40
+:: 12GB ustunde 70 yapabilirsiniz. MC disi programlar icin (orn. discord botlari) dusurebilirsiniz.
+set max_new_size_percent=60
 
 :: 12GB ustu icin 15 yapin. MC disi programlar icin (orn. discord botlari) 30 yapin.
 set reserve_percent=20
@@ -275,11 +278,11 @@ set reserve_percent=20
 :: 12GB ustu icin 20 yapin. MC disi programlar icin (orn. discord botlari) 10 yapin.
 set heap_occupancy_percent=15
 
-:: Maximum GC donma zamani, milisaniye cinsinden. MC disi programlar icin (orn. discord botlari) 200 veya 100 yapin.
-set max_gc_pause_millis=49
+:: Maximum GC donma zamani, milisaniye cinsinden. MC disi programlar icin (orn. discord botlari) arttirabilirsiniz.
+set max_gc_pause_millis=1
 
-:: Yukaridaki sayinin bir fazlasi onerilir. Daha fazla degerler de girebilirsiniz fakat asagi girmeyin.
-set gc_pause_interval_millis=50
+:: Yukaridaki sayidan asagi bir deger girmeyin aksi takdirde hata verebilir.
+set gc_pause_interval_millis=201
 
 :: 1GB ve ustu icin 32, 512MB icin 16, 256MB icin 8, 128MB icin 4 yapin.
 set survivor_ratio=32
@@ -312,7 +315,7 @@ set omit_stacktrace=true
 set always_omit_stacktrace=false
 
 :: Class dosyalarini onbellege alarak performans arttirir, fakat bazi sistemlerde calismaz
-set class_caching=false
+set class_caching=true
 
 :: Baslatma kodu uzun suruyorsa veya powershell ile alakali hata veriyorsa true yapin
 set disable_powershell=false
@@ -388,7 +391,7 @@ if not "x%settings_preset:dev=%" == "x%settings_preset%" (
  set messagebox_on_error=true
  set omit_stacktrace=false
  ::set additional_commands= -XX:+PrintFlagsFinal 
- set additional_commands= -Xcheck:jni -Xfuture 
+ set additional_commands= -Xcheck:jni -Xfuture -XX:+PreserveFramePointer -XX:+PoisonOSREntry -XX:+EagerXrunInit
  echo Gelistirici hazir ayarlari uygulandi.
  echo(
  echo Not: Bu ayarlar sadece test sunuculari ve gelistiriciler icindir!
@@ -418,6 +421,7 @@ if not "x%settings_preset:agressive=%" == "x%settings_preset%" (
  set class_caching=true
  set connect_timeout=5000
  set read_timeout=5000
+ ::set always_omit_stacktrace=true
  echo Optimizeli hazir ayarlar uygulandi.
 )
 
@@ -429,11 +433,11 @@ if not "x%settings_preset:gui=%" == "x%settings_preset%" (
 
 if not "x%settings_preset:relaxgc=%" == "x%settings_preset%" (
  set new_size_percent=20
- set max_new_size_percent=30
+ set max_new_size_percent=60
  set reserve_percent=25
  set heap_occupancy_percent=10
  set max_gc_pause_millis=99
- set gc_pause_interval_millis=100
+ set gc_pause_interval_millis=201
  echo Rahat cop toplama ayarlari uygulandi.
 )
 
@@ -452,6 +456,7 @@ set ip_address=127.0.0.1
 set checked_for_updates=false
 
 :start
+setlocal
 set start=%time%
 
 echo(
@@ -481,6 +486,8 @@ if not exist "%homedrive%%homepath%\.batch.lock" (
  echo(
 )
 
+if not exist "%scriptdir%cache" mkdir "%scriptdir%cache"
+
 if not exist "%scriptdir%cache/.batch.lock" (
  echo true> "%scriptdir%cache/.batch.lock"
  echo Bu sunucuyu ilk kez aciyorsunuz. En iyi sonuclar icin acilma bittikten sonra kapatip tekrar acin!
@@ -494,8 +501,6 @@ set vendor=%vendor_original%
 
 set "scriptdir=%~dp0"
 if not "%scriptdir:~-1%" == "\" set "scriptdir=%scriptdir%\"
-
-if not exist "%scriptdir%cache" mkdir "%scriptdir%cache"
 
 attrib +h "%scriptdir%cache"
 if exist "%scriptdir%.git" attrib +h "%scriptdir%.git"
@@ -896,7 +901,7 @@ if %unblock_files% equ true if %unblocked% equ false (
  set unblocked=true
 )
 
-if %sixty_four_bit_java% equ true set sixty_four_bit_java0= -d64 -Djava.vm.compressedOopsMode=64-bit
+if %sixty_four_bit_java% equ true set sixty_four_bit_java0= -d64
 
 if %verbose_info% equ true echo(
 echo %java_kontrol_ediliyor%
@@ -992,7 +997,7 @@ if defined JAVA_HOME if not defined JDK_HOME set "JDK_HOME=%JAVA_HOME%"
 
 :: Auto tune settings
 
-%java_command% -d64 -Djava.vm.compressedOopsMode=64-bit -version > nul 2> nul
+%java_command% -d64 -version > nul 2> nul
 
 if not defined errorlevel set errorlevel=1
 
@@ -1054,8 +1059,7 @@ if %allow_module_access% equ true if %found_working_java% equ true if %jver_majo
 :: RAM'de etkisi belirsiz oldugundan bakima alindi
 ::if %less_ram% equ false set less_ram0= -XX:+UseStringDeduplication
 
-:: System#gc 'yi while ile cagiran eklentilerin, timeout vermemesi icin bakima alindi
-if %less_ram% equ false if %use_aikars_gc_settings% equ true set less_ram1= -XX:+DisableExplicitGC
+if %less_ram% equ false set less_ram1= -XX:+DisableExplicitGC
 
 :: Artik gereksiz, varsayilan olarak 1024K zaten
 ::if %less_ram% equ true set min_ram=1M
@@ -1065,8 +1069,10 @@ if %use_secure_tls% equ true set use_secure_tls0= -Dhttps.protocols=TLSv1.3,TLSv
 if %use_server_vm% equ true set use_server_vm0= -server
 if %enable_assertions% equ true set enable_assertions0= -esa -ea -Xverify:all
 
+if %always_omit_stacktrace% equ true if %omit_stacktrace% equ false set omit_stacktrace=true
+
 if %omit_stacktrace% equ true set omit_stacktrace0= -XX:+OmitStackTraceInFastThrow
-if %always_omit_stacktrace% equ true set always_omit_stacktrace= -XX:-StackTraceInThrowable
+if %always_omit_stacktrace% equ true set omit_stacktrace0=%omit_stacktrace0% -XX:-StackTraceInThrowable -XX:-JavaMonitorsInStackTrace
 
 if %messagebox_on_error% equ true set show_messagebox_onerror0= -XX:+ShowMessageBoxOnError
 
@@ -1079,8 +1085,8 @@ if 4 gtr %NUMBER_OF_PROCESSORS% (
  set eventLoopThreads=4
 )
 
-if %verbose_info% equ true echo(
-if %verbose_info% equ true echo %ram_ayarlaniyor%
+echo(
+echo %ram_ayarlaniyor%
 
 for /f "skip=1 delims=" %%i in ('wmic os get freephysicalmemory /value') do for /f "delims=" %%j in ("%%i") do set "availableMemory=%%j"
 
@@ -1208,7 +1214,7 @@ if %cond% equ true (
 ::if %using_windows_server% equ false set prod=no
 
 if %class_caching% equ true (
- set class_caching0= -Xshareclasses -Xshareclasses:cacheDir=/cache/classes/%jar_name% -Xshareclasses:name=%jar_name% -Xscmx512M -XX:SharedCacheHardLimit=1G
+ set class_caching0= -Xshareclasses -Xshareclasses:cacheDir=/cache/classes/%jar_name% -Xshareclasses:name=%jar_name% -Xscmx%max_ram%
  set class_caching1= -XX:+ShareAnonymousClasses -Dcom.ibm.enableClassCaching=true
 )
 
@@ -1248,14 +1254,15 @@ set max_ram_no_k=%max_ram_no_k:k=%
 if not "x%max_ram:k=%" == "x%max_ram%" if %max_ram_no_k% gtr %twelve_gb% set heap_above_12g=true
 if not "x%max_ram:K=%" == "x%max_ram%" if %max_ram_no_k% gtr %twelve_gb% set heap_above_12g=true
 
-if %heap_above_12g% equ true if %new_size_percent% equ 30 set new_size_percent=40
-if %heap_above_12g% equ true if %max_new_size_percent% equ 40 set max_new_size_percent=50
+if %heap_above_12g% equ true if %new_size_percent% equ 40 set new_size_percent=50
+if %heap_above_12g% equ true if %max_new_size_percent% equ 60 set max_new_size_percent=70
+
 if %heap_above_12g% equ true if %reserve_percent% equ 20 set reserve_percent=15
 if %heap_above_12g% equ true if %heap_occupancy_percent% equ 15 set heap_occupancy_percent=20
 
 :: Mojang Recommended Client Defaults
 :: (excluding the starting of -Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC, which already in this script)
-set mojang_client_defaults= -XX:G1HeapRegionSize=32M -XX:G1ReservePercent=%reserve_percent% -XX:G1NewSizePercent=%new_size_percent% -XX:MaxGCPauseMillis=%max_gc_pause_millis%
+set mojang_client_defaults= -XX:G1HeapRegionSize=32M -XX:G1ReservePercent=%reserve_percent% -XX:G1NewSizePercent=%new_size_percent% -XX:MaxGCPauseMillis=%max_gc_pause_millis% -XX:MaxGCMinorPauseMillis=%max_gc_pause_millis%
 
 if %max_ram% equ 512M set survivor_ratio=16
 if %max_ram% equ 256M set survivor_ratio=8
@@ -1278,7 +1285,7 @@ if %use_aikars_gc_settings% equ true set timings_aikar_flags_workarounds0=%timin
 set cms0= -XX:+CMSParallelRemarkEnabled -XX:+UseCMSInitiatingOccupancyOnly -XX:+CMSScavengeBeforeRemark -XX:+CMSClassUnloadingEnabled
 if %jver_major% lss 15 set lock_optimization_prejava15= -XX:+UseLWPSynchronization -XX:+UseBiasedLocking -XX:BiasedLockingStartupDelay=0
 
-if %jver_major% lss 9 set java8_backported_defaults= -XX:+UseCountedLoopSafepoints -XX:LoopStripMiningIter=1 -XX:+UseSharedSpaces -XX:-UseParallelGC -XX:LogEventsBufferEntries=20 -XX:MaxInlineLevel=15 -XX:MaxNodeLimit=80000 -XX:StringTableSize=65536 -XX:+AggressiveUnboxing -XX:MarkSweepDeadRatio=5 -XX:MaxHeapFreeRatio=70 -XX:MinHeapFreeRatio=40 -XX:GCPauseIntervalMillis=%gc_pause_interval_millis% -XX:GCTimeRatio=12 -XX:G1RefProcDrainInterval=1000 -XX:G1RSetSparseRegionEntries=8 -XX:G1RSetRegionEntries=256 -Djdk.debug=release -Djava.version.date=2021-01-19
+if %jver_major% lss 9 set java8_backported_defaults= -XX:+UseCountedLoopSafepoints -XX:LoopStripMiningIter=1 -XX:+UseSharedSpaces -XX:-UseConcMarkSweepGC -XX:-UseParallelGC -XX:LogEventsBufferEntries=20 -XX:MaxInlineLevel=15 -XX:MaxNodeLimit=80000 -XX:StringTableSize=65536 -XX:+AggressiveUnboxing -XX:MarkSweepDeadRatio=5 -XX:MaxHeapFreeRatio=70 -XX:MinHeapFreeRatio=40 -XX:GCPauseIntervalMillis=%gc_pause_interval_millis% -XX:GCTimeRatio=12 -XX:G1RefProcDrainInterval=1000 -XX:G1RSetSparseRegionEntries=8 -XX:G1RSetRegionEntries=256 -Djdk.debug=release -Djava.version.date=2021-03-16
 if %jver_major% lss 11 if %use_secure_tls% equ true set java8_backported_defaults=%java8_backported_defaults% -Djava.vendor.url=https://java.oracle.com/ -Djava.vendor.url.bug=https://bugreport.java.com/bugreport/
 
 ::set log4j_perf0= -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector -Dlog4j2.AsyncQueueFullPolicy="com.destroystokyo.paper.log.LogFullPolicy"
@@ -1291,7 +1298,6 @@ if %gc_logging% equ true if %jver_major% geq 11 set gc_logging0= -Xlog:gc*:logs/
 if %gc_logging% equ true if not %jver_major% geq 11 set gc_logging00= -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintAdaptiveSizePolicy
 if %gc_logging% equ true if not %jver_major% geq 11 set gc_logging0= -Xloggc:gc.log -verbose:gc%gc_logging00% -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=1M
 
-set enable_preview=false
 if %enable_preview% equ true set enable_preview0= --enable-preview
 
 ::set optimize_sk_parser0= -XX:CompileCommand=quiet -XX:CompileCommand=compileonly,ch/njol/skript/SkriptParser.parse_i -XX:CompileCommand=inline,ch/njol/skript/SkriptParser.parse_i
@@ -1322,12 +1328,40 @@ if not "%for_client%" equ "true" set non_client00= -jar %jar_name%.jar "nogui%up
 if "%for_client%" equ "true" set fml_parameters0= -Dfml.ignorePatchDiscrepancies=true -Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.readTimeout=%io_timeout% -Dcofh.rf.crashOnOldAPI=false
 
 if %jver_major% lss 10 set unsync_load_class0= -XX:+UnsyncloadClass
+set unsync_load_class0= -XX:+AllowParallelDefineClass%unsync_load_class0%
+
 set graph_extra0= -Dawt.useSystemAAFontSettings=lcd -Dsun.java2d.opengl=true -Dsun.java2d.d3d=false
 
 ::set jit_extra0= -XX:+UseJITServer
 set std_utf8= -Dsun.stderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8
+set yield_opt= -XX:+NoYieldsInMicrolock -XX:+DontYieldALot -XX:DontYieldALotInterval=10
 
-set full_arguments=-XX:+UnlockCommercialFeatures -XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+IgnoreUnrecognizedVMOptions%additional_commands% -Xms%min_ram% -Xmx%max_ram%%enable_assertions0%%unsync_load_class0%%truffle_enable0% -XX:-DontCompileHugeMethods -XX:+TrustFinalNonStaticFields -XX:+UseCondCardMark -XX:+EliminateLocks -XX+DoEscapeAnalysis%jit_extra0%%aikar_additional%%mojang_client_defaults% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%enable_preview0% -Xtune:virtualized -Xgc:concurrentScavenge -Xgc:dnssExpectedTimeRatioMaximum=3 -Xgc:scvNoAdaptiveTenure -XX:+ClassRelationshipVerifier -Xshare:auto%use_cds0%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -XX:+UseNUMA -XX:+ShowCodeDetailsInExceptionMessages -XX:UseSSE=4 -XX:+UseSSE42Intrinsics%lock_optimization_prejava15% -XX:+UseGCOverheadLimit -XX:-NeverActAsServerClassMachine -XX:+UseG1GC%jvmci_enable0% -XX:+PerfDisableSharedMem -XX:-UsePerfData -XX:+DisableAttachMechanism -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities%non_portable1% -XX:-PortableSharedCache -XX:+UseCGroupMemoryLimit -XX:+UseContainerSupport%java8_backported_defaults% -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump -Dcom.mojang.mojangTricksIntelDriversForPerformance=java.exe_MinecraftLauncher.exe%tiered_compilation0% -XX:+UseFastAccessorMethods -XX:+AllowUserSignalHandlers -XX:+UseTLAB -XX:+ReduceCPUMonitorOverhead -XX:+CMSIncrementalPacing%cms0% -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses%omit_stacktrace0%%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches%optimize_sk_parser0%%fml_parameters0% -Djava.lang.string.substring.nocopy=true -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true -Dhttp.maxConnections=100%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=%connect_timeout% -Dsun.net.client.defaultReadTimeout=%read_timeout% -Dskript.dontUseNamesForSerialization=true -Dcom.ibm.tools.attach.enable=no -Djdk.useMethodHandlesForReflection=true -Djdk.util.jar.enableMultiRelease=force -Dkotlinx.coroutines.debug=off%graph_extra0%%head_less00% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8%std_utf8% -Duser.language=en -Duser.country=US -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -Dpolyglot.js.nashorn-compat=true -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dusing.lifemcserver.flags=https://flags.lifemcserver.com -Dflags.lifemcserver.com.version="%version%" -Dflags.lifemcserver.com.vendor="%vendor%"%jansi_parameters%%log4j_config_parameter%%log4j_perf0%%non_portable2%%netty_additional_arguments%%non_portable01%%non_portable0%
+if %always_omit_stacktrace% equ false set code_details_in_exceptions0= -XX:+ShowCodeDetailsInExceptionMessages
+if %always_omit_stacktrace% equ true set code_details_in_exceptions0= -XX:-ShowCodeDetailsInExceptionMessages
+
+set gc_extra0= -XX:G1ConcMarkStepDurationMillis=5 -XX:GCLockerRetryAllocationCount=4 -XX:+ShenandoahOptimizeStaticFinals -XX:+UseTLAB -XX:PausePadding=1 -XX:PromotedPadding=3 -XX:SurvivorPadding=3 -XX:+RegisterFinalizersAtInit -XX:+ClassUnloading -XX:+ClassUnloadingWithConcurrentMark -XX:+MethodFlushing
+set rtm_opt0= -XX:+UseRTMForStackLocks -XX:+UseRTMDeopt
+
+set instr_opt0= -XX:+UseMathExactIntrinsics -XX:+UseCharacterCompareIntrinsics -XX:+UseBASE64Intrinsics -XX:+UseVectorizedMismatchIntrinsic -XX:+UseCLMUL -XX:+UseNewLongLShift -XX:+UseFastStosb -XX:+UseXMMForObjInit -XX:+UseXMMForArrayCopy -XX:+UseUnalignedLoadStores -XX:+UseCountLeadingZerosInstruction -XX:+UseCountTrailingZerosInstruction -XX:+UseXmmI2D -XX:+UseXmmI2F -XX:+UseAdler32Intrinsics -XX:+UseCRC32Intrinsics -XX:+UseCRC32CIntrinsics -XX:+UseMD5 -XX:+UseMD5Intrinsics -XX:+UseSHA -XX:+UseSHA1Intrinsics -XX:+UseSHA3Intrinsics -XX:+UseSHA256Intrinsics -XX:+UseSHA512Intrinsics -XX:+UseGHASHIntrinsics -XX:+UseAES -XX:+UseAESIntrinsics -XX:+UseAESCTRIntrinsics -XX:+UseMontgomerySquareIntrinsic -XX:+UseMontgomeryMultiplyIntrinsic -XX:+UseMulAddIntrinsic -XX:+UseSquareToLenIntrinsic -XX:+UseMultiplyToLenIntrinsic -XX:+OptoPeephole -XX:+OptoScheduling -XX:+OptoRegScheduling -XX:+OptoBundling -XX:+InlineAccessors -XX:+BackgroundCompilation -XX:+InlineArrayCopy -XX:+UseInlineCaches -XX:+InlineReflectionGetCallerClass -XX:+OptimizePtrCompare -XX:+UseFastUnorderedTimeStamps -XX:+InlineIntrinsics -XX:+UseFastJNIAccessors -XX:+UseOnStackReplacement -XX:+SpecialArraysEquals -XX:+RewriteBytecodes -XX:+RewriteFrequentPairs -XX:+CompactStrings -XX:+UseLoopSafepoints -XX:+ReduceNumberOfCompilerThreads -XX:+CICompileOSR -XX:-FilterSpuriousWakeups -XX:+TrapBasedRangeChecks -XX:+SpecialStringEquals -XX:+ExpandSubTypeCheckAtParseTime -XX:+AlwaysSafeConstructors -XX:+UseBMI1Instructions -XX:+UseBMI2Instructions -XX:+UseFMA -XX:+UseCopySignIntrinsic -XX:+UseSignumIntrinsic
+
+if %jver_major% lss 16 set instr_opt0=%instr_opt0% -XX:+CriticalJNINatives
+if %jver_major% lss 15 set instr_opt0=%instr_opt0% -XX:+UseOptoBiasInlining
+
+set windows_unsafe_opt0= -XX:+UseVectoredExceptions -XX:+UseFPUForSpilling -XX:+UseCISCSpill -XX:+SuperWordLoopUnrollAnalysis -XX:+SuperWordRTDepCheck -XX:+ -XX:+UseVectorCmov -XX:+UseCMoveUnconditionally
+
+if %jver_major% lss 14 set windows_unsafe_opt0=%windows_unsafe_opt0% -XX:+BindGCTaskThreadsToCPUs
+
+if defined full_arguments echo WARNING: script variables not cleaned up properly - please close and re-open the script!
+
+if %jver_major% lss 11 set commerical0=-XX:+UnlockCommercialFeatures 
+set windows_unsafe_opt0=%windows_unsafe_opt0% -XX:+AdjustConcurrency -XX:+UseVMInterruptibleIO -XX:+UseNiagaraInstrs -XX:-UseNotificationThread -XX:+UncommonNullCast
+
+:: not required on latest versions as it has Timer hack thread from NMS
+set windows_unsafe_opt0=%windows_unsafe_opt0% -XX:+ForceTimeHighResolution
+
+set controversial_may_delay_start_up= -XX:+AlwaysCompileLoopMethods
+
+set full_arguments=%commerical0%-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+IgnoreUnrecognizedVMOptions -XX:-PrintWarnings%additional_commands% -Xms%min_ram% -Xmx%max_ram%%enable_assertions0%%unsync_load_class0%%truffle_enable0% -XX:-DontCompileHugeMethods -XX:+TrustFinalNonStaticFields -XX:+UseCondCardMark -XX:+EliminateLocks -XX:+EliminateAllocations -XX:+EliminateAutoBox -XX+DoEscapeAnalysis -XX:+InlineWarmCalls%gc_extra0%%rtm_opt0%%jit_extra0%%instr_opt0%%aikar_additional%%mojang_client_defaults% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%enable_preview0% -Xtune:virtualized -Xgc:concurrentScavenge -Xgc:dnssExpectedTimeRatioMaximum=3 -Xgc:scvNoAdaptiveTenure -XX:+ClassRelationshipVerifier -Xshare:auto%use_cds0%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -XX:+UseNUMA -XX:+UseNUMAInterleaving%code_details_in_exceptions0% -XX:UseSSE=4 -XX:+UseSSE42Intrinsics%lock_optimization_prejava15% -XX:+UseGCOverheadLimit -XX:-NeverActAsServerClassMachine -XX:+UseG1GC%jvmci_enable0% -XX:+PerfDisableSharedMem -XX:-UsePerfData -XX:+DisableAttachMechanism -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities%non_portable1% -XX:-PortableSharedCache -XX:+UseCGroupMemoryLimit -XX:+UseContainerSupport%java8_backported_defaults% -XX:+UseOSErrorReporting%windows_unsafe_opt0% -DMojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe=heapdump -Dcom.mojang.mojangTricksIntelDriversForPerformance=java.exe_MinecraftLauncher.exe=hprof%tiered_compilation0% -XX:+UseFastAccessorMethods%controversial_may_delay_start_up% -XX:+AllowUserSignalHandlers -XX:+UseSignalChaining -XX:+UseTLAB -XX:+ReduceCPUMonitorOverhead%yield_opt% -XX:+CMSIncrementalPacing%cms0% -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled -XX:+ExplicitGCInvokesConcurrent -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses%omit_stacktrace0%%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches%optimize_sk_parser0%%fml_parameters0% -Djava.lang.string.substring.nocopy=true -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true -Dhttp.maxConnections=100%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=%connect_timeout% -Dsun.net.client.defaultReadTimeout=%read_timeout% -Dskript.dontUseNamesForSerialization=true -Dcom.ibm.tools.attach.enable=no -Djdk.useMethodHandlesForReflection=true -Djdk.util.jar.enableMultiRelease=force -Dkotlinx.coroutines.debug=off%graph_extra0%%head_less00% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8%std_utf8% -Duser.language="" -Duser.country="" -Duser.variant="" -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -Dpolyglot.js.nashorn-compat=true -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dusing.lifemcserver.flags=https://flags.lifemcserver.com -Dflags.lifemcserver.com.version="%version%" -Dflags.lifemcserver.com.vendor="%vendor%"%jansi_parameters%%log4j_config_parameter%%log4j_perf0%%non_portable2%%netty_additional_arguments%%non_portable01%%non_portable0%
 
 set full_arguments_nonclient00=%full_arguments%
 set full_arguments=%full_arguments%%non_client00%
@@ -1365,6 +1399,14 @@ if "%3" equ "exit" (
 if "%for_client%" equ "true" set full_arguments=%full_arguments%%non_client00%
 
 set JAVA_OPTS=%full_arguments_nonclient00%
+set _JAVA_OPTS=%full_arguments_nonclient00%
+
+:: Update Revision 1: Fixed JAR Sealing related errors on OpenJ9
+set commit_id_rev1=1b51e3c
+if not exist "%scriptdir%cache\.YamlExactSetCli.updated.%commit_id_rev1%.lock" (
+ echo true> "%scriptdir%cache\.YamlExactSetCli.updated.%commit_id_rev1%.lock"
+ del "%scriptdir%cache\YamlExactSetCli.jar"
+)
 
 if not exist "%scriptdir%cache\YamlExactSetCli.jar" if %disable_powershell% equ false if %verbose_info% equ true echo Downloading yaml utility...
 if not exist "%scriptdir%cache\YamlExactSetCli.jar" if %disable_powershell% equ false %powershell_command% %powershell_arguments% "%powershell_workarounds% %powershell_new_web_client_wc% $WC.DownloadFile('https://github.com/LifeMC/site-assets/raw/main/other/YamlExactSetCli.jar', '%scriptdir%cache\YamlExactSetCli.jar')"
@@ -1374,6 +1416,8 @@ if exist "%scriptdir%cache\YamlExactSetCli.jar" %java_command% %full_arguments_n
 
 if exist "%scriptdir%cache\YamlExactSetCli.jar" %java_command% %full_arguments_nonclient00% -jar cache/YamlExactSetCli.jar paper.yml world-settings.default.verbose false
 if exist "%scriptdir%cache\YamlExactSetCli.jar" %java_command% %full_arguments_nonclient00% -jar cache/YamlExactSetCli.jar spigot.yml world-settings.default.verbose false
+
+::if exist "%scriptdir%cache\YamlExactSetCli.jar" %java_command% %full_arguments_nonclient00% -jar cache/YamlExactSetCli.jar spigot.yml world-settings.default.verbose false
 
 echo(
 echo %sunucu_baslatiliyor%
@@ -1452,8 +1496,9 @@ if %auto_del_temp_files% equ true (
 if %auto_restart% equ true (
  echo %yeniden_baslatiliyor%
  timeout %delay% > nul
-
- goto start
 ) else (
  pause
 )
+
+endlocal
+goto start
