@@ -39,9 +39,6 @@ jobs:
                 with:
                     java-version: ${{ matrix.java }}
 
-            -   name: shellcheck
-                uses: ludeeus/action-shellcheck@1.0.0
-
             #-   name: Initialize CodeQL
             #    uses: github/codeql-action/init@main
             #    with:
@@ -51,7 +48,7 @@ jobs:
             -   name: Install Wine
                 run: |
                     if [ "$RUNNER_OS" == "macOS" ]; then
-                        brew cask install wine-stable
+                        brew install --cask wine-stable
                     elif [ "$RUNNER_OS" == "Linux" ]; then
                         sudo dpkg --add-architecture i386
                         sudo apt update
