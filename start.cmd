@@ -1307,6 +1307,11 @@ if %enable_preview% equ true set enable_preview0= --enable-preview
 ::set jvmci_enable0= -XX:+EnableJVMCIProduct
 ::set truffle_enable0= -truffle
 
+if "%1" equ "no-auto-restart" set auto_restart=false
+if "%2" equ "patch-only" set additional_commands=%additional_commands% -Dpaperclip.patchonly=true
+
+if "%4" equ "patch-only" set additional_commands=%additional_commands% -Dpaperclip.patchonly=true
+
 if "%1" equ "gencode" echo(
 if "%1" equ "gencode" echo Platformlar arasi uyumlu kod olusturma aktif edildi.
 if "%1" equ "gencode" set gencode=true
@@ -1350,7 +1355,7 @@ if %jver_major% lss 17 set instr_opt0=%instr_opt0% -XX:Tier0Delay=20
 if %jver_major% lss 16 set instr_opt0=%instr_opt0% -XX:+CriticalJNINatives -XX:InlineSmallCode=2500 -XX:+UseSemaphoreGCThreadsSynchronization -XX:+UseRDPCForConstantTableBase
 if %jver_major% lss 15 set instr_opt0=%instr_opt0% -XX:+UseOptoBiasInlining -XX:+UseNewFieldLayout
 
-set windows_unsafe_opt0= -XX:+UseVectoredExceptions -XX:+UseFPUForSpilling -XX:+UseCISCSpill -XX:+SuperWordLoopUnrollAnalysis -XX:+SuperWordRTDepCheck -XX:+ -XX:+UseVectorCmov -XX:+UseCMoveUnconditionally -XX:+OverrideVMProperties -XX:+UseOpenJSSE -XX:PreBlockSpin=100
+set windows_unsafe_opt0= -XX:+UseVectoredExceptions -XX:+UseFPUForSpilling -XX:+UseCISCSpill -XX:+SuperWordLoopUnrollAnalysis -XX:+SuperWordRTDepCheck -XX:+ -XX:+UseVectorCmov -XX:+UseCMoveUnconditionally -XX:+OverrideVMProperties -XX:PreBlockSpin=100
 
 if %jver_major% lss 14 set windows_unsafe_opt0=%windows_unsafe_opt0% -XX:+BindGCTaskThreadsToCPUs
 
