@@ -5,7 +5,6 @@
 [![License](https://img.shields.io/badge/license-gpl%203.0-brightgreen.svg)](https://opensource.org/licenses/GPL-3.0)
 [![Build Status](https://github.com/LifeMC/java-startup-script/workflows/CLI/badge.svg)](https://github.com/LifeMC/java-startup-script/actions)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/42c5db206def479d8b31f8430203034f)](https://app.codacy.com/app/LifeMC/java-startup-script?utm_source=github.com&utm_medium=referral&utm_content=LifeMC/java-startup-script&utm_campaign=Badge_Grade_Dashboard)
-[![Known Vulnerabilities](https://snyk.io//test/github/LifeMC/java-startup-script/badge.svg?targetFile=start.cmd)](https://snyk.io//test/github/LifeMC/java-startup-script?targetFile=start.cmd)
 
 Optimized Java startup script for Windows and Linux/macOS. (partly)
 
