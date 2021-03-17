@@ -628,6 +628,8 @@ if %disable_powershell% equ false if %check_for_updates% equ true if %checked_fo
 
 if %checked_for_updates% equ false if %vendor% equ %vendor_original% set checked_for_updates=true
 
+if "%3" equ "version" set game_version=%4%
+
 if exist "%jar_name%.jar" (
  set disable_powershell_oldvalue=%disable_powershell%
  set disable_powershell=true
@@ -779,6 +781,8 @@ if exist "%spigot_config%" if %verbose% equ true "%scriptdir%cache\fart.exe" -q 
 set paper_config=paper.yml
 
 if exist "%paper_config%" if %verbose_info% equ true echo Setting up paper config...
+
+if "%5" equ "online-mode" set online_mode=true
 
 if exist "%paper_config%" if %online_mode% equ true "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config%" "online-mode: false" "online-mode: true" > nul 2> nul
 if exist "%paper_config%" if %online_mode% equ false "%scriptdir%cache\fart.exe" -q -i -a -C "%paper_config%" "online-mode: true" "online-mode: false" > nul 2> nul
@@ -1311,9 +1315,6 @@ if %enable_preview% equ true set enable_preview0= --enable-preview
 
 if "%1" equ "no-auto-restart" set auto_restart=false
 if "%2" equ "patch-only" set additional_commands=%additional_commands% -Dpaperclip.patchonly=true
-
-if "%3" equ "version" set game_version=%4%
-if "%5" equ "online-mode" set online_mode=true
 
 if "%4" equ "patch-only" set additional_commands=%additional_commands% -Dpaperclip.patchonly=true
 
