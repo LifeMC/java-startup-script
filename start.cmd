@@ -906,6 +906,8 @@ if %sixty_four_bit_java% equ true set sixty_four_bit_java0= -d64
 if %verbose_info% equ true echo(
 echo %java_kontrol_ediliyor%
 
+if "%6" equ "no-java" set java_command=non-existent
+
 set found_working_java=true
 
 %java_command% -version > nul 2> nul || (
@@ -1312,8 +1314,6 @@ if "%2" equ "patch-only" set additional_commands=%additional_commands% -Dpapercl
 
 if "%3" equ "version" set game_version=%4%
 if "%5" equ "online-mode" set online_mode=true
-
-if "%6" equ "no-java" set java_command=non-existent
 
 if "%4" equ "patch-only" set additional_commands=%additional_commands% -Dpaperclip.patchonly=true
 
