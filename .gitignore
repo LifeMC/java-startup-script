@@ -1,6 +1,11 @@
 # Ignore everything
-*
+/*
+/*/
 
 # But not these files...
 !.gitignore
 !start.cmd
+!LICENSE
+!.gitattributes
+!.editorconfig
+!/.github/

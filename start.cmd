@@ -1019,27 +1019,29 @@ if %found_working_java% equ true for /f tokens^=2-5^ delims^=.-_^" %%j in ('%jav
 if %jver_major% equ 1 if %found_working_java% equ true for /f tokens^=2-5^ delims^=.-_^" %%j in ('%java_command% -fullversion 2^>^&1') do set "jver_revision=%%m"
 if %jver_major% neq 1 set jver_revision=281
 
-:: Checking major equals 1 makes it compatible with Java 9+, they always pass since 9, 10, 11, 12 .. 15, etc all are higher than 1.
-if %jver_major% equ 1 if %jver_minor% lss 8 echo(
-if %jver_major% equ 1 if %jver_minor% lss 8 echo Java 8 alti bir surum kullandiginiz tespit edildi. Lutfen Java 8 kurun. (Java surumunuz: %jver_major%.%jver_minor%)
-if %jver_major% equ 1 if %jver_minor% lss 8 echo(
+set jver_major=%jver_major:+=%
 
-if %jver_major% equ 1 if %jver_minor% lss 8 set tiered_compilation=false
+:: Checking major equals 1 makes it compatible with Java 9+, they always pass since 9, 10, 11, 12 .. 15, etc all are higher than 1.
+if %jver_major% equ 1 if "%jver_minor%" lss "8" echo(
+if %jver_major% equ 1 if "%jver_minor%" lss "8" echo Java 8 alti bir surum kullandiginiz tespit edildi. Lutfen Java 8 kurun. (Java surumunuz: %jver_major%.%jver_minor%)
+if %jver_major% equ 1 if "%jver_minor%" lss "8" echo(
+
+if %jver_major% equ 1 if "%jver_minor%" lss "8" set tiered_compilation=false
 
 :: JDK 8u281 adds TLS 1.3 support.
-if %jver_major% equ 1 if %jver_minor% equ 8 if "%jver_build%" equ "0" if %jver_revision% lss 281 echo(
-if %jver_major% equ 1 if %jver_minor% equ 8 if "%jver_build%" equ "0" if %jver_revision% lss 281 echo Eski bir Java 8 surumu kullandiginiz tespit edildi. Lutfen java.com veya oracle.com'dan son surum Java 8 kurun.
-if %jver_major% equ 1 if %jver_minor% equ 8 if "%jver_build%" equ "0" if %jver_revision% lss 281 echo(
-if %jver_major% equ 1 if %jver_minor% equ 8 if "%jver_build%" equ "0" if %jver_revision% lss 281 echo Eger Oracle hesabiniz var ise Oracle'nin sitesinden JDK olarak indirmeniz onerilir.
-if %jver_major% equ 1 if %jver_minor% equ 8 if "%jver_build%" equ "0" if %jver_revision% lss 281 echo(
-if %jver_major% equ 1 if %jver_minor% equ 8 if "%jver_build%" equ "0" if %jver_revision% lss 281 echo https://www.java.com/ (Hesap gerektirmez/JRE)
-if %jver_major% equ 1 if %jver_minor% equ 8 if "%jver_build%" equ "0" if %jver_revision% lss 281 echo https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html (Oracle hesabi gerektirir/JDK)
+if %jver_major% equ 1 if "%jver_minor%" equ "8" if "%jver_build%" equ "0" if %jver_revision% lss 281 echo(
+if %jver_major% equ 1 if "%jver_minor%" equ "8" if "%jver_build%" equ "0" if %jver_revision% lss 281 echo Eski bir Java 8 surumu kullandiginiz tespit edildi. Lutfen java.com veya oracle.com'dan son surum Java 8 kurun.
+if %jver_major% equ 1 if "%jver_minor%" equ "8" if "%jver_build%" equ "0" if %jver_revision% lss 281 echo(
+if %jver_major% equ 1 if "%jver_minor%" equ "8" if "%jver_build%" equ "0" if %jver_revision% lss 281 echo Eger Oracle hesabiniz var ise Oracle'nin sitesinden JDK olarak indirmeniz onerilir.
+if %jver_major% equ 1 if "%jver_minor%" equ "8" if "%jver_build%" equ "0" if %jver_revision% lss 281 echo(
+if %jver_major% equ 1 if "%jver_minor%" equ "8" if "%jver_build%" equ "0" if %jver_revision% lss 281 echo https://www.java.com/ (Hesap gerektirmez/JRE)
+if %jver_major% equ 1 if "%jver_minor%" equ "8" if "%jver_build%" equ "0" if %jver_revision% lss 281 echo https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html (Oracle hesabi gerektirir/JDK)
 
 :: Warn for JDK 11 too.
-if %jver_major% equ 11 if %jver_minor% equ 0 if %jver_revision% lss 10 echo(
-if %jver_major% equ 11 if %jver_minor% equ 0 if %jver_revision% lss 10 echo Eski bir Java 11 surumu kullandiginiz tespit edildi. Lutfen oracle.com'dan son surum Java 11 kurun.
-if %jver_major% equ 11 if %jver_minor% equ 0 if %jver_revision% lss 10 echo(
-if %jver_major% equ 11 if %jver_minor% equ 0 if %jver_revision% lss 10 echo https://www.oracle.com/java/technologies/javase-jdk11-downloads.html (Oracle hesabi gerektirir/JDK)
+if %jver_major% equ 11 if "%jver_minor%" equ "0" if %jver_revision% lss 10 echo(
+if %jver_major% equ 11 if "%jver_minor%" equ "0" if %jver_revision% lss 10 echo Eski bir Java 11 surumu kullandiginiz tespit edildi. Lutfen oracle.com'dan son surum Java 11 kurun.
+if %jver_major% equ 11 if "%jver_minor%" equ "0" if %jver_revision% lss 10 echo(
+if %jver_major% equ 11 if "%jver_minor%" equ "0" if %jver_revision% lss 10 echo https://www.oracle.com/java/technologies/javase-jdk11-downloads.html (Oracle hesabi gerektirir/JDK)
 
 if %found_working_java% equ false set tiered_compilation=false
 if %tiered_compilation% equ true set tiered_compilation0= -XX:+TieredCompilation
@@ -1262,7 +1264,7 @@ if %heap_above_12g% equ true if %heap_occupancy_percent% equ 15 set heap_occupan
 
 :: Mojang Recommended Client Defaults
 :: (excluding the starting of -Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC, which already in this script)
-set mojang_client_defaults= -XX:G1HeapRegionSize=32M -XX:G1ReservePercent=%reserve_percent% -XX:G1NewSizePercent=%new_size_percent% -XX:MaxGCPauseMillis=%max_gc_pause_millis% -XX:MaxGCMinorPauseMillis=%max_gc_pause_millis%
+set mojang_client_defaults= -XX:G1HeapRegionSize=32M -XX:G1ReservePercent=%reserve_percent% -XX:G1NewSizePercent=%new_size_percent% -XX:MaxGCPauseMillis=%max_gc_pause_millis% -XX:MaxGCMinorPauseMillis=%max_gc_pause_millis% -Xgc:targetPauseTime=%max_gc_pause_millis%
 
 if %max_ram% equ 512M set survivor_ratio=16
 if %max_ram% equ 256M set survivor_ratio=8
@@ -1334,7 +1336,7 @@ set graph_extra0= -Dawt.useSystemAAFontSettings=lcd -Dsun.java2d.opengl=true -Ds
 
 ::set jit_extra0= -XX:+UseJITServer
 set std_utf8= -Dsun.stderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8
-set yield_opt= -XX:+NoYieldsInMicrolock -XX:+DontYieldALot -XX:DontYieldALotInterval=10
+set yield_opt= -XX:+NoYieldsInMicrolock -XX:+DontYieldALot -XX:DontYieldALotInterval=50 -XX:+UseSpinning
 
 if %always_omit_stacktrace% equ false set code_details_in_exceptions0= -XX:+ShowCodeDetailsInExceptionMessages
 if %always_omit_stacktrace% equ true set code_details_in_exceptions0= -XX:-ShowCodeDetailsInExceptionMessages
@@ -1342,26 +1344,30 @@ if %always_omit_stacktrace% equ true set code_details_in_exceptions0= -XX:-ShowC
 set gc_extra0= -XX:G1ConcMarkStepDurationMillis=5 -XX:GCLockerRetryAllocationCount=4 -XX:+ShenandoahOptimizeStaticFinals -XX:+UseTLAB -XX:PausePadding=1 -XX:PromotedPadding=3 -XX:SurvivorPadding=3 -XX:+RegisterFinalizersAtInit -XX:+ClassUnloading -XX:+ClassUnloadingWithConcurrentMark -XX:+MethodFlushing
 set rtm_opt0= -XX:+UseRTMForStackLocks -XX:+UseRTMDeopt
 
-set instr_opt0= -XX:+UseMathExactIntrinsics -XX:+UseCharacterCompareIntrinsics -XX:+UseBASE64Intrinsics -XX:+UseVectorizedMismatchIntrinsic -XX:+UseCLMUL -XX:+UseNewLongLShift -XX:+UseFastStosb -XX:+UseXMMForObjInit -XX:+UseXMMForArrayCopy -XX:+UseUnalignedLoadStores -XX:+UseCountLeadingZerosInstruction -XX:+UseCountTrailingZerosInstruction -XX:+UseXmmI2D -XX:+UseXmmI2F -XX:+UseAdler32Intrinsics -XX:+UseCRC32Intrinsics -XX:+UseCRC32CIntrinsics -XX:+UseMD5 -XX:+UseMD5Intrinsics -XX:+UseSHA -XX:+UseSHA1Intrinsics -XX:+UseSHA3Intrinsics -XX:+UseSHA256Intrinsics -XX:+UseSHA512Intrinsics -XX:+UseGHASHIntrinsics -XX:+UseAES -XX:+UseAESIntrinsics -XX:+UseAESCTRIntrinsics -XX:+UseMontgomerySquareIntrinsic -XX:+UseMontgomeryMultiplyIntrinsic -XX:+UseMulAddIntrinsic -XX:+UseSquareToLenIntrinsic -XX:+UseMultiplyToLenIntrinsic -XX:+OptoPeephole -XX:+OptoScheduling -XX:+OptoRegScheduling -XX:+OptoBundling -XX:+InlineAccessors -XX:+BackgroundCompilation -XX:+InlineArrayCopy -XX:+UseInlineCaches -XX:+InlineReflectionGetCallerClass -XX:+OptimizePtrCompare -XX:+UseFastUnorderedTimeStamps -XX:+InlineIntrinsics -XX:+UseFastJNIAccessors -XX:+UseOnStackReplacement -XX:+SpecialArraysEquals -XX:+RewriteBytecodes -XX:+RewriteFrequentPairs -XX:+CompactStrings -XX:+UseLoopSafepoints -XX:+ReduceNumberOfCompilerThreads -XX:+CICompileOSR -XX:-FilterSpuriousWakeups -XX:+TrapBasedRangeChecks -XX:+SpecialStringEquals -XX:+ExpandSubTypeCheckAtParseTime -XX:+AlwaysSafeConstructors -XX:+UseBMI1Instructions -XX:+UseBMI2Instructions -XX:+UseFMA -XX:+UseCopySignIntrinsic -XX:+UseSignumIntrinsic
+set instr_opt0= -XX:+UseMathExactIntrinsics -XX:+UseCharacterCompareIntrinsics -XX:+UseBASE64Intrinsics -XX:+UseVectorizedMismatchIntrinsic -XX:+UseCLMUL -XX:+UseNewLongLShift -XX:+UseFastStosb -XX:+UseXMMForObjInit -XX:+UseXMMForArrayCopy -XX:+UseUnalignedLoadStores -XX:+UseCountLeadingZerosInstruction -XX:+UseCountTrailingZerosInstruction -XX:+UseXmmI2D -XX:+UseXmmI2F -XX:+UseAdler32Intrinsics -XX:+UseCRC32Intrinsics -XX:+UseCRC32CIntrinsics -XX:+UseMD5 -XX:+UseMD5Intrinsics -XX:+UseSHA -XX:+UseSHA1Intrinsics -XX:+UseSHA3Intrinsics -XX:+UseSHA256Intrinsics -XX:+UseSHA512Intrinsics -XX:+UseGHASHIntrinsics -XX:+UseAES -XX:+UseAESIntrinsics -XX:+UseAESCTRIntrinsics -XX:+UseMontgomerySquareIntrinsic -XX:+UseMontgomeryMultiplyIntrinsic -XX:+UseMulAddIntrinsic -XX:+UseSquareToLenIntrinsic -XX:+UseMultiplyToLenIntrinsic -XX:+OptoPeephole -XX:+OptoScheduling -XX:+OptoRegScheduling -XX:+OptoBundling -XX:+InlineAccessors -XX:+BackgroundCompilation -XX:+InlineArrayCopy -XX:+UseInlineCaches -XX:+InlineReflectionGetCallerClass -XX:+OptimizePtrCompare -XX:+UseFastUnorderedTimeStamps -XX:+InlineIntrinsics -XX:+UseFastJNIAccessors -XX:+UseOnStackReplacement -XX:+SpecialArraysEquals -XX:+RewriteBytecodes -XX:+RewriteFrequentPairs -XX:+UseLoopSafepoints -XX:+ReduceNumberOfCompilerThreads -XX:+CICompileOSR -XX:-FilterSpuriousWakeups -XX:+TrapBasedRangeChecks -XX:+SpecialStringEquals -XX:+ExpandSubTypeCheckAtParseTime -XX:+AlwaysSafeConstructors -XX:+UseBMI1Instructions -XX:+UseBMI2Instructions -XX:+UseFMA -XX:+UseCopySignIntrinsic -XX:+UseSignumIntrinsic
 
-if %jver_major% lss 16 set instr_opt0=%instr_opt0% -XX:+CriticalJNINatives
-if %jver_major% lss 15 set instr_opt0=%instr_opt0% -XX:+UseOptoBiasInlining
+if %jver_major% lss 17 set instr_opt0=%instr_opt0% -XX:Tier0Delay=20
+if %jver_major% lss 16 set instr_opt0=%instr_opt0% -XX:+CriticalJNINatives -XX:InlineSmallCode=2500 -XX:+UseSemaphoreGCThreadsSynchronization -XX:+UseRDPCForConstantTableBase
+if %jver_major% lss 15 set instr_opt0=%instr_opt0% -XX:+UseOptoBiasInlining -XX:+UseNewFieldLayout
 
-set windows_unsafe_opt0= -XX:+UseVectoredExceptions -XX:+UseFPUForSpilling -XX:+UseCISCSpill -XX:+SuperWordLoopUnrollAnalysis -XX:+SuperWordRTDepCheck -XX:+ -XX:+UseVectorCmov -XX:+UseCMoveUnconditionally
+set windows_unsafe_opt0= -XX:+UseVectoredExceptions -XX:+UseFPUForSpilling -XX:+UseCISCSpill -XX:+SuperWordLoopUnrollAnalysis -XX:+SuperWordRTDepCheck -XX:+ -XX:+UseVectorCmov -XX:+UseCMoveUnconditionally -XX:+OverrideVMProperties -XX:+UseOpenJSSE -XX:PreBlockSpin=100
 
 if %jver_major% lss 14 set windows_unsafe_opt0=%windows_unsafe_opt0% -XX:+BindGCTaskThreadsToCPUs
 
 if defined full_arguments echo WARNING: script variables not cleaned up properly - please close and re-open the script!
 
 if %jver_major% lss 11 set commerical0=-XX:+UnlockCommercialFeatures 
-set windows_unsafe_opt0=%windows_unsafe_opt0% -XX:+AdjustConcurrency -XX:+UseVMInterruptibleIO -XX:+UseNiagaraInstrs -XX:-UseNotificationThread -XX:+UncommonNullCast
+set windows_unsafe_opt0=%windows_unsafe_opt0% -XX:+AdjustConcurrency -XX:+UseVMInterruptibleIO -XX:+UseNiagaraInstrs -XX:-UseNotificationThread -XX:+UncommonNullCast -XX:+OptimizeFill -XX:+IncrementalInlineMH -XX:+IncrementalInlineVirtual -XX:+EnableVectorSupport
 
 :: not required on latest versions as it has Timer hack thread from NMS
 set windows_unsafe_opt0=%windows_unsafe_opt0% -XX:+ForceTimeHighResolution
 
+:: may cause an exception on OpenJ9, it is default disabled
+::set windows_unsafe_opt0=%windows_unsafe_opt0% -XX:+CompactStrings
+
 set controversial_may_delay_start_up= -XX:+AlwaysCompileLoopMethods
 
-set full_arguments=%commerical0%-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+IgnoreUnrecognizedVMOptions -XX:-PrintWarnings%additional_commands% -Xms%min_ram% -Xmx%max_ram%%enable_assertions0%%unsync_load_class0%%truffle_enable0% -XX:-DontCompileHugeMethods -XX:+TrustFinalNonStaticFields -XX:+UseCondCardMark -XX:+EliminateLocks -XX:+EliminateAllocations -XX:+EliminateAutoBox -XX+DoEscapeAnalysis -XX:+InlineWarmCalls%gc_extra0%%rtm_opt0%%jit_extra0%%instr_opt0%%aikar_additional%%mojang_client_defaults% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%enable_preview0% -Xtune:virtualized -Xgc:concurrentScavenge -Xgc:dnssExpectedTimeRatioMaximum=3 -Xgc:scvNoAdaptiveTenure -XX:+ClassRelationshipVerifier -Xshare:auto%use_cds0%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -XX:+UseNUMA -XX:+UseNUMAInterleaving%code_details_in_exceptions0% -XX:UseSSE=4 -XX:+UseSSE42Intrinsics%lock_optimization_prejava15% -XX:+UseGCOverheadLimit -XX:-NeverActAsServerClassMachine -XX:+UseG1GC%jvmci_enable0% -XX:+PerfDisableSharedMem -XX:-UsePerfData -XX:+DisableAttachMechanism -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities%non_portable1% -XX:-PortableSharedCache -XX:+UseCGroupMemoryLimit -XX:+UseContainerSupport%java8_backported_defaults% -XX:+UseOSErrorReporting%windows_unsafe_opt0% -DMojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe=heapdump -Dcom.mojang.mojangTricksIntelDriversForPerformance=java.exe_MinecraftLauncher.exe=hprof%tiered_compilation0% -XX:+UseFastAccessorMethods%controversial_may_delay_start_up% -XX:+AllowUserSignalHandlers -XX:+UseSignalChaining -XX:+UseTLAB -XX:+ReduceCPUMonitorOverhead%yield_opt% -XX:+CMSIncrementalPacing%cms0% -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled -XX:+ExplicitGCInvokesConcurrent -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses%omit_stacktrace0%%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches%optimize_sk_parser0%%fml_parameters0% -Djava.lang.string.substring.nocopy=true -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true -Dhttp.maxConnections=100%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=%connect_timeout% -Dsun.net.client.defaultReadTimeout=%read_timeout% -Dskript.dontUseNamesForSerialization=true -Dcom.ibm.tools.attach.enable=no -Djdk.useMethodHandlesForReflection=true -Djdk.util.jar.enableMultiRelease=force -Dkotlinx.coroutines.debug=off%graph_extra0%%head_less00% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8%std_utf8% -Duser.language="" -Duser.country="" -Duser.variant="" -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -Dpolyglot.js.nashorn-compat=true -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dusing.lifemcserver.flags=https://flags.lifemcserver.com -Dflags.lifemcserver.com.version="%version%" -Dflags.lifemcserver.com.vendor="%vendor%"%jansi_parameters%%log4j_config_parameter%%log4j_perf0%%non_portable2%%netty_additional_arguments%%non_portable01%%non_portable0%
+set full_arguments=%commerical0%-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+IgnoreUnrecognizedVMOptions -XX:-PrintWarnings%additional_commands% -Xms%min_ram% -Xmx%max_ram%%enable_assertions0% -Xargencoding:utf8%unsync_load_class0%%truffle_enable0% -XX:-DontCompileHugeMethods -XX:+TrustFinalNonStaticFields -XX:+UseCondCardMark -XX:+EliminateLocks -XX:+EliminateAllocations -XX:+EliminateAutoBox -XX+DoEscapeAnalysis -XX:+InlineWarmCalls%gc_extra0%%rtm_opt0%%jit_extra0%%instr_opt0%%aikar_additional%%mojang_client_defaults% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%enable_preview0% -Xtune:virtualized -Xgc:concurrentScavenge -Xgc:dnssExpectedTimeRatioMaximum=1 -Xgc:excessiveGCratio=99 -Xgc:scvNoAdaptiveTenure -XX:+ClassRelationshipVerifier -Xshare:auto%use_cds0%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -XX:+UseNUMA -XX:+UseNUMAInterleaving%code_details_in_exceptions0% -XX:UseSSE=4 -XX:+UseSSE42Intrinsics%lock_optimization_prejava15% -XX:+UseGCOverheadLimit -XX:-NeverActAsServerClassMachine -XX:+UseG1GC%jvmci_enable0% -XX:+PerfDisableSharedMem -XX:-UsePerfData -XX:+DisableAttachMechanism -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities%non_portable1% -XX:-PortableSharedCache -XX:+UseCGroupMemoryLimit -XX:+UseContainerSupport%java8_backported_defaults% -XX:+UseOSErrorReporting%windows_unsafe_opt0% -DMojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe=heapdump -Dcom.mojang.mojangTricksIntelDriversForPerformance=java.exe_MinecraftLauncher.exe=hprof%tiered_compilation0% -XX:+UseFastAccessorMethods%controversial_may_delay_start_up% -XX:+AllowUserSignalHandlers -XX:+UseSignalChaining -XX:+UseTLAB -XX:+ReduceCPUMonitorOverhead%yield_opt% -XX:+CMSIncrementalPacing%cms0% -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled -XX:+ExplicitGCInvokesConcurrent -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses%omit_stacktrace0%%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches%optimize_sk_parser0%%fml_parameters0% -Djava.lang.string.substring.nocopy=true -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true -Dhttp.maxConnections=100%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=%connect_timeout% -Dsun.net.client.defaultReadTimeout=%read_timeout% -Dskript.dontUseNamesForSerialization=true -Dcom.ibm.tools.attach.enable=no -Djdk.useMethodHandlesForReflection=true -Djdk.util.jar.enableMultiRelease=force -Dkotlinx.coroutines.debug=off%graph_extra0%%head_less00% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8%std_utf8% -Duser.language="" -Duser.country="" -Duser.variant="" -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -Dpolyglot.js.nashorn-compat=true -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dusing.lifemcserver.flags=https://flags.lifemcserver.com -Dflags.lifemcserver.com.version="%version%" -Dflags.lifemcserver.com.vendor="%vendor%"%jansi_parameters%%log4j_config_parameter%%log4j_perf0%%non_portable2%%netty_additional_arguments%%non_portable01%%non_portable0%
 
 set full_arguments_nonclient00=%full_arguments%
 set full_arguments=%full_arguments%%non_client00%
@@ -1405,7 +1411,7 @@ set _JAVA_OPTS=%full_arguments_nonclient00%
 set commit_id_rev1=1b51e3c
 if not exist "%scriptdir%cache\.YamlExactSetCli.updated.%commit_id_rev1%.lock" (
  echo true> "%scriptdir%cache\.YamlExactSetCli.updated.%commit_id_rev1%.lock"
- del "%scriptdir%cache\YamlExactSetCli.jar"
+ if exist "%scriptdir%cache\YamlExactSetCli.jar" del "%scriptdir%cache\YamlExactSetCli.jar"
 )
 
 if not exist "%scriptdir%cache\YamlExactSetCli.jar" if %disable_powershell% equ false if %verbose_info% equ true echo Downloading yaml utility...
