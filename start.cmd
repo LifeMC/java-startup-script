@@ -43,7 +43,7 @@
 :: Discord: https://discord.gg/tmupwqn - Tanitim Konusu: https://flags.lifemcserver.com
 
 
-@echo on
+@echo off
 
 :: Turkce karakter sorunu yasiyorsaniz alttaki satirin basindaki :: i kaldirin.
 :: Not: Bu konsol fontunu kotu gozuken bir font ile degistirebilir.
@@ -61,7 +61,7 @@ if not "%ProgramFiles(x86)%" == "" set "SystemPath=%SystemRoot%\Sysnative"
 
 if exist "%SystemPath%\cmd.exe" if exist "%0" if not "%1" == "true" start "" /elevate /b "%SystemPath%\cmd.exe" "%0" true
 
-if not defined in_subprocess (cmd /e:on /v:on /f:off /k set in_subprocess=y ^& %0 %*) & exit )
+if not defined in_subprocess (cmd /q /e:on /v:on /f:off /k set in_subprocess=y ^& %0 %*) & exit )
 
 :: SURUM - degistermeniz onerilmez
 
@@ -1393,7 +1393,7 @@ if %print_java_version% equ true set full_arguments=-showversion %full_arguments
 if %verbose_info% equ true echo Starting Java with the final command %java_command% %full_arguments%
 
 set start_code=%java_command% %full_arguments%
-if "%for_client%" equ "true" set start_code=%full_arguments%
+if "%for_client%" equ "true" set "start_code=%full_arguments%"
 
 if "%3" equ "print" echo(
 if "%3" equ "print" echo Baslatma kodlari: %start_code%
