@@ -391,7 +391,7 @@ if not "x%settings_preset:dev=%" == "x%settings_preset%" (
  set messagebox_on_error=true
  set omit_stacktrace=false
  ::set additional_commands= -XX:+PrintFlagsFinal 
- set additional_commands= -Xcheck:jni -Xfuture -XX:+PreserveFramePointer -XX:+PoisonOSREntry -XX:+EagerXrunInit
+ set additional_commands= -XX:+PrintWarnings -Xcheck:jni -Xfuture -XX:+PreserveFramePointer -XX:+PoisonOSREntry -XX:+EagerXrunInit -XX:DiagnoseSyncOnValueBasedClasses
  echo Gelistirici hazir ayarlari uygulandi.
  echo(
  echo Not: Bu ayarlar sadece test sunuculari ve gelistiriciler icindir!
@@ -628,7 +628,7 @@ if %disable_powershell% equ false if %check_for_updates% equ true if %checked_fo
 
 if %checked_for_updates% equ false if %vendor% equ %vendor_original% set checked_for_updates=true
 
-if "%3" equ "version" set game_version=%4%
+if "%3" equ "version" set game_version=%4
 
 if exist "%jar_name%.jar" (
  set disable_powershell_oldvalue=%disable_powershell%
@@ -1072,7 +1072,7 @@ if %less_ram% equ false set less_ram1= -XX:+DisableExplicitGC
 :: Artik gereksiz, varsayilan olarak 1024K zaten
 ::if %less_ram% equ true set min_ram=1M
 
-if %use_secure_tls% equ true set use_secure_tls0= -Dhttps.protocols=TLSv1.3,TLSv1.2 -Dmail.smtp.ssl.protocols=TLSv1.3,TLSv1.2
+if %use_secure_tls% equ true set use_secure_tls0= -Dhttps.protocols=TLSv1.3,TLSv1.2 -Dmail.smtp.ssl.protocols=TLSv1.3,TLSv1.2 -XX:+UseOpenJSSE
 
 if %use_server_vm% equ true set use_server_vm0= -server
 if %enable_assertions% equ true set enable_assertions0= -esa -ea -Xverify:all
@@ -1198,7 +1198,10 @@ if %jansi_force% equ true set jansi_parameters=%jansi_parameters% -Djansi.force=
 if %verbose_info% equ true echo Cleaning up old leftover JANSI DLL files...
 
 del /f /q "%scriptdir%cache\jansi*.dll" > nul 2> nul
+del /f /q "%scriptdir%cache\jansi*.so" > nul 2> nul
+
 del /f /q "%tmp%\jansi*.dll" > nul 2> nul
+del /f /q "%tmp%\jansi*.so" > nul 2> nul
 
 del /f /q "%tmp%\hsperfdata_*" > nul 2> nul
 
@@ -1308,7 +1311,7 @@ if %gc_logging% equ true if not %jver_major% geq 11 set gc_logging0= -Xloggc:gc.
 
 if %enable_preview% equ true set enable_preview0= --enable-preview
 
-::set optimize_sk_parser0= -XX:CompileCommand=quiet -XX:CompileCommand=compileonly,ch/njol/skript/SkriptParser.parse_i -XX:CompileCommand=inline,ch/njol/skript/SkriptParser.parse_i
+set optimize_sk_parser0= -XX:CompileCommand=quiet -XX:CompileCommand=compileonly,ch/njol/skript/SkriptParser.parse_i -XX:CompileCommand=inline,ch/njol/skript/SkriptParser.parse_i
 
 ::set jvmci_enable0= -XX:+EnableJVMCIProduct
 ::set truffle_enable0= -truffle
@@ -1347,7 +1350,7 @@ set graph_extra0= -Dawt.useSystemAAFontSettings=lcd -Dsun.java2d.opengl=true -Ds
 
 ::set jit_extra0= -XX:+UseJITServer
 set std_utf8= -Dsun.stderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8
-set yield_opt= -XX:+NoYieldsInMicrolock -XX:+DontYieldALot -XX:DontYieldALotInterval=50 -XX:+UseSpinning
+set yield_opt= -XX:+NoYieldsInMicrolock -XX:+DontYieldALot -XX:DontYieldALotInterval=%gc_pause_interval_millis% -XX:+UseSpinning
 
 if %always_omit_stacktrace% equ false set code_details_in_exceptions0= -XX:+ShowCodeDetailsInExceptionMessages
 if %always_omit_stacktrace% equ true set code_details_in_exceptions0= -XX:-ShowCodeDetailsInExceptionMessages
@@ -1355,7 +1358,9 @@ if %always_omit_stacktrace% equ true set code_details_in_exceptions0= -XX:-ShowC
 set gc_extra0= -XX:G1ConcMarkStepDurationMillis=5 -XX:GCLockerRetryAllocationCount=4 -XX:+ShenandoahOptimizeStaticFinals -XX:+UseTLAB -XX:PausePadding=1 -XX:PromotedPadding=3 -XX:SurvivorPadding=3 -XX:+RegisterFinalizersAtInit -XX:+ClassUnloading -XX:+ClassUnloadingWithConcurrentMark -XX:+MethodFlushing
 set rtm_opt0= -XX:+UseRTMForStackLocks -XX:+UseRTMDeopt
 
-set instr_opt0= -XX:+UseMathExactIntrinsics -XX:+UseCharacterCompareIntrinsics -XX:+UseBASE64Intrinsics -XX:+UseVectorizedMismatchIntrinsic -XX:+UseCLMUL -XX:+UseNewLongLShift -XX:+UseFastStosb -XX:+UseXMMForObjInit -XX:+UseXMMForArrayCopy -XX:+UseUnalignedLoadStores -XX:+UseCountLeadingZerosInstruction -XX:+UseCountTrailingZerosInstruction -XX:+UseXmmI2D -XX:+UseXmmI2F -XX:+UseAdler32Intrinsics -XX:+UseCRC32Intrinsics -XX:+UseCRC32CIntrinsics -XX:+UseMD5 -XX:+UseMD5Intrinsics -XX:+UseSHA -XX:+UseSHA1Intrinsics -XX:+UseSHA3Intrinsics -XX:+UseSHA256Intrinsics -XX:+UseSHA512Intrinsics -XX:+UseGHASHIntrinsics -XX:+UseAES -XX:+UseAESIntrinsics -XX:+UseAESCTRIntrinsics -XX:+UseMontgomerySquareIntrinsic -XX:+UseMontgomeryMultiplyIntrinsic -XX:+UseMulAddIntrinsic -XX:+UseSquareToLenIntrinsic -XX:+UseMultiplyToLenIntrinsic -XX:+OptoPeephole -XX:+OptoScheduling -XX:+OptoRegScheduling -XX:+OptoBundling -XX:+InlineAccessors -XX:+BackgroundCompilation -XX:+InlineArrayCopy -XX:+UseInlineCaches -XX:+InlineReflectionGetCallerClass -XX:+OptimizePtrCompare -XX:+UseFastUnorderedTimeStamps -XX:+InlineIntrinsics -XX:+UseFastJNIAccessors -XX:+UseOnStackReplacement -XX:+SpecialArraysEquals -XX:+RewriteBytecodes -XX:+RewriteFrequentPairs -XX:+UseLoopSafepoints -XX:+ReduceNumberOfCompilerThreads -XX:+CICompileOSR -XX:-FilterSpuriousWakeups -XX:+TrapBasedRangeChecks -XX:+SpecialStringEquals -XX:+ExpandSubTypeCheckAtParseTime -XX:+AlwaysSafeConstructors -XX:+UseBMI1Instructions -XX:+UseBMI2Instructions -XX:+UseFMA -XX:+UseCopySignIntrinsic -XX:+UseSignumIntrinsic
+set instr_opt0= -XX:+UseMathExactIntrinsics -XX:+UseCharacterCompareIntrinsics -XX:+UseBASE64Intrinsics -XX:+UseVectorizedMismatchIntrinsic -XX:+UseCLMUL -XX:+UseNewLongLShift -XX:+UseFastStosb -XX:+UseXMMForObjInit -XX:+UseXMMForArrayCopy -XX:+UseUnalignedLoadStores -XX:+UseCountLeadingZerosInstruction -XX:+UseCountTrailingZerosInstruction -XX:+UseXmmI2D -XX:+UseXmmI2F -XX:+UseAdler32Intrinsics -XX:+UseCRC32Intrinsics -XX:+UseCRC32CIntrinsics -XX:+UseMD5 -XX:+UseMD5Intrinsics -XX:+UseSHA -XX:+UseSHA1Intrinsics -XX:+UseSHA3Intrinsics -XX:+UseSHA256Intrinsics -XX:+UseSHA512Intrinsics -XX:+UseGHASHIntrinsics -XX:+UseAES -XX:+UseAESIntrinsics -XX:+UseAESCTRIntrinsics -XX:+UseMontgomerySquareIntrinsic -XX:+UseMontgomeryMultiplyIntrinsic -XX:+UseMulAddIntrinsic -XX:+UseSquareToLenIntrinsic -XX:+UseMultiplyToLenIntrinsic -XX:+OptoPeephole -XX:+OptoScheduling -XX:+OptoRegScheduling -XX:+OptoBundling -XX:+InlineAccessors -XX:+BackgroundCompilation -XX:+InlineArrayCopy -XX:+UseInlineCaches -XX:+InlineReflectionGetCallerClass -XX:+OptimizePtrCompare -XX:+UseFastUnorderedTimeStamps -XX:+InlineIntrinsics -XX:+UseFastJNIAccessors -XX:+UseOnStackReplacement -XX:+SpecialArraysEquals -XX:+RewriteBytecodes -XX:+RewriteFrequentPairs -XX:+UseLoopSafepoints -XX:+ReduceNumberOfCompilerThreads -XX:+CICompileOSR -XX:-FilterSpuriousWakeups -XX:+TrapBasedRangeChecks -XX:+SpecialStringEquals -XX:+ExpandSubTypeCheckAtParseTime -XX:+AlwaysSafeConstructors -XX:+UseBMI1Instructions -XX:+UseBMI2Instructions -XX:+UseFMA -XX:+UseCopySignIntrinsic -XX:+UseSignumIntrinsic -XX:+InlineUnsafeOps -XX:+UseAVX -XX:+InvokeDynamic -XX:+MethodHandleSupport -XX:+AnonymousClasses -XX:+InterfaceInjection -XX:+TailCalls -XX:+TupleSignatures -XX:+ImmediateWrappers -XX:-RestrictReservedStack -XX:+UseFastEmptyMethods -XX:+UseSplitVerifier -XX:+CMSCleanOnEnter -XX:+CMSConcurrentMTEnabled -XX:+CMSParallelSurvivorRemarkEnabled -XX:+UseFastLocking -XX:+InlineClassNatives -XX:+ConvertCmpD2CmpF -XX:+IdealizeClearArrayNode -XX:+CICompilerNatives -XX:+InlineDataFile -XX:+AllowVectorizeOnDemand
+
+set instr_controversial_opt0= -XX:AllocatePrefetchStyle=3 -XX:+UseCodeAging
 
 if %jver_major% lss 17 set instr_opt0=%instr_opt0% -XX:Tier0Delay=20
 if %jver_major% lss 16 set instr_opt0=%instr_opt0% -XX:+CriticalJNINatives -XX:InlineSmallCode=2500 -XX:+UseSemaphoreGCThreadsSynchronization -XX:+UseRDPCForConstantTableBase
@@ -1378,7 +1383,7 @@ set windows_unsafe_opt0=%windows_unsafe_opt0% -XX:+ForceTimeHighResolution
 
 set controversial_may_delay_start_up= -XX:+AlwaysCompileLoopMethods
 
-set full_arguments=%commerical0%-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+IgnoreUnrecognizedVMOptions -XX:-PrintWarnings%additional_commands% -Xms%min_ram% -Xmx%max_ram%%enable_assertions0% -Xargencoding:utf8%unsync_load_class0%%truffle_enable0% -XX:-DontCompileHugeMethods -XX:+TrustFinalNonStaticFields -XX:+UseCondCardMark -XX:+EliminateLocks -XX:+EliminateAllocations -XX:+EliminateAutoBox -XX+DoEscapeAnalysis -XX:+InlineWarmCalls%gc_extra0%%rtm_opt0%%jit_extra0%%instr_opt0%%aikar_additional%%mojang_client_defaults% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%enable_preview0% -Xtune:virtualized -Xgc:concurrentScavenge -Xgc:dnssExpectedTimeRatioMaximum=1 -Xgc:excessiveGCratio=99 -Xgc:scvNoAdaptiveTenure -XX:+ClassRelationshipVerifier -Xshare:auto%use_cds0%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -XX:+UseNUMA -XX:+UseNUMAInterleaving%code_details_in_exceptions0% -XX:UseSSE=4 -XX:+UseSSE42Intrinsics%lock_optimization_prejava15% -XX:+UseGCOverheadLimit -XX:-NeverActAsServerClassMachine -XX:+UseG1GC%jvmci_enable0% -XX:+PerfDisableSharedMem -XX:-UsePerfData -XX:+DisableAttachMechanism -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities%non_portable1% -XX:-PortableSharedCache -XX:+UseCGroupMemoryLimit -XX:+UseContainerSupport%java8_backported_defaults% -XX:+UseOSErrorReporting%windows_unsafe_opt0% -DMojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe=heapdump -Dcom.mojang.mojangTricksIntelDriversForPerformance=java.exe_MinecraftLauncher.exe=hprof%tiered_compilation0% -XX:+UseFastAccessorMethods%controversial_may_delay_start_up% -XX:+AllowUserSignalHandlers -XX:+UseSignalChaining -XX:+UseTLAB -XX:+ReduceCPUMonitorOverhead%yield_opt% -XX:+CMSIncrementalPacing%cms0% -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled -XX:+ExplicitGCInvokesConcurrent -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses%omit_stacktrace0%%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches%optimize_sk_parser0%%fml_parameters0% -Djava.lang.string.substring.nocopy=true -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true -Dhttp.maxConnections=100%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=%connect_timeout% -Dsun.net.client.defaultReadTimeout=%read_timeout% -Dskript.dontUseNamesForSerialization=true -Dcom.ibm.tools.attach.enable=no -Djdk.useMethodHandlesForReflection=true -Djdk.util.jar.enableMultiRelease=force -Dkotlinx.coroutines.debug=off%graph_extra0%%head_less00% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8%std_utf8% -Duser.language="" -Duser.country="" -Duser.variant="" -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -Dpolyglot.js.nashorn-compat=true -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dusing.lifemcserver.flags=https://flags.lifemcserver.com -Dflags.lifemcserver.com.version="%version%" -Dflags.lifemcserver.com.vendor="%vendor%"%jansi_parameters%%log4j_config_parameter%%log4j_perf0%%non_portable2%%netty_additional_arguments%%non_portable01%%non_portable0%
+set full_arguments=%commerical0%-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+IgnoreUnrecognizedVMOptions -XX:-PrintWarnings%additional_commands% -Xms%min_ram% -Xmx%max_ram%%enable_assertions0% -Xargencoding:utf8%unsync_load_class0%%truffle_enable0% -XX:-DontCompileHugeMethods -XX:+TrustFinalNonStaticFields -XX:+UseCondCardMark -XX:+EliminateLocks -XX:+EliminateAllocations -XX:+EliminateAutoBox -XX:+EliminateNullChecks -XX:+EliminateFieldAccess -XX:+EliminateBlocks -XX+DoEscapeAnalysis -XX:+InlineWarmCalls%gc_extra0%%rtm_opt0%%jit_extra0%%instr_opt0%%instr_controversial_opt0%%aikar_additional%%mojang_client_defaults% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%enable_preview0% -Xtune:virtualized -Xgc:concurrentScavenge -Xgc:dnssExpectedTimeRatioMaximum=1 -Xgc:excessiveGCratio=99 -Xgc:scvNoAdaptiveTenure -XX:+ClassRelationshipVerifier -Xshare:auto%use_cds0%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -XX:+UseNUMA -XX:+UseNUMAInterleaving%code_details_in_exceptions0% -XX:UseSSE=4 -XX:+UseSSE42Intrinsics%lock_optimization_prejava15% -XX:+UseGCOverheadLimit -XX:-NeverActAsServerClassMachine -XX:+AlwaysActAsServerClassMachine -XX:+UseG1GC%jvmci_enable0% -XX:+PerfDisableSharedMem -XX:-UsePerfData -XX:+DisableAttachMechanism -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities%non_portable1% -XX:-PortableSharedCache -XX:+UseCGroupMemoryLimit -XX:+UseContainerSupport%java8_backported_defaults% -XX:+UseOSErrorReporting%windows_unsafe_opt0% -DMojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe=heapdump -Dcom.mojang.mojangTricksIntelDriversForPerformance=java.exe_MinecraftLauncher.exe=hprof%tiered_compilation0% -XX:+UseFastAccessorMethods%controversial_may_delay_start_up% -XX:+AllowUserSignalHandlers -XX:+UseSignalChaining -XX:+UseTLAB -XX:+ReduceCPUMonitorOverhead%yield_opt% -XX:+CMSIncrementalPacing%cms0% -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled -XX:+ExplicitGCInvokesConcurrent -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses%omit_stacktrace0%%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches%optimize_sk_parser0%%fml_parameters0% -Djava.lang.string.substring.nocopy=false -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true -Dhttp.maxConnections=100%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=%connect_timeout% -Dsun.net.client.defaultReadTimeout=%read_timeout% -Dskript.dontUseNamesForSerialization=true -Dcom.ibm.tools.attach.enable=no -Djdk.useMethodHandlesForReflection=true -Djdk.util.jar.enableMultiRelease=force -Dkotlinx.coroutines.debug=off%graph_extra0%%head_less00% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8%std_utf8% -Duser.language="" -Duser.country="" -Duser.variant="" -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -Dpolyglot.js.nashorn-compat=true -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dusing.lifemcserver.flags=https://flags.lifemcserver.com -Dflags.lifemcserver.com.version="%version%" -Dflags.lifemcserver.com.vendor="%vendor%"%jansi_parameters%%log4j_config_parameter%%log4j_perf0%%non_portable2%%netty_additional_arguments%%non_portable01%%non_portable0%
 
 set full_arguments_nonclient00=%full_arguments%
 set full_arguments=%full_arguments%%non_client00%
@@ -1404,11 +1409,14 @@ if "%1" equ "gencode" if "%2" equ "mac" echo #^^!/usr/bin/env bash > %~n0.sh
 if "%1" equ "gencode" if "%2" equ "mac" echo %java_command% %full_arguments% >> %~n0.sh
 
 if "%3" equ "save" (
- if "%for_client%" equ true echo(
- if "%for_client%" equ true echo Client uyumlu kod %5% olarak kaydedildi.
- if "%for_client%" equ true echo %start_code% > %5%
- 
- if exist "%~n0.sh" move "%~n0.sh" "%5%"
+ if defined %5 set output_file=%5
+ if not defined %5 set output_file=%~n0.sh
+
+ if "%for_client%" equ "true" echo(
+ if "%for_client%" equ "true" echo Client uyumlu kod %output_file% olarak kaydedildi.
+ if "%for_client%" equ "true" echo %start_code% > %output_file%
+
+ if exist "%~n0.sh" move /y "%~n0.sh" "%5"
 )
 
 if "%4" equ "exit" (
@@ -1430,6 +1438,8 @@ if "%for_client%" equ "true" set full_arguments=%full_arguments%%non_client00%
 
 set JAVA_OPTS=%full_arguments_nonclient00%
 set _JAVA_OPTS=%full_arguments_nonclient00%
+
+set JAVA_TOOL_OPTIONS=%full_arguments_nonclient00%
 
 :: Update Revision 1: Fixed JAR Sealing related errors on OpenJ9
 set commit_id_rev1=1b51e3c
