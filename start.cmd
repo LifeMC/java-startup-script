@@ -43,7 +43,7 @@
 :: Discord: https://discord.gg/tmupwqn - Tanitim Konusu: https://flags.lifemcserver.com
 
 
-@echo off
+@echo on
 
 :: Turkce karakter sorunu yasiyorsaniz alttaki satirin basindaki :: i kaldirin.
 :: Not: Bu konsol fontunu kotu gozuken bir font ile degistirebilir.
@@ -61,7 +61,7 @@ if not "%ProgramFiles(x86)%" == "" set "SystemPath=%SystemRoot%\Sysnative"
 
 if exist "%SystemPath%\cmd.exe" if exist "%0" if not "%1" == "true" start "" /elevate /b "%SystemPath%\cmd.exe" "%0" true
 
-if not defined in_subprocess (cmd /q /e:on /v:on /f:off /k set in_subprocess=y ^& %0 %*) & exit )
+if not defined in_subprocess (cmd /e:on /v:on /f:off /k set in_subprocess=y ^& %0 %*) & exit )
 
 :: SURUM - degistermeniz onerilmez
 
