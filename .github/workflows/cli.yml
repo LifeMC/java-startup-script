@@ -69,8 +69,8 @@ jobs:
                     .\start.cmd gencode mac save exit mac.sh
                     .\start.cmd gencode linux exit
 
+                    git add start.sh
                     git update-index --chmod=+x start.sh
-                    git update-index --chmod=+x mac.sh
                 if: runner.os == 'Windows'
 
             -   name: Test CLI
