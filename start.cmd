@@ -1311,7 +1311,7 @@ if %gc_logging% equ true if not %jver_major% geq 11 set gc_logging0= -Xloggc:gc.
 
 if %enable_preview% equ true set enable_preview0= --enable-preview
 
-set optimize_sk_parser0= -XX:CompileCommand=quiet -XX:CompileCommand=compileonly,ch/njol/skript/SkriptParser.parse_i -XX:CompileCommand=inline,ch/njol/skript/SkriptParser.parse_i
+set optimize_sk_parser0= -XX:CompileCommand=quiet -XX:CompileCommand=inline,ch/njol/skript/SkriptParser.parse_i
 
 ::set jvmci_enable0= -XX:+EnableJVMCIProduct
 ::set truffle_enable0= -truffle
