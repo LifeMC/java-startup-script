@@ -1311,7 +1311,27 @@ if %gc_logging% equ true if not %jver_major% geq 11 set gc_logging0= -Xloggc:gc.
 
 if %enable_preview% equ true set enable_preview0= --enable-preview
 
-set optimize_sk_parser0= -XX:CompileCommand=quiet -XX:CompileCommand=inline,ch/njol/skript/SkriptParser.parse_i
+set nms_version=v1_16_R3
+
+if "%game_version" equ "1.16.1" set nms_version=v1_16_R1
+if "%game_version" equ "1.16.3" set nms_version=v1_16_R2
+
+if "%game_version%" equ "1.8" set nms_version=v1_8_R1
+if "%game_version%" equ "1.8.8" set nms_version=v1_8_R3
+
+if "%game_version%" equ "1.9.4" set nms_version=v1_9_R2
+
+if "%game_version%" equ "1.10.2" set nms_version=v1_10_R1
+if "%game_version%" equ "1.11.2" set nms_version=v1_11_R1
+if "%game_version%" equ "1.12.2" set nms_version=v1_12_R1
+if "%game_version%" equ "1.13.2" set nms_version=v1_13_R2
+if "%game_version%" equ "1.14.4" set nms_version=v1_14_R1
+if "%game_version%" equ "1.15.2" set nms_version=v1_15_R1
+
+:: This first started out to optimize Skript's parser,
+:: but now includes many methods to help the compiler decide inlining better,
+:: for hot methods. These methods usually show up on Spark reports.
+set optimize_sk_parser0= -XX:CompileCommand=quiet -XX:CompileCommand=inline,ch/njol/skript/SkriptParser.parse_i -XX:CompileCommand=inline,net/minecraft/server/%nms_version%/PlayerChunkMap.forEachVisibleChunk -XX:CompileCommand=inline,net/minecraft/server/%nms_version%/PlayerChunkMap.isOutsideOfRange -XX:CompileCommand=inline,java/util/concurrent/CompletableFuture.getNow -XX:CompileCommand=inline,net/minecraft/server/%nms_version%/ChunkProviderServer$$Lambda$4300/0x00000000801896ab8.accept -XX:CompileCommand=inline,net/minecraft/server/%nms_version%/ChunkProviderServer.lambda$tickChunks$14 -XX:CompileCommand=inline,net/minecraft/server/%nms_version%/MinecraftServer/RollingAverage.getAverage -XX:CompileCommand=inline,net/minecraft/server/%nms_version%/IAsyncTaskHandler.awaitTasks -XX:CompileCommand=inline,net/minecraft/server/%nms_version%/MinecraftServer.executeNext -XX:CompileCommand=inline,net/minecraft/server/%nms_version%/IAsyncTaskHandler.waitForTasks -XX:CompileCommand=inline,java/util/concurrent/locks/LockSupport.parkNanos -XX:CompileCommand=inline,java/lang/Thread.yield -XX:CompileCommand=inline,net/minecraft/server/%nms_version%/EntityLiving.tick
 
 ::set jvmci_enable0= -XX:+EnableJVMCIProduct
 ::set truffle_enable0= -truffle
