@@ -1331,7 +1331,7 @@ if "%game_version%" equ "1.15.2" set nms_version=v1_15_R1
 :: This first started out to optimize Skript's parser,
 :: but now includes many methods to help the compiler decide inlining better,
 :: for hot methods. These methods usually show up on Spark reports.
-set optimize_sk_parser0= -XX:CompileCommand=quiet -XX:CompileCommand=inline,*._i -XX:CompileCommand=inline,*.forEachVisibleChunk -XX:CompileCommand=inline,*.isOutsideOfRange -XX:CompileCommand=inline,*.getNow -XX:CompileCommand=inline,*.0x00000000801896ab8::accept -XX:CompileCommand=inline,*.lambda$tickChunks$14 -XX:CompileCommand=inline,*.getAverage -XX:CompileCommand=inline,*.awaitTasks -XX:CompileCommand=inline,*.executeNext -XX:CompileCommand=inline,*.waitForTasks -XX:CompileCommand=inline,*.parkNanos -XX:CompileCommand=inline,*.yield -XX:CompileCommand=inline,*.tick -XX:CompileCommand=inline,*.sleep -XX:CompileCommand=inline,*.getItemMeta
+set optimize_sk_parser0= -XX:CompileCommand=quiet -XX:CompileCommand=inline,*._i -XX:CompileCommand=inline,*.forEachVisibleChunk -XX:CompileCommand=inline,*.isOutsideOfRange -XX:CompileCommand=inline,*.getNow -XX:CompileCommand=inline,*.accept -XX:CompileCommand=inline,*.lambda$tickChunks$14 -XX:CompileCommand=inline,*.getAverage -XX:CompileCommand=inline,*.awaitTasks -XX:CompileCommand=inline,*.executeNext -XX:CompileCommand=inline,*.waitForTasks -XX:CompileCommand=inline,*.parkNanos -XX:CompileCommand=inline,*.yield -XX:CompileCommand=inline,*.tick -XX:CompileCommand=inline,*.sleep -XX:CompileCommand=inline,*.getItemMeta
 ::set jvmci_enable0= -XX:+EnableJVMCIProduct
 ::set truffle_enable0= -truffle
 
