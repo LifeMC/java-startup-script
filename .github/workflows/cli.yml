@@ -69,7 +69,7 @@ jobs:
                     .\start.cmd gencode mac save exit mac.sh
                     .\start.cmd gencode linux exit
 
-                    git add start.sh
+                    git add -f start.sh
                     git update-index --chmod=+x start.sh
                 if: runner.os == 'Windows'
 
