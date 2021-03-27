@@ -43,7 +43,7 @@
 :: Discord: https://discord.gg/tmupwqn - Tanitim Konusu: https://flags.lifemcserver.com
 
 
-@echo on
+@echo off
 
 :: Turkce karakter sorunu yasiyorsaniz alttaki satirin basindaki :: i kaldirin.
 :: Not: Bu konsol fontunu kotu gozuken bir font ile degistirebilir.
@@ -59,9 +59,9 @@ cd /d "%~dp0"
 set "SystemPath=%SystemRoot%\System32"
 if not "%ProgramFiles(x86)%" == "" set "SystemPath=%SystemRoot%\Sysnative"
 
-if exist "%SystemPath%\cmd.exe" if exist "%0" if not "%1" == "true" start "" /elevate /b "%SystemPath%\cmd.exe" "%0" true
+if exist "%SystemPath%\cmd.exe" if exist "%0" if not "%1" == "true" start "" /b "%SystemPath%\cmd.exe" "%0" true
 
-if not defined in_subprocess (cmd /e:on /v:on /f:off /k set in_subprocess=y ^& %0 %*) & exit )
+if not defined in_subprocess (cmd /q /e:on /v:on /f:off /k set in_subprocess=y ^& %0 %*) & exit )
 
 :: SURUM - degistermeniz onerilmez
 
@@ -1364,7 +1364,7 @@ if %jver_major% lss 17 set instr_opt0=%instr_opt0% -XX:Tier0Delay=20
 if %jver_major% lss 16 set instr_opt0=%instr_opt0% -XX:+CriticalJNINatives -XX:InlineSmallCode=2500 -XX:+UseSemaphoreGCThreadsSynchronization -XX:+UseRDPCForConstantTableBase
 if %jver_major% lss 15 set instr_opt0=%instr_opt0% -XX:+UseOptoBiasInlining -XX:+UseNewFieldLayout
 
-set windows_unsafe_opt0= -XX:+UseVectoredExceptions -XX:+UseFPUForSpilling -XX:+UseCISCSpill -XX:+SuperWordLoopUnrollAnalysis -XX:+SuperWordRTDepCheck -XX:+ -XX:+UseVectorCmov -XX:+UseCMoveUnconditionally -XX:+OverrideVMProperties -XX:PreBlockSpin=100
+set windows_unsafe_opt0= -XX:+UseVectoredExceptions -XX:+UseFPUForSpilling -XX:+UseCISCSpill -XX:+SuperWordLoopUnrollAnalysis -XX:+SuperWordRTDepCheck -XX:+ -XX:+UseVectorCmov -XX:+UseCMoveUnconditionally -XX:+OverrideVMProperties -XX:PreBlockSpin=%gc_pause_interval_millis%
 
 if %jver_major% lss 14 set windows_unsafe_opt0=%windows_unsafe_opt0% -XX:+BindGCTaskThreadsToCPUs
 
@@ -1381,7 +1381,7 @@ set windows_unsafe_opt0=%windows_unsafe_opt0% -XX:+ForceTimeHighResolution
 
 set controversial_may_delay_start_up= -XX:+AlwaysCompileLoopMethods
 
-set inline_opt0= -XX:CompileCommand=quiet -XX:CompileCommand=inline,*._i -XX:CompileCommand=inline,*.forEachVisibleChunk -XX:CompileCommand=inline,*.isOutsideOfRange -XX:CompileCommand=inline,*.getNow -XX:CompileCommand=inline,*.accept -XX:CompileCommand=inline,*.lambda$tickChunks$14 -XX:CompileCommand=inline,*.getAverage -XX:CompileCommand=inline,*.awaitTasks -XX:CompileCommand=inline,*.executeNext -XX:CompileCommand=inline,*.waitForTasks -XX:CompileCommand=inline,*.parkNanos -XX:CompileCommand=inline,*.yield -XX:CompileCommand=inline,*.tick -XX:CompileCommand=inline,*.sleep -XX:CompileCommand=inline,*.getItemMeta
+set inline_opt0= -XX:CompileCommand=quiet -XX:CompileCommand=inline,*._i -XX:CompileCommand=inline,*.forEachVisibleChunk -XX:CompileCommand=inline,*.isOutsideOfRange -XX:CompileCommand=inline,*.getNow -XX:CompileCommand=inline,*.accept -XX:CompileCommand=inline,*.lambda$tickChunks$14 -XX:CompileCommand=inline,*.getAverage -XX:CompileCommand=inline,*.awaitTasks -XX:CompileCommand=inline,*.executeNext -XX:CompileCommand=inline,*.waitForTasks -XX:CompileCommand=inline,*.parkNanos -XX:CompileCommand=inline,*.yield -XX:CompileCommand=inline,*.tick -XX:CompileCommand=inline,*.sleep -XX:CompileCommand=inline,*.getItemMeta -XX:CompileCommand=inline,*.exactMatch -XX:CompileCommand=inline,*.matchAlias -XX:CompileCommand=inline,*.parse -XX:CompileCommand=inline,*.nextBracket -XX:CompileCommand=inline,*.nextQuote -XX:CompileCommand=inline,*.defineClass1 -XX:CompileCommand=inline,*.inflateBytesBytes -XX:CompileCommand=inline,*.buildNoise
 
 set full_arguments=%commerical0%-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+IgnoreUnrecognizedVMOptions -XX:-PrintWarnings%additional_commands% -Xms%min_ram% -Xmx%max_ram%%enable_assertions0% -Xargencoding:utf8%unsync_load_class0%%truffle_enable0% -XX:-DontCompileHugeMethods -XX:+TrustFinalNonStaticFields -XX:+UseCondCardMark -XX:+EliminateLocks -XX:+EliminateAllocations -XX:+EliminateAutoBox -XX:+EliminateNullChecks -XX:+EliminateFieldAccess -XX:+EliminateBlocks -XX+DoEscapeAnalysis -XX:+InlineWarmCalls%gc_extra0%%rtm_opt0%%jit_extra0%%instr_opt0%%instr_controversial_opt0%%aikar_additional%%mojang_client_defaults% -XX:+IdleTuningGcOnIdle%show_messagebox_onerror0%%module_access%%enable_preview0% -Xtune:virtualized -Xgc:concurrentScavenge -Xgc:dnssExpectedTimeRatioMaximum=1 -Xgc:excessiveGCratio=99 -Xgc:scvNoAdaptiveTenure -XX:+ClassRelationshipVerifier -Xshare:auto%use_cds0%%class_caching0%%sixty_four_bit_java0%%use_server_vm0% -XX:+UseNUMA -XX:+UseNUMAInterleaving%code_details_in_exceptions0% -XX:UseSSE=4 -XX:+UseSSE42Intrinsics%lock_optimization_prejava15% -XX:+UseGCOverheadLimit -XX:-NeverActAsServerClassMachine -XX:+AlwaysActAsServerClassMachine -XX:+UseG1GC%jvmci_enable0% -XX:+PerfDisableSharedMem -XX:-UsePerfData -XX:+DisableAttachMechanism -XX:+MaxFDLimit -XX:+RelaxAccessControlCheck -XX:+UseThreadPriorities%non_portable1% -XX:-PortableSharedCache -XX:+UseCGroupMemoryLimit -XX:+UseContainerSupport%java8_backported_defaults% -XX:+UseOSErrorReporting%windows_unsafe_opt0% -DMojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe=heapdump -Dcom.mojang.mojangTricksIntelDriversForPerformance=java.exe_MinecraftLauncher.exe=hprof%tiered_compilation0% -XX:+UseFastAccessorMethods%controversial_may_delay_start_up% -XX:+AllowUserSignalHandlers -XX:+UseSignalChaining -XX:+UseTLAB -XX:+ReduceCPUMonitorOverhead%yield_opt% -XX:+CMSIncrementalPacing%cms0% -XX:+ScavengeBeforeFullGC%less_ram0% -XX:+ParallelRefProcEnabled -XX:+ExplicitGCInvokesConcurrent -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses%omit_stacktrace0%%less_ram1% -XX:+UseGCStartupHints%class_caching1% -XX+JITInlineWatches%inline_opt0%%fml_parameters0% -Djava.lang.string.substring.nocopy=false -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true -Dhttp.maxConnections=100%use_secure_tls0% -Dsun.net.http.errorstream.enableBuffering=true -Dsun.net.client.defaultConnectTimeout=%connect_timeout% -Dsun.net.client.defaultReadTimeout=%read_timeout% -Dskript.dontUseNamesForSerialization=true -Dcom.ibm.tools.attach.enable=no -Djdk.useMethodHandlesForReflection=true -Djdk.util.jar.enableMultiRelease=force -Dkotlinx.coroutines.debug=off%graph_extra0%%head_less00% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8%std_utf8% -Duser.language="" -Duser.country="" -Duser.variant="" -Duser.timezone=Europe/Istanbul -Dpaper.playerconnection.keepalive=%io_timeout% -Dnashorn.option.no.deprecation.warning=true -Dpolyglot.js.nashorn-compat=true -DPaper.IgnoreJavaVersion=true%timings_aikar_flags_workarounds0% -Dusing.flags.lifemcserver.com=true -Dusing.lifemcserver.flags=https://flags.lifemcserver.com -Dflags.lifemcserver.com.version="%version%" -Dflags.lifemcserver.com.vendor="%vendor%"%jansi_parameters%%log4j_config_parameter%%log4j_perf0%%non_portable2%%netty_additional_arguments%%non_portable01%%non_portable0%
 
