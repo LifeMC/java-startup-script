@@ -93,7 +93,7 @@ jobs:
                 if: runner.os != 'Windows'
 
             -   name: Upload Artifact
-                uses: actions/upload-artifact@v2.2.3
+                uses: actions/upload-artifact@v2.2.4
                 with:
                     name: startup-script
                     path: |
