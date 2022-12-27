@@ -22,7 +22,7 @@ jobs:
 
         steps:
             -   name: Cache
-                uses: actions/cache@v3.2.0
+                uses: actions/cache@v3.2.2
                 with:
                     # A directory to store and save the cache
                     path: cache
